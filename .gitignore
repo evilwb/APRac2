@@ -1,0 +1,6 @@
+/build/target
+__pycache__
+*.aprac2
+*.iso
+test/test_output
+lib

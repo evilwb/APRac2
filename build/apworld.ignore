@@ -1,0 +1,8 @@
+.git*
+__pycache__
+build
+LICENSE.md
+README.md
+requirements.txt
+Ratchet & Clank 2.yaml
+*.iso
