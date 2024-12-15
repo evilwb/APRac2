@@ -8,7 +8,7 @@ The following are required in order to play Ratchet & Clank 2 in Archipelago
 
 - Installed [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases) v0.5.0 or higher.\
    **Make sure to install the Generator if you intend to generate multiworlds.**
-- The latest version of the [Ratchet & Clank 2 apworld]().
+- The latest version of the [Ratchet & Clank 2 apworld](https://github.com/evilwb/APRac2/releases).
 - [PCSX2 Emulator](https://pcsx2.net/downloads/). Must be v1.7 or higher for the required PINE support.
 - A Ratchet & Clank 2 US ISO (`SCUS-97268`)
 
@@ -16,6 +16,8 @@ The following are required in order to play Ratchet & Clank 2 in Archipelago
 
 1. Unzip the downloaded Ratchet & Clank 2 apworld zip file
 2. Double-click the `rac2.apworld` to install it to your local Archipelago instance
+3. Copy the pcsx2_interface folder into your Archipelago/lib/ folder
+   - This step will only be necessary on first install and when pcsx2_interface gets updated (rarely). I'll try to put a note on releases where it needs to be updated.
 
 ## PCSX2 Settings
 - Enable PINE in PCSX2
@@ -90,7 +92,7 @@ Once you do, follow these steps to connect to the room:
 
 - Use the latest Ratchet & Clank 2 Archipelago release
 
-  - Ratchet & Clank 2 Archipelago: [Releases · evilwb_APRac2]()
+  - Ratchet & Clank 2 Archipelago: [Releases](https://github.com/evilwb/APRac2/releases)
 
 - Use the latest PCSX2
 
@@ -123,4 +125,3 @@ Once you do, follow these steps to connect to the room:
 ## Feedback
 
 In the official [Archipelago Discord](https://discord.com/invite/8Z65BR2) under the `future-game-design` channel, there is a [_Ratchet & Clank 2_ thread]().
-Feel free to ping `@Evilwb` with any bugs/thoughts/complaints/wishes/jokes you may have!
