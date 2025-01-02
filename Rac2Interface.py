@@ -10,7 +10,7 @@ from typing import Optional, List
 
 from .Items import ItemData, item_table, ItemName, equipment_table, planet_coord_table, CLANK_PACKS, QUICK_SELECTABLE
 from .Addresses import Addresses
-import pcsx2_interface
+from .pcsx2_interface.pine import Pine
 
 _SUPPORTED_VERSIONS = ["SCUS-97268"]
 
@@ -100,36 +100,30 @@ class MobyInstance:
     uid: int  # 0xB2, 16 bits
 
     def push(self):
-        pcsx2_interface.write_bytes(self.address + 0x10, struct.pack("<f", self.x))
-        pcsx2_interface.write_bytes(self.address + 0x14, struct.pack("<f", self.y))
-        pcsx2_interface.write_bytes(self.address + 0x18, struct.pack("<f", self.z))
-        pcsx2_interface.write_int8(self.address + 0x20, self.state)
-        pcsx2_interface.write_int8(self.address + 0x21, self.group)
-        pcsx2_interface.write_int8(self.address + 0x22, self.moby_class)
-        pcsx2_interface.write_int8(self.address + 0x23, self.alpha)
-        pcsx2_interface.write_int32(self.address + 0x24, self.class_address)
-        pcsx2_interface.write_int32(self.address + 0x28, self.chain_address)
-        pcsx2_interface.write_bytes(self.address + 0x2C, struct.pack("<f", self.scale))
-        pcsx2_interface.write_int8(self.address + 0x31, self.is_drawn)
-        pcsx2_interface.write_int16(self.address + 0x32, self.draw_distance)
-        pcsx2_interface.write_int16(self.address + 0x34, self.flags1)
-        pcsx2_interface.write_int16(self.address + 0x36, self.flags2)
-        pcsx2_interface.write_bytes(self.address + 0x38, struct.pack("<f", self.lighting))
-        pcsx2_interface.write_int8(self.address + 0x3C, self.red)
-        pcsx2_interface.write_int8(self.address + 0x3D, self.green)
-        pcsx2_interface.write_int8(self.address + 0x3E, self.blue)
-        pcsx2_interface.write_int8(self.address + 0x3F, self.shine)
-        pcsx2_interface.write_int32(self.address + 0x64, self.update_function_address)
-        pcsx2_interface.write_int32(self.address + 0x68, self.pvars_address)
-        pcsx2_interface.write_int32(self.address + 0x98, self.colldata_address)
-        pcsx2_interface.write_int16(self.address + 0xAA, self.oclass)
-        pcsx2_interface.write_int16(self.address + 0xB2, self.uid)
-
-    def get_pvar(self, offset: int, size: int) -> bytes:
-        return pcsx2_interface.read_bytes(self.pvars_address + offset, size)
-
-    def set_pvar(self, offset: int, value: bytes):
-        pcsx2_interface.write_bytes(self.pvars_address + offset, value)
+        Rac2Interface.pcsx2_interface.write_float(self.address + 0x10, self.x)
+        Rac2Interface.pcsx2_interface.write_float(self.address + 0x14, self.y)
+        Rac2Interface.pcsx2_interface.write_float(self.address + 0x18, self.z)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x20, self.state)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x21, self.group)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x22, self.moby_class)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x23, self.alpha)
+        Rac2Interface.pcsx2_interface.write_int32(self.address + 0x24, self.class_address)
+        Rac2Interface.pcsx2_interface.write_int32(self.address + 0x28, self.chain_address)
+        Rac2Interface.pcsx2_interface.write_float(self.address + 0x2C, self.scale)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x31, self.is_drawn)
+        Rac2Interface.pcsx2_interface.write_int16(self.address + 0x32, self.draw_distance)
+        Rac2Interface.pcsx2_interface.write_int16(self.address + 0x34, self.flags1)
+        Rac2Interface.pcsx2_interface.write_int16(self.address + 0x36, self.flags2)
+        Rac2Interface.pcsx2_interface.write_float(self.address + 0x38, self.lighting)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x3C, self.red)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x3D, self.green)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x3E, self.blue)
+        Rac2Interface.pcsx2_interface.write_int8(self.address + 0x3F, self.shine)
+        Rac2Interface.pcsx2_interface.write_int32(self.address + 0x64, self.update_function_address)
+        Rac2Interface.pcsx2_interface.write_int32(self.address + 0x68, self.pvars_address)
+        Rac2Interface.pcsx2_interface.write_int32(self.address + 0x98, self.colldata_address)
+        Rac2Interface.pcsx2_interface.write_int16(self.address + 0xAA, self.oclass)
+        Rac2Interface.pcsx2_interface.write_int16(self.address + 0xB2, self.uid)
 
 
 @dataclass(frozen=True)
@@ -214,7 +208,7 @@ class InventoryItemData(ItemData):
 
 class Rac2Interface:
     """Interface sitting in front of the pcsx2_interface to provide higher level functions for interacting with RAC2"""
-    pcsx2_interface: pcsx2_interface = pcsx2_interface
+    pcsx2_interface: Pine = Pine()
     addresses: Addresses = None
     connection_status: str
     logger: Logger
@@ -260,13 +254,13 @@ class Rac2Interface:
                 self.pcsx2_interface.write_int32(self.addresses.selectable_planets + 4 * list_idx, id_to_write)
 
         if item.name == ItemName.Platinum_Bolt:
-            pcsx2_interface.write_int8(self.addresses.platinum_bolt_count, new_amount)
+            self.pcsx2_interface.write_int8(self.addresses.platinum_bolt_count, new_amount)
 
         if item.name == ItemName.Nanotech_Boost:
-            pcsx2_interface.write_int8(self.addresses.nanotech_boost_count, new_amount)
+            self.pcsx2_interface.write_int8(self.addresses.nanotech_boost_count, new_amount)
 
         if item.name == ItemName.Hypnomatic_Part:
-            pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
+            self.pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
 
         # TODO: Deal with armor and weapons
 
@@ -284,10 +278,10 @@ class Rac2Interface:
                     planet_list.append(planet_id)
             return InventoryItemData(item, item.offset in planet_list, 1)
         if item.name == ItemName.Platinum_Bolt:
-            total_bolts = pcsx2_interface.read_int8(self.addresses.platinum_bolt_count)
+            total_bolts = self.pcsx2_interface.read_int8(self.addresses.platinum_bolt_count)
             return InventoryItemData(item, total_bolts, item.max_capacity)
         if item.name == ItemName.Nanotech_Boost:
-            total_boosts = pcsx2_interface.read_int8(self.addresses.nanotech_boost_count)
+            total_boosts = self.pcsx2_interface.read_int8(self.addresses.nanotech_boost_count)
             return InventoryItemData(item, total_boosts, item.max_capacity)
         if item.name == ItemName.Hypnomatic_Part:
             part_count = self.pcsx2_interface.read_int8(self.addresses.hypnomatic_part_count)
@@ -325,18 +319,17 @@ class Rac2Interface:
 
     def get_current_planet(self) -> Rac2Planet:
         """Returns the planet that the player is currently on"""
-        memory = self.pcsx2_interface.read_bytes(self.addresses.current_planet, 4)
-        planet_id = int.from_bytes(memory, "little", signed=True)
+        planet_id = self.pcsx2_interface.read_int32(self.addresses.current_planet)
         return planet_by_id(planet_id)
 
     def get_pause_state(self) -> int:
         address = self.addresses.pause_state
         if self.get_current_planet() is Rac2Planet.Oozla:
             address = self.addresses.oozla_pause_state
-        return pcsx2_interface.read_int8(address)
+        return self.pcsx2_interface.read_int8(address)
 
     def get_ratchet_state(self) -> int:
-        return pcsx2_interface.read_int8(self.addresses.ratchet_state)
+        return self.pcsx2_interface.read_int8(self.addresses.ratchet_state)
 
     def get_current_nanotech(self) -> int:
         return self.pcsx2_interface.read_int8(self.addresses.current_nanotech)
@@ -377,7 +370,9 @@ class Rac2Interface:
                     f"Connected to the wrong game ({game_id}, "
                     f"please connect to Ratchet & Clank 2 (Game ID starts with a SCUS-)")
                 self.game_id_error = game_id
-        except RuntimeError as e:
+        except RuntimeError:
+            pass
+        except ConnectionError:
             pass
 
     def disconnect_from_game(self):
@@ -412,8 +407,10 @@ class Rac2Interface:
         try:
             payload_message = message.encode() + b"\00"
             segments = self.get_segment_pointer_table()
-            message_address = self.pcsx2_interface.find_first(b"You got a skill point!",
-                                                              segments.help_messages, segments.tie_instances)
+            message_address = self.addresses.planet[self.get_current_planet()].skill_point_text
+
+            if not message_address:
+                return False
 
             # Overwrite from start of "You got a skill point!" text with payload message.
             overwritten_text = self.pcsx2_interface.read_bytes(message_address, len(payload_message))
@@ -461,14 +458,9 @@ class Rac2Interface:
         return None
 
     def move_ratchet(self, x: float, y: float, z: float):
-        self.pcsx2_interface.write_bytes(self.addresses.ratchet_position, struct.pack("<f", x))
-        self.pcsx2_interface.write_bytes(self.addresses.ratchet_position + 0x4, struct.pack("<f", y))
-        self.pcsx2_interface.write_bytes(self.addresses.ratchet_position + 0x8, struct.pack("<f", z))
-
-    def dump_memory(self, output_file: str):
-        with open(output_file, "wb") as file:
-            for i in range(512):
-                file.write(self.pcsx2_interface.batch_read(i * 65536, (i + 1) * 65536))
+        self.pcsx2_interface.write_float(self.addresses.ratchet_position, x)
+        self.pcsx2_interface.write_float(self.addresses.ratchet_position + 0x4, y)
+        self.pcsx2_interface.write_float(self.addresses.ratchet_position + 0x8, z)
 
     def read_instruction(self, address: int) -> int:
         return self.pcsx2_interface.read_int32(address)

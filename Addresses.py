@@ -205,6 +205,7 @@ class PlanetAddresses:
     segment_pointers: Optional[int] = None
     planet_switch_trigger: Optional[int] = None
     next_planet: Optional[int] = None
+    skill_point_text: Optional[int] = None
 
 
 
