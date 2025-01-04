@@ -1,8 +1,5 @@
 from dataclasses import dataclass
-from types import SimpleNamespace
-from typing import Optional, final, List, Dict
-
-from worlds.rac2.data.Planets import Planet
+from typing import Optional, Dict
 
 
 class Addresses:
@@ -42,6 +39,8 @@ class Addresses:
             self.quickselect: int = 0x1A73B8
             self.current_planet: int = 0x1A79F0
             self.nanotech_boost_table: int = 0x1A7A28
+            self.skill_point_table: int = 0x1A7A60
+            self.ship_upgrades: int = 0x1A7AF0
             self.inventory: int = 0x1A7AF8
             self.secondary_inventory: int = 0x1A7B30
             self.unlocked_planets: int = 0x1A7BC8
@@ -71,126 +70,151 @@ class Addresses:
                     segment_pointers=0x1BF840,
                     planet_switch_trigger=0x1A8F14,
                     next_planet=0x1B2080,
+                    skill_point_text=0x1A900A0,
                 ),
                 2: PlanetAddresses(
                     segment_pointers=0x1C0880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
+                    skill_point_text=0x1B9A310,
                 ),
                 3: PlanetAddresses(
                     segment_pointers=0x1BFD00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2540,
+                    skill_point_text=0x1C66600,
                 ),
                 4: PlanetAddresses(
                     segment_pointers=0x1BFA00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2000,
+                    skill_point_text=0x1C8DF50,
                 ),
                 5: PlanetAddresses(
                     segment_pointers=0x1BFA40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
+                    skill_point_text=0x1874090,
                 ),
                 6: PlanetAddresses(
                     segment_pointers=0x1BFBC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
+                    skill_point_text=0x1C726D0,
                 ),
                 7: PlanetAddresses(
                     segment_pointers=0x1BF580,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1E00,
+                    skill_point_text=0x1981130,
                 ),
                 8: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
+                    skill_point_text=0x1C601C0,
                 ),
                 9: PlanetAddresses(
                     segment_pointers=0x1BFD80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2380,
+                    skill_point_text=0x1CCE990,
                 ),
                 10: PlanetAddresses(
                     segment_pointers=0x1BFA00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
+                    skill_point_text=0x1649420,
                 ),
                 11: PlanetAddresses(
                     segment_pointers=0x1C0C40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
+                    skill_point_text=0x1C4EAD0,
                 ),
                 12: PlanetAddresses(
                     segment_pointers=0x1C0180,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B29C0,
+                    skill_point_text=0x1C44EF0,
                 ),
                 13: PlanetAddresses(
                     segment_pointers=0x1BFC40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2440,
+                    skill_point_text=0x1CCBA00,
                 ),
                 14: PlanetAddresses(
                     segment_pointers=0x1BF880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B20C0,
+                    skill_point_text=0x1B5A240,
                 ),
                 15: PlanetAddresses(
                     segment_pointers=0x1BFB40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2140,
+                    skill_point_text=0x16734E0,
                 ),
                 16: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2640,
+                    skill_point_text=0x1CD5660,
                 ),
                 17: PlanetAddresses(
                     segment_pointers=0x1BFF40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2740,
+                    skill_point_text=0x1CEA930,
                 ),
                 18: PlanetAddresses(
                     segment_pointers=0x1BFB40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
+                    skill_point_text=0x1C6B7F0,
                 ),
                 19: PlanetAddresses(
                     segment_pointers=0x1BFDC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
+                    skill_point_text=0x1C49920,
                 ),
                 20: PlanetAddresses(
                     segment_pointers=0x1C0340,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2AC0,
+                    skill_point_text=0x1C1B010,
                 ),
                 22: PlanetAddresses(
                     segment_pointers=0x1C0000,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1C40,
+                    skill_point_text=0x168B7D0,
                 ),
                 23: PlanetAddresses(
                     segment_pointers=0x1C09C0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B22C0,
+                    skill_point_text=0x150F110,
                 ),
                 24: PlanetAddresses(
                     segment_pointers=0x1BEA40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B12C0,
+                    skill_point_text=0xEDE4B0,
                 ),
                 25: PlanetAddresses(
                     segment_pointers=0x1BF580,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1BC0,
+                    skill_point_text=0xE13140,
                 ),
                 26: PlanetAddresses(
                     segment_pointers=0x1BEF00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1740,
+                    skill_point_text=0x1171FF0,
                 ),
                 30: PlanetAddresses(
                     segment_pointers=0x1C0140,

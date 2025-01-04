@@ -419,17 +419,17 @@ class Rac2Interface:
             self.pcsx2_interface.write_bytes(message_address, payload_message)
 
             # Save original values for variables we use to trigger the text box.
-            has_nice_ride = self.pcsx2_interface.read_int8(0x1A7A7D)
-            ship_upgrades = self.pcsx2_interface.read_int16(0x1A7AF0)
+            has_nice_ride = self.pcsx2_interface.read_int8(self.addresses.skill_point_table + 0x1D)
+            ship_upgrades = self.pcsx2_interface.read_int16(self.addresses.ship_upgrades)
 
             # Set variables to trigger skill point get text box.
-            self.pcsx2_interface.write_int8(0x1A7A7D, 0)
-            self.pcsx2_interface.write_int16(0x1A7AF0, 0xFF50)
+            self.pcsx2_interface.write_int8(self.addresses.skill_point_table + 0x1D, 0)
+            self.pcsx2_interface.write_int16(self.addresses.ship_upgrades, 0xFF50)
 
             # After short delay, reset variables to original values.
             sleep(0.05)
-            self.pcsx2_interface.write_int8(0x1A7A7D, has_nice_ride)
-            self.pcsx2_interface.write_int16(0x1A7AF0, ship_upgrades)
+            self.pcsx2_interface.write_int8(self.addresses.skill_point_table + 0x1D, has_nice_ride)
+            self.pcsx2_interface.write_int16(self.addresses.ship_upgrades, ship_upgrades)
             self.pcsx2_interface.write_bytes(message_address, overwritten_text)
         except RuntimeError:
             return False
