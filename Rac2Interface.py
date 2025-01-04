@@ -354,11 +354,12 @@ class Rac2Interface:
 
     def connect_to_game(self):
         """Initializes the connection to PCSX2 and verifies it is connected to RAC2"""
-        try:
+        if not self.pcsx2_interface.is_connected():
             self.pcsx2_interface.connect()
             if not self.pcsx2_interface.is_connected():
                 return
             self.logger.info("Connected to PCSX2 Emulator")
+        try:
             game_id = self.pcsx2_interface.get_game_id()
             # The first read of the address will be null if the client is faster than the emulator
             self.current_game = None
@@ -377,6 +378,7 @@ class Rac2Interface:
 
     def disconnect_from_game(self):
         self.pcsx2_interface.disconnect()
+        self.current_game = None
         self.logger.info("Disconnected from PCSX2 Emulator")
 
     def get_connection_state(self) -> bool:

@@ -118,6 +118,8 @@ async def pcsx2_sync_task(ctx: Rac2Context):
                 await _handle_game_ready(ctx)
             else:
                 await _handle_game_not_ready(ctx)
+        except ConnectionError:
+            ctx.game_interface.disconnect_from_game()
         except Exception as e:
             if isinstance(e, RuntimeError):
                 logger.error(str(e))

@@ -68,7 +68,7 @@ class Pine:
         self._slot: int = slot
         self._sock: socket.socket = socket.socket()
         self._sock_state: bool = False
-        self._init_socket()
+        # self._init_socket()
 
     def _init_socket(self) -> None:
         if system() == "Windows":
@@ -88,7 +88,7 @@ class Pine:
 
         try:
             self._sock = socket.socket(socket_family, socket.SOCK_STREAM)
-            self._sock.settimeout(1.0)
+            self._sock.settimeout(5.0)
             self._sock.connect(socket_name)
         except socket.error:
             self._sock.close()
