@@ -106,7 +106,7 @@ function mk_apworld() {
     echo "${tag}" > "${destdir}/rac2/version.txt"
 
     # If this already exists then ovewrite it
-    rm -rf "${destdir}/rac2/lib"
+#    rm -rf "${destdir}/rac2/lib"
 #    mv "${destdir}/lib/pcsx2_interface" "${destdir}"
     pushd "${destdir}"
     zip -9r "rac2.apworld" "rac2"
@@ -169,14 +169,14 @@ function main() {
         local bundle="${bundle_base}-${tag}"
         local destdir="${target_path}/${bundle}"
 
-        for platform in "${SUPPORTED_PLATFORMS[@]}"; do
-            for version in "${PYTHON_VERSIONS[@]}"; do
-              local requirements_file="${project}/requirements.txt"
-              get_deps "${platform}" "${version}" ${requirements_file} "${destdir}"
-              # copy deps to project folder as well for local dev
-              cp -r "${destdir}/pcsx2_interface" "${project}/lib"
-            done
-        done
+#        for platform in "${SUPPORTED_PLATFORMS[@]}"; do
+#            for version in "${PYTHON_VERSIONS[@]}"; do
+#              local requirements_file="${project}/requirements.txt"
+#              get_deps "${platform}" "${version}" ${requirements_file} "${destdir}"
+#              # copy deps to project folder as well for local dev
+#              cp -r "${destdir}/pcsx2_interface" "${project}/lib"
+#            done
+#        done
 
         mk_apworld "${project}" "${destdir}"
         cp_data "${project}" "${destdir}"
