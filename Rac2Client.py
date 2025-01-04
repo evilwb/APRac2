@@ -137,10 +137,10 @@ async def handle_check_goal_complete(ctx: Rac2Context):
 
 async def handle_check_deathlink(ctx: Rac2Context):
     health = ctx.game_interface.get_current_nanotech()
-    if health <= 0 and ctx.is_pending_death_link_reset == False:
-        await ctx.send_death(ctx.player_names[ctx.slot] + " ran out of energy.")
+    if health <= 0 and not ctx.is_pending_death_link_reset:
+        await ctx.send_death(ctx.player_names[ctx.slot] + " ran out of Nanotech.")
         ctx.is_pending_death_link_reset = True
-    elif health > 0 and ctx.is_pending_death_link_reset == True:
+    elif health > 0 and ctx.is_pending_death_link_reset:
         ctx.is_pending_death_link_reset = False
 
 
