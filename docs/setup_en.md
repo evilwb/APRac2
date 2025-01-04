@@ -16,8 +16,6 @@ The following are required in order to play Ratchet & Clank 2 in Archipelago
 
 1. Unzip the downloaded Ratchet & Clank 2 apworld zip file
 2. Double-click the `rac2.apworld` to install it to your local Archipelago instance
-3. Copy the pcsx2_interface folder into your Archipelago/lib/ folder
-   - This step will only be necessary on first install and when pcsx2_interface gets updated (rarely). I'll try to put a note on releases where it needs to be updated.
 
 ## PCSX2 Settings
 - Enable PINE in PCSX2
