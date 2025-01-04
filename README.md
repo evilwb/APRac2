@@ -10,7 +10,7 @@ To get started or for troubleshooting, see [the Setup Guide](./docs/setup_en.md)
 In Ratchet & Clank 2, all Gadgets, Platinum Bolts and Planet Coordinates are shuffled into the multiworld, giving the game a greater variety in routing to complete the end goal.
 
 
-## What is the goal of Metroid Prime when randomized?
+## What is the goal of Ratchet & Clank 2 when randomized?
 The end goal of the randomizer game is to defeat the giant mutated Protopet on planet Yeedil.
 
 

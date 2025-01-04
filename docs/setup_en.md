@@ -99,7 +99,7 @@ Once you do, follow these steps to connect to the room:
 - Use the Correct Version of the Game
 
   - Ensure your ISO of Ratchet & Clank 2 is the supported version:
-    - Platform: `Playstaion2` (None of the Playstation3 versions are supported.)
+    - Platform: `PlayStation 2` (None of the PlayStation 3 versions are supported.)
     - Version: `1.01`
     - Serial: `SCUS-97268`
     - CRC: `38996035`
