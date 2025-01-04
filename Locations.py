@@ -266,7 +266,7 @@ joba_location_table = {
     LocationName.Joba_Shady_Salesman: LocationData(LocationName.Joba_Shady_Salesman, 111, can_dynamo),
     LocationName.Joba_Arena_Battle: LocationData(
         LocationName.Joba_Arena_Battle, 112,
-        lambda state, player: can_dynamo(state, player) and can_pack(state, player)
+        lambda state, player: can_dynamo(state, player) and can_pack(state, player) and can_levitate(state, player)
     ),
     LocationName.Joba_Arena_Cage_Match: LocationData(
         LocationName.Joba_Arena_Cage_Match, 113,
