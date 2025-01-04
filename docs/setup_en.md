@@ -122,4 +122,4 @@ Once you do, follow these steps to connect to the room:
 
 ## Feedback
 
-In the official [Archipelago Discord](https://discord.com/invite/8Z65BR2) under the `future-game-design` channel, there is a [_Ratchet & Clank 2_ thread]().
+In the official [Archipelago Discord](https://discord.com/invite/8Z65BR2) under the `future-game-design` channel, there is a [_Ratchet & Clank 2_ thread](https://discord.com/channels/731205301247803413/1325015730218860554).
