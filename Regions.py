@@ -2,7 +2,7 @@ import typing
 
 from BaseClasses import CollectionState, Region
 from .Locations import LocationData
-from .Logic import can_pack, can_swingshot
+from .Logic import can_heli, can_swingshot
 from .data.Planets import Planet, PlanetData, planets
 from .Items import ItemName
 
@@ -24,7 +24,7 @@ def create_regions(world: 'Rac2World'):
                     if planet == Planet.Tabora:
                         return (
                             state.has(planet.coord_item, world.player)
-                            and can_pack(state, world.player)
+                            and can_heli(state, world.player)
                             and can_swingshot(state, world.player)
                         )
                     if planet == Planet.Aranos_Prison:

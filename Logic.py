@@ -25,8 +25,12 @@ def can_therminate(state: CollectionState, player: int) -> bool:
     return state.has(ItemName.Thermanator, player)
 
 
-def can_pack(state: CollectionState, player: int) -> bool:
+def can_improved_jump(state: CollectionState, player: int) -> bool:
     return state.has_any([ItemName.Heli_Pack, ItemName.Thruster_Pack], player)
+
+
+def can_heli(state: CollectionState, player: int) -> bool:
+    return state.has(ItemName.Heli_Pack, player)
 
 
 def can_grind(state: CollectionState, player: int) -> bool:

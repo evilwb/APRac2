@@ -2,9 +2,7 @@ from enum import StrEnum
 from typing import Optional, Callable
 
 from BaseClasses import Location, CollectionState
-from worlds.rac2.Logic import can_dynamo, can_tractor, can_gravity, can_electrolyze, can_infiltrate, can_swingshot, \
-    can_pack, can_therminate, can_glide, can_levitate, has_qwark_statuette, can_grind, can_hypnotize, \
-    has_hypnomatic_parts
+from worlds.rac2.Logic import *
 
 
 class Rac2Location(Location):
@@ -158,15 +156,15 @@ endako_location_table = {
 barlow_location_table = {
     LocationName.Barlow_Inventor: LocationData(LocationName.Barlow_Inventor, 40, can_swingshot),
     LocationName.Barlow_Hoverbike_Race_Transmission: LocationData(
-        LocationName.Barlow_Hoverbike_Race_Transmission, 41, can_pack
+        LocationName.Barlow_Hoverbike_Race_Transmission, 41, can_improved_jump
     ),
     LocationName.Barlow_Hoverbike_Race_Helmet: LocationData(
         LocationName.Barlow_Hoverbike_Race_Helmet, 42,
-        lambda state, player: can_pack(state, player) and can_electrolyze(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
     ),
     LocationName.Barlow_Hoverbike_Race_PB: LocationData(
         LocationName.Barlow_Hoverbike_Race_PB, 43,
-        lambda state, player: can_pack(state, player) and can_electrolyze(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
     ),
     LocationName.Barlow_Hound_Cave_PB: LocationData(LocationName.Barlow_Hound_Cave_PB, 44, can_swingshot),
 }
@@ -182,17 +180,17 @@ notak_location_table = {
     # TODO: Double check requirements on these locations
     LocationName.Notak_Top_Pier_Telescreen: LocationData(
         LocationName.Notak_Top_Pier_Telescreen, 60,
-        lambda state, player: can_pack(state, player) and can_therminate(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_therminate(state, player)
     ),
     LocationName.Notak_Worker_Bots: LocationData(
         LocationName.Notak_Worker_Bots, 61,
-        lambda state, player: can_pack(state, player) and can_therminate(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_therminate(state, player)
     ),
     LocationName.Notak_Behind_Building_PB: LocationData(LocationName.Notak_Behind_Building_PB, 62),
     LocationName.Notak_Promenade_Sign_PB: LocationData(LocationName.Notak_Promenade_Sign_PB, 63),
     LocationName.Notak_Timed_Dynamo_PB: LocationData(
         LocationName.Notak_Timed_Dynamo_PB, 64,
-        lambda state, player: can_pack(state, player) and can_therminate(state, player) and can_dynamo(state, player)),
+        lambda state, player: can_improved_jump(state, player) and can_therminate(state, player) and can_dynamo(state, player)),
     LocationName.Notak_Promenade_End_NT: LocationData(LocationName.Notak_Promenade_End_NT, 65),
 }
 
@@ -200,12 +198,12 @@ siberius_location_table = {
     LocationName.Siberius_Defeat_Thief: LocationData(LocationName.Siberius_Defeat_Thief, 70, can_swingshot),
     LocationName.Siberius_Flamebot_Ledge_PB: LocationData(
         LocationName.Siberius_Flamebot_Ledge_PB, 72,
-        lambda state, player: can_pack(state, player) or can_tractor(state, player)
+        lambda state, player: can_improved_jump(state, player) or can_tractor(state, player)
     ),
-    LocationName.Siberius_Fenced_Area_PB: LocationData(LocationName.Siberius_Fenced_Area_PB, 73, can_pack),
+    LocationName.Siberius_Fenced_Area_PB: LocationData(LocationName.Siberius_Fenced_Area_PB, 73, can_heli),
 }
 
-# NOTICE: Clank pack and Swingshot are already logically required in order to access this planet
+# NOTICE: Heli-Pack and Swingshot are already logically required in order to access this planet
 tabora_location_table = {
     # LocationName.Tabora_OmniWrench_10000: LocationData(LocationName.Tabora_OmniWrench_10000, 80),
     LocationName.Tabora_Meet_Angela: LocationData(LocationName.Tabora_Meet_Angela, 81),
@@ -229,13 +227,16 @@ tabora_location_table = {
 dobbo_location_table = {
     LocationName.Dobbo_Defeat_Thug_Leader: LocationData(
         LocationName.Dobbo_Defeat_Thug_Leader, 90,
-        lambda state, player: can_pack(state, player) and can_dynamo(state, player) and can_swingshot(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_dynamo(state, player) and can_swingshot(state, player)
     ),
     # TODO: Check if clank is needed
     LocationName.Dobbo_Facility_Terminal: LocationData(
         LocationName.Dobbo_Facility_Terminal, 91,
-        lambda state, player: can_dynamo(state, player) and can_swingshot(state, player) and
-                              can_glide(state, player) and can_infiltrate(state, player)
+        lambda state, player:
+            can_dynamo(state, player)
+            and can_swingshot(state, player)
+            and can_glide(state, player)
+            and can_infiltrate(state, player)
     ),
     LocationName.Dobbo_Spiderbot_Room_PB: LocationData(
         LocationName.Dobbo_Spiderbot_Room_PB, 92,
@@ -266,11 +267,11 @@ joba_location_table = {
     LocationName.Joba_Shady_Salesman: LocationData(LocationName.Joba_Shady_Salesman, 111, can_dynamo),
     LocationName.Joba_Arena_Battle: LocationData(
         LocationName.Joba_Arena_Battle, 112,
-        lambda state, player: can_dynamo(state, player) and can_pack(state, player) and can_levitate(state, player)
+        lambda state, player: can_dynamo(state, player) and can_improved_jump(state, player) and can_levitate(state, player)
     ),
     LocationName.Joba_Arena_Cage_Match: LocationData(
         LocationName.Joba_Arena_Cage_Match, 113,
-        lambda state, player: can_dynamo(state, player) and can_pack(state, player) and can_levitate(state, player)
+        lambda state, player: can_dynamo(state, player) and can_improved_jump(state, player) and can_levitate(state, player)
     ),
     LocationName.Joba_Hidden_Cliff_PB: LocationData(
         LocationName.Joba_Hidden_Cliff_PB, 114,
@@ -278,7 +279,7 @@ joba_location_table = {
     ),
     LocationName.Joba_Levitator_Tower_PB: LocationData(
         LocationName.Joba_Levitator_Tower_PB, 115,
-        lambda state, player: can_dynamo(state, player) and can_pack(state, player) and can_levitate(state, player)
+        lambda state, player: can_dynamo(state, player) and can_improved_jump(state, player) and can_levitate(state, player)
     ),
     LocationName.Joba_Hoverbike_Race_Shortcut_NT: LocationData(
         LocationName.Joba_Hoverbike_Race_Shortcut_NT, 116,
@@ -291,16 +292,17 @@ todano_location_table = {
     LocationName.Todano_Search_Rocket_Silo: LocationData(
         LocationName.Todano_Search_Rocket_Silo, 120,
         lambda state, player:
-            can_pack(state, player)
+            can_improved_jump(state, player)
             and can_electrolyze(state, player)
             and can_infiltrate(state, player)
-            and can_pack(state, player)
     ),
     LocationName.Todano_Stuart_Zurgo_Trade: LocationData(
         # TODO: Double check if clank is needed
         LocationName.Todano_Stuart_Zurgo_Trade, 121,
-        lambda state, player:  can_electrolyze(state, player) and can_tractor(state, player) and
-                               has_qwark_statuette(state, player)
+        lambda state, player:
+            can_electrolyze(state, player)
+            and can_tractor(state, player)
+            and has_qwark_statuette(state, player)
     ),
     LocationName.Todano_Near_Stuart_Zurgo_PB: LocationData(
         # TODO: Double check if clank is needed
@@ -347,7 +349,7 @@ aranos_location_table = {
     LocationName.Aranos_Plumber: LocationData(LocationName.Aranos_Plumber, 141),
     LocationName.Aranos_Under_Ship_PB: LocationData(
         LocationName.Aranos_Under_Ship_PB, 142,
-        lambda state, player: can_pack(state, player)
+        lambda state, player: can_heli(state, player)
     ),
 }
 
@@ -364,13 +366,17 @@ snivelak_location_table = {
     ),
     LocationName.Snivelak_Dynamo_Platforms_PB: LocationData(
         LocationName.Snivelak_Dynamo_Platforms_PB, 161,
-        lambda state, player: can_swingshot(state, player) and can_grind(state, player) and
-                              can_gravity(state, player) and can_dynamo(state, player) and can_pack(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_grind(state, player)
+            and can_gravity(state, player)
+            and can_dynamo(state, player)
+            and can_heli(state, player)
     ),
     LocationName.Snivelak_Swingshot_Tower_NT: LocationData(
         LocationName.Snivelak_Swingshot_Tower_NT, 162,
         # TODO: Try without Clank
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player)
+        lambda state, player: can_swingshot(state, player) and can_heli(state, player)
     ),
 }
 
@@ -378,48 +384,63 @@ smolg_location_table = {
     LocationName.Smolg_Balloon_Transmission: LocationData(
         LocationName.Smolg_Balloon_Transmission, 170,
         # TODO: Try without Clank
-        lambda state, player: can_pack(state, player) and can_dynamo(state, player) and can_electrolyze(state, player)
+        lambda state, player:
+            can_improved_jump(state, player)
+            and can_dynamo(state, player)
+            and can_electrolyze(state, player)
     ),
     LocationName.Smolg_Distribution_Facility_End: LocationData(
         LocationName.Smolg_Distribution_Facility_End, 171,
         # TODO: Check what infiltrator does
-        lambda state, player: can_pack(state, player) and can_dynamo(state, player) and
-                              can_electrolyze(state, player) and can_grind(state, player)
+        lambda state, player:
+            can_improved_jump(state, player)
+            and can_dynamo(state, player)
+            and can_electrolyze(state, player)
+            and can_grind(state, player)
     ),
     LocationName.Smolg_Mutant_Crab: LocationData(
         LocationName.Smolg_Mutant_Crab, 172,
-        # TODO: Try without Clank
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player) and can_levitate(state, player)
+        # TODO: Double check if Clank is needed
+        lambda state, player: can_swingshot(state, player) and can_levitate(state, player)
     ),
     LocationName.Smolg_Floating_Platform_PB: LocationData(
         LocationName.Smolg_Floating_Platform_PB, 173,
-        # TODO: Try without Clank
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player) and can_levitate(state, player)
+        # TODO: Double check if Clank is needed
+        lambda state, player: can_swingshot(state, player) and can_levitate(state, player)
     ),
     LocationName.Smolg_Warehouse_PB: LocationData(
         LocationName.Smolg_Warehouse_PB, 174,
         # TODO: Try without Clank
-        lambda state, player: can_pack(state, player) and can_dynamo(state, player)
+        lambda state, player: can_improved_jump(state, player) and can_dynamo(state, player)
     ),
 }
 
 damosel_location_table = {
     LocationName.Damosel_Hypnotist: LocationData(
         LocationName.Damosel_Hypnotist, 180,
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player) and
-                              can_therminate(state, player) and has_hypnomatic_parts(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_improved_jump(state, player)
+            and can_therminate(state, player)
+            and has_hypnomatic_parts(state, player)
     ),
     LocationName.Damosel_Train_Rails: LocationData(LocationName.Damosel_Train_Rails, 181, can_grind),
     LocationName.Damosel_Defeat_Mothership: LocationData(LocationName.Damosel_Defeat_Mothership, 182),
     LocationName.Damosel_Frozen_Fountain_PB: LocationData(
         LocationName.Damosel_Frozen_Fountain_PB, 183,
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player) and
-                              can_therminate(state, player) and can_grind(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_improved_jump(state, player)
+            and can_therminate(state, player)
+            and can_grind(state, player)
     ),
     LocationName.Damosel_Pyramid_PB: LocationData(
         LocationName.Damosel_Pyramid_PB, 184,
-        lambda state, player: can_swingshot(state, player) and can_pack(state, player) and
-                              can_therminate(state, player) and can_hypnotize(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_improved_jump(state, player)
+            and can_therminate(state, player)
+            and can_hypnotize(state, player)
     ),
 }
 
@@ -444,16 +465,25 @@ yeedil_location_table = {
     LocationName.Yeedil_Bridge_Grindrail_PB: LocationData(LocationName.Yeedil_Bridge_Grindrail_PB, 200, can_grind),
     LocationName.Yeedil_Tractor_Pillar_PB: LocationData(
         LocationName.Yeedil_Tractor_Pillar_PB, 201,
-        lambda state, player: can_swingshot(state, player) and can_hypnotize(state, player) and
-                              can_pack(state, player) and can_dynamo(state, player) and
-                              can_infiltrate(state, player) and can_electrolyze(state, player) and
-                              can_tractor(state, player) and can_grind(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_hypnotize(state, player)
+            and can_improved_jump(state, player)
+            and can_dynamo(state, player)
+            and can_infiltrate(state, player)
+            and can_electrolyze(state, player)
+            and can_tractor(state, player)
+            and can_grind(state, player)
     ),
     LocationName.Yeedil_Defeat_Mutated_Protopet: LocationData(
         LocationName.Yeedil_Defeat_Mutated_Protopet, None,
-        lambda state, player: can_swingshot(state, player) and can_hypnotize(state, player) and
-                              can_pack(state, player) and can_dynamo(state, player) and
-                              can_infiltrate(state, player) and can_electrolyze(state, player)
+        lambda state, player:
+            can_swingshot(state, player)
+            and can_hypnotize(state, player)
+            and can_improved_jump(state, player)
+            and can_dynamo(state, player)
+            and can_infiltrate(state, player)
+            and can_electrolyze(state, player)
     ),
 }
 
