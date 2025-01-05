@@ -14,7 +14,7 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     planet = ctx.current_planet
 
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
-    if button_input == 0x80F:  # L1 + L2 + R1 + R2 + START
+    if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
         if game_interface.switch_planet(Rac2Planet.Ship_Shack):
             game_interface.logger.info("Resetting to Ship Shack")
 
@@ -24,7 +24,7 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
 
     unstuck_message: str = (
         "It appears that you don't have the required equipment to escape this area.\1\1"
-        "Hold: \24+\25+\26+\27+START to fly back to the \12Ship Shack\10."
+        "Hold: \24+\25+\26+\27+SELECT to fly back to the \12Ship Shack\10."
     )
     if planet == Rac2Planet.Tabora:
         has_heli_pack = game_interface.get_inventory_item(equipment_table[ItemName.Heli_Pack]).current_amount > 0
