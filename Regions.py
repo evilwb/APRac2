@@ -30,7 +30,9 @@ def create_regions(world: 'Rac2World'):
                     if planet == Planet.Aranos_Prison:
                         return (
                             state.has(planet.coord_item, world.player)
-                            and state.has_all([ItemName.Gravity_Boots, ItemName.Levitator], world.player)
+                            and state.has_all([
+                                ItemName.Gravity_Boots, ItemName.Levitator, ItemName.Infiltrator], world.player
+                            )
                         )
                     # Connect with general case access rule
                     else:

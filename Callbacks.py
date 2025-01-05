@@ -35,10 +35,10 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     if planet == Rac2Planet.Aranos_Prison:
         has_gravity_boots = game_interface.get_inventory_item(equipment_table[ItemName.Gravity_Boots]).current_amount > 0
         has_levitator = game_interface.get_inventory_item(equipment_table[ItemName.Levitator]).current_amount > 0
-        if not (has_gravity_boots and has_levitator):
+        has_infiltrator = game_interface.get_inventory_item(equipment_table[ItemName.Infiltrator]).current_amount > 0
+        if not (has_gravity_boots and has_levitator and has_infiltrator):
             if ctx.notification_manager.queue_size() == 0:
                 ctx.notification_manager.queue_notification(unstuck_message, 1.0)
-
 
 
 def init(ctx: 'Rac2Context', ap_connected: bool):
