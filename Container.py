@@ -360,6 +360,9 @@ def patch_iso(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatch) ->
     patch.write_token(APTokenTypes.WRITE, address + 0x3B0, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
 
+    # Allow Hypnomatic part to spawn even if the Hypnomatic has already been collected.
+    patch.write_token(APTokenTypes.WRITE, Addresses.HYPNOMATIC_PART2_FUNC + 0x70, NOP)
+
     # Hypnotist
     address = Addresses.HYPNOTIST_FUNC
     # Check Secondary Inventory to determine if the purchase has occurred.
