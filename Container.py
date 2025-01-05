@@ -63,6 +63,10 @@ def patch_iso(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatch) ->
     for address in Addresses.SETUP_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x07, 0x00, 0x00, 0x10]))
 
+    # Disable game failsafe that disable Clank if you don't have heli-pack unlocked when loading into a planet.
+    for address in Addresses.SETUP_RATCHET_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
+
     # prevent planets from getting added to the ship menu when a new planet is unlocked
     for address in Addresses.UNLOCK_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x4C, NOP)
