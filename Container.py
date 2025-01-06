@@ -1,5 +1,5 @@
 import hashlib
-from typing import Any
+from typing import Any, Callable
 
 import settings
 from BaseClasses import MultiWorld
@@ -18,16 +18,19 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
     procedure = [
         ("apply_tokens", ["token_data.bin"])
     ]
+    notifier: Callable[[str, float], None]
 
     @classmethod
     def get_source_data(cls) -> bytes:
         with open(settings.get_settings().rac2_options.iso_file, "rb") as file:
+            cls.notifier("Reading ISO into memory", 10)
             base_iso_bytes = bytes(file.read())
         basemd5 = hashlib.md5()
         basemd5.update(base_iso_bytes)
         if basemd5.hexdigest() not in {SCUS_97268_HASH}:
             raise Exception("Supplied Base ISO does not match known MD5 for US or JP release. "
                             "Get the correct game and version, then dump it")
+        cls.notifier("Writing new ISO", 90)
         return base_iso_bytes
 
     def __init__(self, *args: Any, **kwargs: Any):

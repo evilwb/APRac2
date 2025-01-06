@@ -4,7 +4,6 @@ import os
 import subprocess
 import traceback
 from typing import Optional
-
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 from NetUtils import ClientStatus
 import Utils
@@ -213,10 +212,11 @@ async def patch_and_run_game(aprac2_file: str):
     output_path = base_name + '.iso'
 
     if not os.path.exists(output_path):
-        aprac2 = Rac2ProcedurePatch()
-        aprac2.read(aprac2_file)
-        aprac2.patch(output_path)
+        from .PatcherUI import PatcherUI
+        patcher = PatcherUI(aprac2_file, output_path, logger)
+        patcher.run()
     Utils.async_start(run_game(output_path))
+
 
 
 def launch():
@@ -232,14 +232,15 @@ def launch():
 
         if args.aprac2_file:
             logger.info("aprac2 file supplied, beginning patching process...")
-            Utils.async_start(patch_and_run_game(args.aprac2_file))
+            await patch_and_run_game(args.aprac2_file)
 
         ctx = Rac2Context(args.connect, args.password)
+
         logger.info("Connecting to server...")
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
         if gui_enabled:
             ctx.run_gui()
-        # ctx.run_cli()
+        ctx.run_cli()
 
         logger.info("Running game...")
         ctx.pcsx2_sync_task = asyncio.create_task(pcsx2_sync_task(ctx), name="PCSX2 Sync")
