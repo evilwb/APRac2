@@ -43,4 +43,4 @@ The client should be able to detect and resync missing items in most cases, but 
 Some of the changes include:
   - You start at Slim's Ship Shack which will act as a hub.
   - You start with 3 random planets unlocked.
-  - Holding `L1 + R1 + L2 + R2 + START` will reset you to the Ship Shack.
+  - Holding `L1 + R1 + L2 + R2 + SELECT` will reset you to the Ship Shack.
