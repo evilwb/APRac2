@@ -218,7 +218,6 @@ async def patch_and_run_game(aprac2_file: str):
     Utils.async_start(run_game(output_path))
 
 
-
 def launch():
     Utils.init_logging("RAC2 Client")
 

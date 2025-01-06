@@ -402,13 +402,10 @@ class Rac2Interface:
         ):
             return False
 
-        # for i in range(1, math.ceil(len(message) / HUD_MAX_MESSAGE_WIDTH)):
-        #     message = message[:HUD_MAX_MESSAGE_WIDTH * i] + '\1' + message[HUD_MAX_MESSAGE_WIDTH * i:]
         message = "\1".join(textwrap.wrap(message, width=35, replace_whitespace=False, break_long_words=False))
 
         try:
             payload_message = message.encode() + b"\00"
-            segments = self.get_segment_pointer_table()
             message_address = self.addresses.planet[self.get_current_planet()].skill_point_text
 
             if not message_address:

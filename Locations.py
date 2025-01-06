@@ -391,7 +391,6 @@ smolg_location_table = {
     ),
     LocationName.Smolg_Distribution_Facility_End: LocationData(
         LocationName.Smolg_Distribution_Facility_End, 171,
-        # TODO: Check what infiltrator does
         lambda state, player:
             can_improved_jump(state, player)
             and can_dynamo(state, player)
