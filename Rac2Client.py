@@ -148,7 +148,8 @@ async def _handle_game_ready(ctx: Rac2Context):
         if not ctx.game_interface.is_loading():
             ctx.is_loading = False
             current_planet = ctx.game_interface.get_current_planet()
-            logger.info(f"Loaded planet {current_planet} ({current_planet.name})")
+            if current_planet is not None:
+                logger.info(f"Loaded planet {current_planet} ({current_planet.name})")
             await asyncio.sleep(1)
         await asyncio.sleep(0.5)
         return
@@ -158,6 +159,7 @@ async def _handle_game_ready(ctx: Rac2Context):
         return
 
     ctx.notification_manager.handle_notifications()
+
     if ctx.current_planet != ctx.game_interface.get_current_planet():
         ctx.previous_planet = ctx.current_planet
         ctx.current_planet = ctx.game_interface.get_current_planet()
@@ -171,7 +173,7 @@ async def _handle_game_ready(ctx: Rac2Context):
             return
 
         current_inventory = ctx.game_interface.get_current_inventory()
-        if ctx.current_planet > 0:
+        if ctx.current_planet is not None and ctx.current_planet > 0:
             await handle_receive_items(ctx, current_inventory)
         await handle_checked_location(ctx)
         await handle_check_goal_complete(ctx)
