@@ -39,6 +39,9 @@ class PatcherUI(App):
         return self.container
 
     def on_start(self):
+        threading.Thread(target=self.patch).start()
+
+    def patch(self):
         @mainthread
         def update_progress(msg: str, percent: float):
             self.progresstext.text = msg
@@ -46,14 +49,8 @@ class PatcherUI(App):
             if percent >= 99:
                 App.get_running_app().stop()
 
-        Rac2ProcedurePatch.notifier = update_progress
-
-        threading.Thread(target=self.patch).start()
-
-    def patch(self):
         aprac2 = Rac2ProcedurePatch()
         aprac2.read(self.aprac2_path)
-        aprac2.patch(self.output_path)
-        Rac2ProcedurePatch.notifier("Done Patching!", 100)
+        aprac2.patch_mmap(self.output_path, update_progress)
 
 

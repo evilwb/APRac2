@@ -1,4 +1,6 @@
 import hashlib
+import shutil
+import mmap
 from typing import Any, Callable
 
 import settings
@@ -20,24 +22,61 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
     ]
     notifier: Callable[[str, float], None]
 
-    @classmethod
-    def get_source_data(cls) -> bytes:
-        with open(settings.get_settings().rac2_options.iso_file, "rb") as file:
-            cls.notifier("Reading ISO into memory", 10)
-            base_iso_bytes = bytes(file.read())
+    @staticmethod
+    def check_hash(iso_path: str):
         basemd5 = hashlib.md5()
-        basemd5.update(base_iso_bytes)
+        with open(iso_path, "rb") as iso:
+            basemd5.update(mmap.mmap(iso.fileno(), 0, access=mmap.ACCESS_READ))
         if basemd5.hexdigest() not in {SCUS_97268_HASH}:
             raise Exception("Supplied Base ISO does not match known MD5 for US or JP release. "
                             "Get the correct game and version, then dump it")
-        cls.notifier("Writing new ISO", 90)
-        return base_iso_bytes
+
+    @staticmethod
+    def apply_tokens_mmap(caller: APProcedurePatch, rom: mmap, token_file: str) -> None:
+        token_data = caller.get_file(token_file)
+        token_count = int.from_bytes(token_data[0:4], "little")
+        bpr = 4
+        for _ in range(token_count):
+            token_type = token_data[bpr:bpr + 1][0]
+            offset = int.from_bytes(token_data[bpr + 1:bpr + 5], "little")
+            size = int.from_bytes(token_data[bpr + 5:bpr + 9], "little")
+            data = token_data[bpr + 9:bpr + 9 + size]
+            if token_type in [APTokenTypes.AND_8, APTokenTypes.OR_8, APTokenTypes.XOR_8]:
+                arg = data[0]
+                if token_type == APTokenTypes.AND_8:
+                    rom[offset] = rom[offset] & arg
+                elif token_type == APTokenTypes.OR_8:
+                    rom[offset] = rom[offset] | arg
+                else:
+                    rom[offset] = rom[offset] ^ arg
+            elif token_type in [APTokenTypes.COPY, APTokenTypes.RLE]:
+                length = int.from_bytes(data[:4], "little")
+                value = int.from_bytes(data[4:], "little")
+                if token_type == APTokenTypes.COPY:
+                    rom[offset: offset + length] = rom[value: value + length]
+                else:
+                    rom[offset: offset + length] = bytes([value] * length)
+            else:
+                rom[offset:offset + len(data)] = data
+            bpr += 9 + size
+        return
+
+    def patch_mmap(self, target: str, notifier: Callable[[str, float], None]) -> None:
+        self.read()
+        notifier("Checking Hash", 0)
+        self.check_hash(settings.get_settings().rac2_options.iso_file)
+        notifier("Hash was Good. Copying ISO", 0)
+        shutil.copy(settings.get_settings().rac2_options.iso_file, target)
+        notifier("Patching ISO", 0)
+        with open(target, "r+b") as file:
+            self.apply_tokens_mmap(self, mmap.mmap(file.fileno(), 0), "token_data.bin")
+        notifier("Patching complete!", 100)
 
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
 
 
-def patch_iso(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatch) -> None:
+def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatch) -> None:
     # TODO: use for other game versions
     if True:
         from .IsoAddressesSCUS97268 import Addresses

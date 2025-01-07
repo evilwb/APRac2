@@ -8,7 +8,7 @@ from .Regions import create_regions
 from .Locations import every_location, LocationName
 from .Rac2Options import Rac2Options
 from .Items import Rac2Item, ItemName, equipment_table, item_table
-from .Container import Rac2ProcedurePatch, patch_iso
+from .Container import Rac2ProcedurePatch, generate_patch
 from BaseClasses import Item, Tutorial, ItemClassification
 import typing
 import os
@@ -138,7 +138,7 @@ class Rac2World(World):
 
     def generate_output(self, output_directory: str) -> None:
         aprac2 = Rac2ProcedurePatch(player=self.player, player_name=self.multiworld.get_player_name(self.player))
-        patch_iso(self.multiworld, self.player, aprac2)
+        generate_patch(self.multiworld, self.player, aprac2)
         rom_path = os.path.join(output_directory,
                                 f"{self.multiworld.get_out_file_name_base(self.player)}{aprac2.patch_file_ending}")
         aprac2.write(rom_path)
