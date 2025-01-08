@@ -8,6 +8,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import ClientStatus
 import Utils
 from settings import get_settings
+from worlds.rac2 import every_location, LocationName
 from worlds.rac2.ClientCheckLocations import handle_checked_location
 from worlds.rac2.Container import get_version_from_iso, Rac2ProcedurePatch
 from .Callbacks import update, init
@@ -63,6 +64,26 @@ class Rac2Context(CommonContext):
         super().__init__(server_address, password)
         self.game_interface = Rac2Interface(logger)
         self.notification_manager = NotificationManager(HUD_MESSAGE_DURATION, self.game_interface.send_hud_message)
+        self.locations_scouted = {
+            every_location[LocationName.Oozla_Megacorp_Scientist].id,
+            every_location[LocationName.Maktar_Arena_Challenge].id,
+            every_location[LocationName.Barlow_Inventor].id,
+            every_location[LocationName.Feltzin_Defeat_Thug_Ships].id,
+            every_location[LocationName.Feltzin_Race_PB].id,
+            every_location[LocationName.Notak_Worker_Bots].id,
+            every_location[LocationName.Hrugis_Destroy_Defenses].id,
+            every_location[LocationName.Hrugis_Race_PB].id,
+            every_location[LocationName.Joba_Shady_Salesman].id,
+            every_location[LocationName.Joba_Arena_Battle].id,
+            every_location[LocationName.Joba_Arena_Cage_Match].id,
+            every_location[LocationName.Todano_Stuart_Zurgo_Trade].id,
+            every_location[LocationName.Aranos_Plumber].id,
+            every_location[LocationName.Gorn_Defeat_Thug_Fleet].id,
+            every_location[LocationName.Gorn_Race_PB].id,
+            every_location[LocationName.Smolg_Mutant_Crab].id,
+            every_location[LocationName.Damosel_Hypnotist].id,
+            every_location[LocationName.Grelbin_Mystic_More_Moonstones].id,
+        }
 
     def on_deathlink(self, data: Utils.Dict[str, Utils.Any]) -> None:
         super().on_deathlink(data)
