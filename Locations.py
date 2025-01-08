@@ -156,7 +156,8 @@ endako_location_table = {
 barlow_location_table = {
     LocationName.Barlow_Inventor: LocationData(LocationName.Barlow_Inventor, 40, can_swingshot),
     LocationName.Barlow_Hoverbike_Race_Transmission: LocationData(
-        LocationName.Barlow_Hoverbike_Race_Transmission, 41, can_improved_jump
+        LocationName.Barlow_Hoverbike_Race_Transmission, 41,
+        lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
     ),
     LocationName.Barlow_Hoverbike_Race_Helmet: LocationData(
         LocationName.Barlow_Hoverbike_Race_Helmet, 42,
