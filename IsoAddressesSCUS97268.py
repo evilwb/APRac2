@@ -88,6 +88,7 @@ class Addresses:
 
     # Notak
     WORKER_BOTS_FUNC: int = 0xAE53FE5C
+    SECRET_MESSAGE_FUNC: int = 0xAE4F0B8C
 
     # Siberius
     THIEF_FUNC: int = 0xB0887340

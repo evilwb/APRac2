@@ -279,12 +279,11 @@ def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatc
     patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x60, 0x7B, 0x44, 0xA0]))
 
     """--------- 
-    Feltzin 
+    Notak 
     ---------"""
-    # # Change the text for the post mission reward screen
-    # item_name = multiworld.get_location(LocationName.Feltzin_Defeat_Thug_Ships, player).item.name
-    # message = f"You have earned a \14{item_name}".encode()
-    # patch.write_token(APTokenTypes.WRITE, Addresses.NOTAK_COORDS_TEXT, message[:53])
+    # The planet unlock message for Ship Shack gets called in a unique way that we disable here.
+    patch.write_token(APTokenTypes.WRITE, Addresses.SECRET_MESSAGE_FUNC + 0x24, NOP)
+    patch.write_token(APTokenTypes.WRITE, Addresses.SECRET_MESSAGE_FUNC + 0x4C, NOP)
 
     """--------- 
     Siberius

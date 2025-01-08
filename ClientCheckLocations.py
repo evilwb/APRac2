@@ -27,6 +27,7 @@ PLANET_UNLOCK_TO_LOCATION_ID: Dict[int, int] = {
     Planet.Damosel.number: every_location[LocationName.Smolg_Mutant_Crab].id,
     Planet.Grelbin.number: every_location[LocationName.Smolg_Balloon_Transmission].id,
     Planet.Yeedil.number: every_location[LocationName.Grelbin_Find_Angela].id,
+    Planet.Ship_Shack.number: every_location[LocationName.Notak_Top_Pier_Telescreen].id
 }
 
 INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
