@@ -7,7 +7,7 @@ DEFAULT_TEST_SEED = get_seed(1)
 
 
 class Rac2TestBase(WorldTestBase):
-    game = "Ratchet and Clank 2"
+    game = "Ratchet & Clank 2"
     player: ClassVar[int] = 1
 
     seed = DEFAULT_TEST_SEED
