@@ -78,6 +78,7 @@ class Rac2World(World):
         create_regions(self)
 
     def create_item(self, name: str, override: Optional[ItemClassification] = None) -> "Item":
+        name = str(name)
         created_thing = item_table[name]
         if override:
             return Rac2Item(name, override, created_thing.id, self.player)
