@@ -412,7 +412,7 @@ def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatc
     address = Addresses.HYPNOTIST_FUNC
     # Check Secondary Inventory to determine if the purchase has occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x67, 0x7B, 0x42, 0x90]))
-    patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x67, 0x7B, 0x63, 0x90]))
+    patch.write_token(APTokenTypes.WRITE, address + 0x440, bytes([0x67, 0x7B, 0x63, 0x90]))
     # Make Hypnotist check AP controlled Hypnomatic Part Count
     # instead of normal address to determine total parts collected.
     patch.write_token(APTokenTypes.WRITE, address + 0x19C, bytes([0x1A, 0x00, 0x03, 0x3C]))
