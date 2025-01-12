@@ -237,7 +237,7 @@ dobbo_location_table = {
             can_dynamo(state, player)
             and can_swingshot(state, player)
             and can_glide(state, player)
-            and can_infiltrate(state, player)
+            and can_electrolyze(state, player)
     ),
     LocationName.Dobbo_Spiderbot_Room_PB: LocationData(
         LocationName.Dobbo_Spiderbot_Room_PB, 92,
