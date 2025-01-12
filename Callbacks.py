@@ -14,6 +14,10 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     game_interface = ctx.game_interface
     planet = ctx.current_planet
 
+    if ctx.queued_deaths > 0 and game_interface.get_alive() and game_interface.get_pause_state() == 0:
+        game_interface.set_nanotech(0)
+        ctx.queued_deaths -= 1
+
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
         if game_interface.switch_planet(Rac2Planet.Ship_Shack):

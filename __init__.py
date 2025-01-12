@@ -12,7 +12,7 @@ from .Container import Rac2ProcedurePatch, generate_patch
 from BaseClasses import Item, Tutorial, ItemClassification
 import typing
 import os
-from typing import Dict, Optional
+from typing import Dict, Optional, Mapping, Any
 
 
 def run_client(url: Optional[str] = None):
@@ -143,3 +143,8 @@ class Rac2World(World):
         rom_path = os.path.join(output_directory,
                                 f"{self.multiworld.get_out_file_name_base(self.player)}{aprac2.patch_file_ending}")
         aprac2.write(rom_path)
+
+    def fill_slot_data(self) -> Mapping[str, Any]:
+        return self.options.as_dict(
+            "death_link"
+        )

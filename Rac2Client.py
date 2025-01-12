@@ -59,6 +59,7 @@ class Rac2Context(CommonContext):
     slot_data: dict[str, Utils.Any] = None
     last_error_message: Optional[str] = None
     death_link_enabled = False
+    queued_deaths: int = 0
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -87,7 +88,13 @@ class Rac2Context(CommonContext):
 
     def on_deathlink(self, data: Utils.Dict[str, Utils.Any]) -> None:
         super().on_deathlink(data)
-        self.game_interface.set_nanotech(0)
+        if self.death_link_enabled:
+            self.queued_deaths += 1
+            cause = data.get("cause", "")
+            if cause:
+                self.notification_manager.queue_notification(f"DeathLink: {cause}")
+            else:
+                self.notification_manager.queue_notification(f"DeathLink: Received from {data['source']}")
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
