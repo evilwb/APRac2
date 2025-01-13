@@ -105,6 +105,11 @@ def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatc
     for address in Addresses.SETUP_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x07, 0x00, 0x00, 0x10]))
 
+    # Make it so the vendor only unlocks weapons that are new to a planet but not all weapons from prior planets.
+    for address in Addresses.IS_BUYABLE_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x68, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x6C, bytes([0x03, 0x00, 0x50, 0x14]))
+
     # Disable game failsafe that disable Clank if you don't have heli-pack unlocked when loading into a planet.
     for address in Addresses.SETUP_RATCHET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
