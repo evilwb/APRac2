@@ -395,7 +395,7 @@ smolg_location_table = {
         lambda state, player:
             can_improved_jump(state, player)
             and can_dynamo(state, player)
-            and can_electrolyze(state, player)
+            and can_infiltrate(state, player)
             and can_grind(state, player)
     ),
     LocationName.Smolg_Mutant_Crab: LocationData(
