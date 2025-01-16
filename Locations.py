@@ -158,10 +158,6 @@ barlow_location_table = {
         LocationName.Barlow_Hoverbike_Race_Transmission, 41,
         lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
     ),
-    LocationName.Barlow_Hoverbike_Race_Helmet: LocationData(
-        LocationName.Barlow_Hoverbike_Race_Helmet, 42,
-        lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
-    ),
     LocationName.Barlow_Hoverbike_Race_PB: LocationData(
         LocationName.Barlow_Hoverbike_Race_PB, 43,
         lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)

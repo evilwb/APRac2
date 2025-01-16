@@ -319,12 +319,12 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x690, bytes([0x2B, 0x00, 0x40, 0x10]))
     patch.write_token(APTokenTypes.WRITE, address + 0x694, bytes([0x33, 0x00, 0x05, 0x24]))
 
-    # Biker One
-    address = Addresses.BIKER_ONE_FUNC
-    # Replace code that calls give_item and planet_unlock_message with code that just sets secondary inventory flag.
-    patch.write_token(APTokenTypes.WRITE, address + 0x240, bytes([0x1A, 0x00, 0x02, 0x3C]))
-    patch.write_token(APTokenTypes.WRITE, address + 0x244, bytes([0x01, 0x00, 0x04, 0x24]))
-    patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x60, 0x7B, 0x44, 0xA0]))
+    # # Biker One
+    # address = Addresses.BIKER_ONE_FUNC
+    # # Replace code that calls give_item and planet_unlock_message with code that just sets secondary inventory flag.
+    # patch.write_token(APTokenTypes.WRITE, address + 0x240, bytes([0x1A, 0x00, 0x02, 0x3C]))
+    # patch.write_token(APTokenTypes.WRITE, address + 0x244, bytes([0x01, 0x00, 0x04, 0x24]))
+    # patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x60, 0x7B, 0x44, 0xA0]))
 
     # Prevent spawning at Gadgetron Inventor when Thermanator is collected.
     patch.write_token(APTokenTypes.WRITE, Addresses.BARLOW_SPAWN_CONTROLLER_FUNC + 0x7C, NOP)

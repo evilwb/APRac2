@@ -24,7 +24,6 @@ class Rac2Item(Item):
 
 
 class ItemName(StrEnum):
-    Biker_Helmet = "Biker Helmet"
     Qwark_Statuette = "Qwark Statuette"
     Glider = "Glider"
     Armor_Magnetizer = "Armor Magnetizer"
@@ -87,7 +86,6 @@ equipment_table: dict[str, ItemData] = {
     ItemName.Electrolyzer: ItemData(ItemName.Electrolyzer, 38, 38, ItemClassification.progression),
     ItemName.Thermanator: ItemData(ItemName.Thermanator, 39, 39, ItemClassification.progression),
     ItemName.Tractor_Beam: ItemData(ItemName.Tractor_Beam, 46, 46, ItemClassification.progression),
-    ItemName.Biker_Helmet: ItemData(ItemName.Biker_Helmet, 48, 48, ItemClassification.progression),
     ItemName.Qwark_Statuette: ItemData(ItemName.Qwark_Statuette, 49, 49, ItemClassification.progression),
     ItemName.Box_Breaker: ItemData(ItemName.Box_Breaker, 50, 50, ItemClassification.useful),
     ItemName.Infiltrator: ItemData(ItemName.Infiltrator, 51, 51, ItemClassification.progression),

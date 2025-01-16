@@ -45,7 +45,6 @@ INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
     item_table[ItemName.Electrolyzer].offset: every_location[LocationName.Maktar_Arena_Challenge].id,
     item_table[ItemName.Thermanator].offset: every_location[LocationName.Barlow_Inventor].id,
     item_table[ItemName.Tractor_Beam].offset: every_location[LocationName.Oozla_Megacorp_Scientist].id,
-    item_table[ItemName.Biker_Helmet].offset: every_location[LocationName.Barlow_Hoverbike_Race_Helmet].id,
     item_table[ItemName.Qwark_Statuette].offset: every_location[LocationName.Aranos_Plumber].id,
     item_table[ItemName.Box_Breaker].offset: every_location[LocationName.Oozla_Swamp_MonsterII].id,
     item_table[ItemName.Infiltrator].offset: every_location[LocationName.Joba_Arena_Cage_Match].id,
