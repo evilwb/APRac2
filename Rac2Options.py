@@ -3,7 +3,8 @@ from Options import (
     DeathLink,
     StartInventoryPool,
     PerGameCommonOptions,
-    Choice
+    Choice,
+    Toggle,
 )
 from dataclasses import dataclass
 
@@ -19,8 +20,16 @@ class ShuffleWeaponVendors(Choice):
     default = 0
 
 
+class SkipWupashNebula(Toggle):
+    """Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula."""
+
+    display_name = "Skip Wupash Nebula"
+    default = True
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     shuffle_weapon_vendors: ShuffleWeaponVendors
+    skip_wupash_nebula: SkipWupashNebula

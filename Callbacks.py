@@ -21,6 +21,10 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     game_interface.pcsx2_interface.write_int8(game_interface.addresses.clank_disabled, 0)
     game_interface.pcsx2_interface.write_int8(game_interface.addresses.inventory + 4, 1)
 
+    # Ship Wupash if option is enabled.
+    if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
+        game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
+
     if ctx.queued_deaths > 0 and game_interface.get_alive() and game_interface.get_pause_state() == 0:
         game_interface.set_nanotech(0)
         ctx.queued_deaths -= 1

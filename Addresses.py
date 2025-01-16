@@ -44,6 +44,7 @@ class Addresses:
             self.inventory: int = 0x1A7AF8
             self.secondary_inventory: int = 0x1A7B30
             self.unlocked_planets: int = 0x1A7BC8
+            self.wupash_complete_flag: int = 0x1A7C01
             # I use some unused addresses at the end of the platinum bolt table to store some extra data for AP.
             self.platinum_bolt_count: int = self.platinum_bolt_table + 0x6C
             self.nanotech_boost_count: int = self.platinum_bolt_table + 0x6D
