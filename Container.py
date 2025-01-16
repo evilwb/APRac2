@@ -1,12 +1,16 @@
 import hashlib
 import shutil
 import mmap
-from typing import Any, Callable
+from typing import Any, Callable, TYPE_CHECKING
 
 import settings
-from BaseClasses import MultiWorld
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
 from worlds.rac2 import LocationName
+from .Rac2Options import ShuffleWeaponVendors
+from .data import Weapons
+
+if TYPE_CHECKING:
+    from . import Rac2World
 
 SCUS_97268_HASH = "3cbbb5127ee8a0be93ef0876f7781ee8"
 NOP = bytes([0x00, 0x00, 0x00, 0x00])
@@ -76,7 +80,7 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
         super().__init__(*args, **kwargs)
 
 
-def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatch) -> None:
+def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePatch, instruction=None) -> None:
     # TODO: use for other game versions
     if True:
         from .IsoAddressesSCUS97268 import Addresses
@@ -152,10 +156,51 @@ def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatc
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
 
-    # # Prevent Planet Coordinate received message popup after cutscenes.
-    # for address in Addresses.PLANET_CUTSCENE_CONTROLLER_FUNCS:
-    #     patch.write_token(APTokenTypes.WRITE, address + 0x3B0, NOP)
-    #     patch.write_token(APTokenTypes.WRITE, address + 0x4BC, NOP)
+    """----------------------
+    Shuffle Weapons Vendors
+    ----------------------"""
+    # Handle "weapons" mode.
+    if multiworld.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
+        weapons = Weapons.get_all()
+        weapons.remove(Weapons.CLANK_ZAPPER)
+        weapons.remove(Weapons.SHEEPINATOR)
+        unlock_planets = [1, 1, 3, 3, 4, 6, 8, 8, 9, 11, 11, 12, 14, 14]
+        multiworld.random.shuffle(weapons)
+
+        first_weapon = weapons[0]
+        second_weapon = weapons[1]
+        megacorp_weapons = weapons[2:len(unlock_planets) + 2]
+        gadgetron_weapons = weapons[len(unlock_planets) + 2:]
+
+        # Patch starting weapons.
+        for address in Addresses.AVAILABLE_ITEM_FUNCS:
+            # First weapon.
+            weapon_id = first_weapon.offset
+            low = (0x7AF8 + weapon_id).to_bytes(2, "little")
+            patch.write_token(APTokenTypes.WRITE, address + 0x8, low)
+            patch.write_token(APTokenTypes.WRITE, address + 0x18, weapon_id.to_bytes(1, "little"))
+            patch.write_token(APTokenTypes.WRITE, address + 0x20, weapon_id.to_bytes(1, "little"))
+            patch.write_token(APTokenTypes.WRITE, address + 0x24, bytes([0x40, 0x00, 0x83, 0x34]))
+            patch.write_token(APTokenTypes.WRITE, address + 0x28, weapon_id.to_bytes(1, "little"))
+
+            # Second weapon.
+            weapon_id = second_weapon.offset
+            low = (0x7AF8 + weapon_id).to_bytes(2, "little")
+            patch.write_token(APTokenTypes.WRITE, address + 0x40, low)
+            patch.write_token(APTokenTypes.WRITE, address + 0x50, weapon_id.to_bytes(1, "little"))
+            patch.write_token(APTokenTypes.WRITE, address + 0x58, weapon_id.to_bytes(1, "little"))
+            patch.write_token(APTokenTypes.WRITE, address + 0x5C, bytes([0x40, 0x00, 0x83, 0x34]))
+
+        # Patch Megacorp vendor.
+        for address in Addresses.VENDOR_REQUIREMENT_TABLES:
+            for i, planet in enumerate(unlock_planets):
+                patch.write_token(APTokenTypes.WRITE, address + i * 8, megacorp_weapons[i].offset.to_bytes(4, "little"))
+                patch.write_token(APTokenTypes.WRITE, address + i * 8 + 4, planet.to_bytes(4, "little"))
+
+        # Patch Gadgetron vendor.
+        for address in Addresses.POPULATE_VENDOR_SLOT_FUNCS:
+            for i, offset in enumerate(range(0x8C0, 0x8D8, 4)):
+                patch.write_token(APTokenTypes.WRITE, address + offset, gadgetron_weapons[i].offset.to_bytes(1, "little"))
 
     """--------- 
     Oozla 
@@ -219,10 +264,6 @@ def generate_patch(multiworld: MultiWorld, player: int, patch: Rac2ProcedurePatc
     patch.write_token(APTokenTypes.WRITE, address + 0x2EEC, bytes([0x1A, 0x00, 0x10, 0x3C]))
     patch.write_token(APTokenTypes.WRITE, address + 0x2EF4, bytes([0x26, 0x00, 0x02, 0x24]))
     patch.write_token(APTokenTypes.WRITE, address + 0x2EF8, bytes([0xF8, 0x7A, 0x10, 0x26]))
-    # Change the text for the arena reward message
-    item_name = multiworld.get_location(LocationName.Maktar_Arena_Challenge, player).item.name
-    message = f"You have earned a \14{item_name}".encode()
-    patch.write_token(APTokenTypes.WRITE, Addresses.ELECTROLYZER_REWARD_TEXT, message[:35])
 
     """--------- 
     Endako   

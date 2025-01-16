@@ -1,6 +1,7 @@
 from enum import StrEnum
 from typing import TYPE_CHECKING, Optional
 from BaseClasses import Item, ItemClassification
+from worlds.rac2.data.Weapons import *
 
 
 class ItemData:
@@ -94,6 +95,33 @@ equipment_table: dict[str, ItemData] = {
     ItemName.Infiltrator: ItemData(ItemName.Infiltrator, 51, 51, ItemClassification.progression),
     ItemName.Charge_Boots: ItemData(ItemName.Charge_Boots, 54, 54, ItemClassification.useful),
     ItemName.Hypnomatic: ItemData(ItemName.Hypnomatic, 55, 55, ItemClassification.progression),
+}
+
+weapon_table: dict[str, ItemData] = {
+    CLANK_ZAPPER.name: ItemData(CLANK_ZAPPER.name, 60, CLANK_ZAPPER.offset, ItemClassification.useful),
+    BOMB_GLOVE.name: ItemData(BOMB_GLOVE.name, 61, BOMB_GLOVE.offset, ItemClassification.useful),
+    VISIBOMB_GUN.name: ItemData(VISIBOMB_GUN.name, 62, VISIBOMB_GUN.name, ItemClassification.useful),
+    SHEEPINATOR.name: ItemData(SHEEPINATOR.name, 63, SHEEPINATOR.offset, ItemClassification.useful),
+    DECOY_GLOVE.name: ItemData(DECOY_GLOVE.name, 64, DECOY_GLOVE.offset, ItemClassification.useful),
+    TESLA_CLAW.name: ItemData(TESLA_CLAW.name, 65, TESLA_CLAW.offset, ItemClassification.useful),
+    CHOPPER.name: ItemData(CHOPPER.name, 66, CHOPPER.offset, ItemClassification.useful),
+    PULSE_RIFLE.name: ItemData(PULSE_RIFLE.name, 67, PULSE_RIFLE.offset, ItemClassification.useful),
+    SEEKER_GUN.name: ItemData(SEEKER_GUN.name, 68, SEEKER_GUN.offset, ItemClassification.useful),
+    HOVERBOMB_GUN.name: ItemData(HOVERBOMB_GUN.name, 69, HOVERBOMB_GUN.offset, ItemClassification.useful),
+    BLITZ_GUN.name: ItemData(BLITZ_GUN.name, 70, BLITZ_GUN.offset, ItemClassification.useful),
+    MINIROCKET_TUBE.name: ItemData(MINIROCKET_TUBE.name, 71, MINIROCKET_TUBE.offset, ItemClassification.useful),
+    PLASMA_COIL.name: ItemData(PLASMA_COIL.name, 72, PLASMA_COIL.offset, ItemClassification.useful),
+    LAVA_GUN.name: ItemData(LAVA_GUN.name, 73, LAVA_GUN.offset, ItemClassification.useful),
+    LANCER.name: ItemData(LANCER.name, 74, LANCER.offset, ItemClassification.useful),
+    SYNTHENOID.name: ItemData(SYNTHENOID.name, 75, SYNTHENOID.offset, ItemClassification.useful),
+    SPIDERBOT_GLOVE.name: ItemData(SPIDERBOT_GLOVE.name, 76, SPIDERBOT_GLOVE.offset, ItemClassification.progression),
+    BOUNCER.name: ItemData(BOUNCER.name, 77, BOUNCER.offset, ItemClassification.useful),
+    MINITURRET_GLOVE.name: ItemData(MINITURRET_GLOVE.name, 78, MINITURRET_GLOVE.offset, ItemClassification.useful),
+    GRAVITY_BOMB.name: ItemData(GRAVITY_BOMB.name, 79, GRAVITY_BOMB.offset, ItemClassification.useful),
+    ZODIAC.name: ItemData(ZODIAC.name, 80, ZODIAC.offset, ItemClassification.useful),
+    RYNO_II.name: ItemData(RYNO_II.name, 81, RYNO_II.offset, ItemClassification.useful),
+    SHIELD_CHARGER.name: ItemData(SHIELD_CHARGER.name, 82, SHIELD_CHARGER.offset, ItemClassification.useful),
+    WALLOPER.name: ItemData(WALLOPER.name, 83, WALLOPER.offset, ItemClassification.useful),
 }
 
 planet_coord_table: dict[str, ItemData] = {
