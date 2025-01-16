@@ -96,6 +96,7 @@ equipment_table: dict[str, ItemData] = {
     ItemName.Charge_Boots: ItemData(ItemName.Charge_Boots, 54, 54, ItemClassification.useful),
     ItemName.Hypnomatic: ItemData(ItemName.Hypnomatic, 55, 55, ItemClassification.progression),
     SHEEPINATOR.name: ItemData(SHEEPINATOR.name, 63, SHEEPINATOR.offset, ItemClassification.useful),
+    SPIDERBOT_GLOVE.name: ItemData(SPIDERBOT_GLOVE.name, 76, SPIDERBOT_GLOVE.offset, ItemClassification.progression),
 }
 
 weapon_table: dict[str, ItemData] = {

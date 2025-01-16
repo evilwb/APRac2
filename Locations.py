@@ -242,7 +242,10 @@ dobbo_location_table = {
     ),
     LocationName.Dobbo_Spiderbot_Room_PB: LocationData(
         LocationName.Dobbo_Spiderbot_Room_PB, 92,
-        lambda state, player: can_dynamo(state, player) and can_swingshot(state, player)
+        lambda state, player:
+            can_dynamo(state, player)
+            and can_swingshot(state, player)
+            and can_spiderbot(state, player)
     ),
     # TODO: Check if clank is needed
     LocationName.Dobbo_Facility_Glide_PB: LocationData(
@@ -314,7 +317,10 @@ todano_location_table = {
     LocationName.Todano_End_Tour_PB: LocationData(LocationName.Todano_End_Tour_PB, 123),
     LocationName.Todano_Spiderbot_Conveyor_PB: LocationData(
         LocationName.Todano_Spiderbot_Conveyor_PB, 124,
-        lambda state, player: can_electrolyze(state, player) and can_tractor(state, player)
+        lambda state, player:
+            can_electrolyze(state, player)
+            and can_tractor(state, player)
+            and can_spiderbot(state, player)
     ),
     LocationName.Todano_Rocket_Silo_NT: LocationData(
         LocationName.Todano_Rocket_Silo_NT, 125,
@@ -333,7 +339,7 @@ boldan_location_table = {
     ),
     LocationName.Boldan_Spiderbot_Alley_PB: LocationData(
         LocationName.Boldan_Spiderbot_Alley_PB, 131,
-        lambda state, player: can_levitate(state, player)
+        lambda state, player: can_levitate(state, player) and can_spiderbot(state, player)
     ),
     LocationName.Boldan_Floating_Platform_PB: LocationData(
         LocationName.Boldan_Floating_Platform_PB, 132,

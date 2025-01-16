@@ -1,6 +1,9 @@
 from BaseClasses import CollectionState
 from .Items import ItemName
 import typing
+
+from .data import Weapons
+
 if typing.TYPE_CHECKING:
     from .Rac2Options import Rac2Options
 
@@ -63,6 +66,10 @@ def can_electrolyze(state: CollectionState, player: int) -> bool:
 
 def can_infiltrate(state: CollectionState, player: int) -> bool:
     return state.has(ItemName.Infiltrator, player)
+
+
+def can_spiderbot(state: CollectionState, player: int) -> bool:
+    return state.has(Weapons.SPIDERBOT_GLOVE.name, player)
 
 
 def has_qwark_statuette(state: CollectionState, player: int) -> bool:
