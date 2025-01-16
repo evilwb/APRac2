@@ -259,7 +259,7 @@ def launch():
                             help='Path to an aprac2 file')
         args = parser.parse_args()
 
-        if args.aprac2_file:
+        if os.path.isfile(args.aprac2_file):
             logger.info("aprac2 file supplied, beginning patching process...")
             await patch_and_run_game(args.aprac2_file)
 
