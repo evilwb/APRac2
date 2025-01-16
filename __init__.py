@@ -1,4 +1,5 @@
 # Setup local dependencies if running in an apworld
+from .data import Weapons
 from .data.Planets import Planet, PlanetData, planets
 
 from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
@@ -6,7 +7,7 @@ import settings
 from worlds.AutoWorld import World, WebWorld
 from .Regions import create_regions
 from .Locations import every_location, LocationName
-from .Rac2Options import Rac2Options
+from .Rac2Options import Rac2Options, ShuffleWeaponVendors
 from .Items import Rac2Item, ItemName, equipment_table, item_table
 from .Container import Rac2ProcedurePatch, generate_patch
 from BaseClasses import Item, Tutorial, ItemClassification
@@ -115,14 +116,14 @@ class Rac2World(World):
                 continue
             if item_name in excluded.keys():
                 continue
+            # Don't add Sheepinator if vendor shuffle is set to "weapons" mode.
+            if item_name == Weapons.SHEEPINATOR.name and self.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
+                continue
             elif item_table[item_name].max_capacity > 1:
                 for new_item in range(item_table[item_name].max_capacity):
                     self.multiworld.itempool += [
                         self.create_item(item_name, item_table[item_name].classification)]
                     items_added += 1
-            # elif item_name == ItemName.Aranos_Prison_Coords:
-            #     self.multiworld.get_location(LocationName.Boldan_Find_Fizzwidget,
-            #                                  self.player).place_locked_item(self.create_item(item_name))
             else:
                 self.multiworld.itempool += [self.create_item(item_name)]
                 items_added += 1

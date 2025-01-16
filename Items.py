@@ -95,6 +95,7 @@ equipment_table: dict[str, ItemData] = {
     ItemName.Infiltrator: ItemData(ItemName.Infiltrator, 51, 51, ItemClassification.progression),
     ItemName.Charge_Boots: ItemData(ItemName.Charge_Boots, 54, 54, ItemClassification.useful),
     ItemName.Hypnomatic: ItemData(ItemName.Hypnomatic, 55, 55, ItemClassification.progression),
+    SHEEPINATOR.name: ItemData(SHEEPINATOR.name, 63, SHEEPINATOR.offset, ItemClassification.useful),
 }
 
 weapon_table: dict[str, ItemData] = {
@@ -154,7 +155,10 @@ misc_table: dict[str, ItemData] = {
 }
 
 item_table: dict[str, ItemData] = {
-    **equipment_table, **planet_coord_table, **misc_table}
+    **equipment_table,
+    **planet_coord_table,
+    **misc_table,
+}
 
 CLANK_PACKS: list[str] = [
     ItemName.Heli_Pack,

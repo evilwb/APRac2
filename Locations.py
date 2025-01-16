@@ -81,6 +81,7 @@ class LocationName(StrEnum):
     Joba_Timed_Dynamo_NT = "Joba: Timed Dynamo Course - Nanotech Boost"
     Todano_Search_Rocket_Silo = "Todano: Search Rocket Silo"
     Todano_Stuart_Zurgo_Trade = "Todano: Stuart Zurgo Trade - Armor Magnetizer"
+    Todano_Facility_Interior = "Todano: Facility Interior - Sheepinator"
     Todano_Near_Stuart_Zurgo_PB = "Todano: Near Stuart Zurgo - Platinum Bolt"
     Todano_End_Tour_PB = "Todano: End of Tour - Platinum Bolt"
     Todano_Spiderbot_Conveyor_PB = "Todano: Spiderbot Conveyor - Platinum Bolt"
@@ -308,7 +309,7 @@ todano_location_table = {
     LocationName.Todano_Near_Stuart_Zurgo_PB: LocationData(
         # TODO: Double check if clank is needed
         LocationName.Todano_Near_Stuart_Zurgo_PB, 122,
-        lambda state, player:  can_electrolyze(state, player) and can_tractor(state, player)
+        lambda state, player: can_electrolyze(state, player) and can_tractor(state, player)
     ),
     LocationName.Todano_End_Tour_PB: LocationData(LocationName.Todano_End_Tour_PB, 123),
     LocationName.Todano_Spiderbot_Conveyor_PB: LocationData(
@@ -319,6 +320,10 @@ todano_location_table = {
         LocationName.Todano_Rocket_Silo_NT, 125,
         lambda state, player: can_electrolyze(state, player) and can_infiltrate(state, player)
     ),
+    LocationName.Todano_Facility_Interior: LocationData(
+        LocationName.Todano_Facility_Interior, 126,
+        lambda state, player: can_electrolyze(state, player) and can_tractor(state, player)
+    )
 }
 
 boldan_location_table = {

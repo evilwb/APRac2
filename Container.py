@@ -409,6 +409,14 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x3C0, bytes([0x37, 0x7B, 0x44, 0xA0]))
     patch.write_token(APTokenTypes.WRITE, address + 0x3C4, NOP)
 
+    # Sheepinator Pickup
+    address = Addresses.SHEEPINATOR_PICKUP_FUNC
+    # Replace code that gives item, displays message and equips item with code that just sets secondary inventory flag.
+    patch.write_token(APTokenTypes.WRITE, address + 0x138, bytes([0x1A, 0x00, 0x02, 0x3C]))
+    patch.write_token(APTokenTypes.WRITE, address + 0x13C, bytes([0x01, 0x00, 0x04, 0x24]))
+    patch.write_token(APTokenTypes.WRITE, address + 0x140, bytes([0x40, 0x7B, 0x44, 0xA0]))
+    patch.write_token(APTokenTypes.WRITE, address + 0x164, NOP)
+
     """--------- 
     Boldan
     ---------"""

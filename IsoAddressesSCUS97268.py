@@ -131,6 +131,7 @@ class Addresses:
 
     # Todano
     STUART_ZURGO_FUNC: int = 0xBFA84CE0
+    SHEEPINATOR_PICKUP_FUNC: int = 0xBFAD2898
 
     # Boldan
     BOLDAN_CUTSCENE_TRIGGER_FUNC: int = 0xC34347CC

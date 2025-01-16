@@ -3,6 +3,7 @@ from typing import Dict, TYPE_CHECKING
 from worlds.rac2 import every_location, LocationName, ItemName, item_table
 from worlds.rac2.Rac2Interface import PLANET_LIST_SIZE, INVENTORY_SIZE, NANOTECH_BOOST_MAX
 from worlds.rac2.data.Planets import Planet
+from .data import Weapons
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -51,6 +52,7 @@ INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
     item_table[ItemName.Infiltrator].offset: every_location[LocationName.Joba_Arena_Cage_Match].id,
     item_table[ItemName.Charge_Boots].offset: every_location[LocationName.Joba_First_Hoverbike_Race].id,
     item_table[ItemName.Hypnomatic].offset: every_location[LocationName.Damosel_Hypnotist].id,
+    item_table[Weapons.SHEEPINATOR.name].offset: every_location[LocationName.Todano_Facility_Interior].id
 }
 
 PLAT_BOLT_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
