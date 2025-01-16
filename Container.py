@@ -249,6 +249,9 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     # check secondary inventory table instead of primary when determining if boss kill has already occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x110, bytes([0x62, 0x7B, 0x42, 0x90]))
 
+    # Prevent spawning at Scientist when Tractor Beam is collected.
+    patch.write_token(APTokenTypes.WRITE, Addresses.OOZLA_CONTROLLER_FUNC + 0x108, NOP)
+
     """--------- 
     Maktar
     ---------"""
