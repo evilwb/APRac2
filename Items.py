@@ -32,7 +32,6 @@ class ItemName(StrEnum):
     Mapper = "Mapper"
     Electrolyzer = "Electrolyzer"
     Infiltrator = "Infiltrator"
-    Hydro_Pack = "Hydro-Pack"
     Levitator = "Levitator"
     Swingshot = "Swingshot"
     Dynamo = "Dynamo"
@@ -77,7 +76,6 @@ class ItemName(StrEnum):
 equipment_table: dict[str, ItemData] = {
     ItemName.Heli_Pack: ItemData(ItemName.Heli_Pack, 2, 2, ItemClassification.progression),
     ItemName.Thruster_Pack: ItemData(ItemName.Thruster_Pack, 3, 3, ItemClassification.progression),
-    ItemName.Hydro_Pack: ItemData(ItemName.Hydro_Pack, 4, 4, ItemClassification.useful),
     ItemName.Mapper: ItemData(ItemName.Mapper, 5, 5, ItemClassification.useful),
     ItemName.Armor_Magnetizer: ItemData(ItemName.Armor_Magnetizer, 7, 7, ItemClassification.useful),
     ItemName.Levitator: ItemData(ItemName.Levitator, 8, 8, ItemClassification.progression),
@@ -164,7 +162,6 @@ item_table: dict[str, ItemData] = {
 CLANK_PACKS: list[str] = [
     ItemName.Heli_Pack,
     ItemName.Thruster_Pack,
-    ItemName.Hydro_Pack,
 ]
 QUICK_SELECTABLE: list[str] = [
     ItemName.Swingshot,

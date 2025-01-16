@@ -36,7 +36,6 @@ class LocationName(StrEnum):
     Endako_Clank_Apartment_GB = "Endako: Clank's Apartment - Grindboots"
     Endako_Rescue_Clank_Heli = "Endako: Rescue Clank Heli-Pack"
     Endako_Rescue_Clank_Thruster = "Endako: Rescue Clank Thruster-Pack"
-    Endako_Rescue_Clank_Hydro = "Endako: Rescue Clank Hydro-Pack"
     Endako_Ledge_PB = "Endako: Ledge - Platinum Bolt"
     Endako_Crane_PB = "Endako: Crane - Platinum Bolt"
     Endako_Crane_NT = "Endako: Crane - Nanotech Boost"
@@ -145,7 +144,6 @@ endako_location_table = {
     LocationName.Endako_Clank_Apartment_GB: LocationData(LocationName.Endako_Clank_Apartment_GB, 31),
     LocationName.Endako_Rescue_Clank_Heli: LocationData(LocationName.Endako_Rescue_Clank_Heli, 32, can_electrolyze),
     LocationName.Endako_Rescue_Clank_Thruster: LocationData(LocationName.Endako_Rescue_Clank_Thruster, 33, can_electrolyze),
-    LocationName.Endako_Rescue_Clank_Hydro: LocationData(LocationName.Endako_Rescue_Clank_Hydro, 34, can_electrolyze),
     LocationName.Endako_Ledge_PB: LocationData(LocationName.Endako_Ledge_PB, 35),
     LocationName.Endako_Crane_PB: LocationData(LocationName.Endako_Crane_PB, 36, can_electrolyze),
     LocationName.Endako_Crane_NT: LocationData(

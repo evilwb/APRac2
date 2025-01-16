@@ -17,6 +17,10 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     if ap_connected:
         replace_text(ctx)
 
+    # Force Clank and Hydro-Pack to be enabled at all times.
+    game_interface.pcsx2_interface.write_int8(game_interface.addresses.clank_disabled, 0)
+    game_interface.pcsx2_interface.write_int8(game_interface.addresses.inventory + 4, 1)
+
     if ctx.queued_deaths > 0 and game_interface.get_alive() and game_interface.get_pause_state() == 0:
         game_interface.set_nanotech(0)
         ctx.queued_deaths -= 1
@@ -40,6 +44,7 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
         if not (has_heli_pack and has_swingshot):
             if ctx.notification_manager.queue_size() == 0:
                 ctx.notification_manager.queue_notification(unstuck_message, 1.0)
+
     if planet == Rac2Planet.Aranos_Prison:
         has_gravity_boots = game_interface.get_inventory_item(equipment_table[ItemName.Gravity_Boots]).current_amount > 0
         has_levitator = game_interface.get_inventory_item(equipment_table[ItemName.Levitator]).current_amount > 0

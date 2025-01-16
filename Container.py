@@ -297,10 +297,9 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     address = Addresses.FREE_RATCHET_FUNC
     # Prevent Clank from being enabled
     patch.write_token(APTokenTypes.WRITE, address + 0x2C, NOP)
-    # Prevent Heli-Pack, Thruster-Pack and Hydro-Pack from being added to Primary Inventory
+    # Prevent Heli-Pack and Thruster-Pack from being added to Primary Inventory
     patch.write_token(APTokenTypes.WRITE, address + 0x4C, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x64, NOP)
-    patch.write_token(APTokenTypes.WRITE, address + 0x74, NOP)
 
     """--------- 
     Barlow   

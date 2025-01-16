@@ -34,7 +34,6 @@ PLANET_UNLOCK_TO_LOCATION_ID: Dict[int, int] = {
 INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
     item_table[ItemName.Heli_Pack].offset: every_location[LocationName.Endako_Rescue_Clank_Heli].id,
     item_table[ItemName.Thruster_Pack].offset: every_location[LocationName.Endako_Rescue_Clank_Thruster].id,
-    item_table[ItemName.Hydro_Pack].offset: every_location[LocationName.Endako_Rescue_Clank_Hydro].id,
     item_table[ItemName.Mapper].offset: every_location[LocationName.Damosel_Defeat_Mothership].id,
     item_table[ItemName.Armor_Magnetizer].offset: every_location[LocationName.Todano_Stuart_Zurgo_Trade].id,
     item_table[ItemName.Levitator].offset: every_location[LocationName.Joba_Shady_Salesman].id,
