@@ -327,6 +327,12 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x244, bytes([0x01, 0x00, 0x04, 0x24]))
     patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x60, 0x7B, 0x44, 0xA0]))
 
+    # Prevent spawning at Gadgetron Inventor when Thermanator is collected.
+    patch.write_token(APTokenTypes.WRITE, Addresses.BARLOW_SPAWN_CONTROLLER_FUNC + 0x7C, NOP)
+    # Don't skip ship landing cutscene.
+    for address in Addresses.PLANET_MAIN_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x284, NOP)
+
     """--------- 
     Notak 
     ---------"""

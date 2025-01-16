@@ -102,6 +102,7 @@ class Addresses:
     # Barlow
     INVENTOR_FUNC: int = 0xA90926E4
     BIKER_ONE_FUNC: int = 0xA9080D8C
+    BARLOW_SPAWN_CONTROLLER_FUNC: int = 0xA90B415C
 
     # Feltzin
     NOTAK_COORDS_TEXT: int = 0x975B43F4
