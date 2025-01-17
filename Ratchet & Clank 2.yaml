@@ -32,7 +32,7 @@ description: Default Ratchet & Clank 2 Template
 
 game: Ratchet & Clank 2
 requires:
-  version: 0.5.0 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.6.0 # Version of Archipelago required for this yaml to work as expected.
 
 Ratchet & Clank 2:
   # Game Options
@@ -54,17 +54,28 @@ Ratchet & Clank 2:
   accessibility:
     # Set rules for reachability of your items/locations.
     # 
-    # - **Locations:** ensure everything can be reached and acquired.
-    # - **Items:** ensure all logically relevant items can be acquired.
-    # - **Minimal:** ensure what is needed to reach your goal can be acquired.
-    locations: 0
-    items: 50
+    # **Full:** ensure everything can be reached and acquired.
+    # 
+    # **Minimal:** ensure what is needed to reach your goal can be acquired.
+    full: 50
     minimal: 0
 
   death_link:
-    # When you die, everyone dies. Of course the reverse is true too.
+    # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
     'false': 50
     'true': 0
+
+  shuffle_weapon_vendors:
+    # Shuffle what items appear at the Megacorp and Gadgetron vendors. Also shuffles your two starting weapons.
+    # Off: The vendors will stay unmodified.
+    # Weapons: All weapons that are normally available at the vendors will be shuffled among the vendor slots.
+    'off': 50
+    weapons: 0
+
+  skip_wupash_nebula:
+    # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
+    'false': 0
+    'true': 50
 
   # Item & Location Options
   local_items:
@@ -77,6 +88,12 @@ Ratchet & Clank 2:
 
   start_inventory:
     # Start with these items.
+    {}
+
+  start_inventory_from_pool:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
     {}
 
   start_hints:
@@ -98,9 +115,3 @@ Ratchet & Clank 2:
   item_links:
     # Share part of your item pool with other players.
     []
-
-  start_inventory_from_pool:
-    # Start with these items and don't place them in the world.
-    # 
-    # The game decides what the replacement items will be.
-    {}
