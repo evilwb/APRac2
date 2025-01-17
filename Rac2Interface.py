@@ -294,8 +294,35 @@ class Rac2Interface:
         return inventory
 
     def get_alive(self) -> bool:
-        nanotech = self.pcsx2_interface.read_int8(self.addresses.current_nanotech)
-        return nanotech != 0
+        planet = self.get_current_planet()
+        if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:
+            return self.pcsx2_interface.read_int8(self.addresses.planet[planet].camara_state) != 6
+        elif planet in [Rac2Planet.Dobbo_Orbit, Rac2Planet.Damosel_Orbit]:
+            return self.pcsx2_interface.read_int8(self.addresses.ratchet_state) != 95
+        else:
+            if (self.pcsx2_interface.read_int8(self.addresses.current_nanotech) == 0
+                    or self.pcsx2_interface.read_int8(self.addresses.ratchet_state) == 116
+                    or self.pcsx2_interface.read_int8(self.addresses.ratchet_state) == 145):
+                return False
+            else:
+                return True
+
+    def kill_player(self) -> None:
+        planet = self.get_current_planet()
+        # Kill Ship
+        if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:
+            self.pcsx2_interface.write_int8(self.addresses.planet[planet].camara_state, 6)
+        # Kill Giant Clank
+        elif planet in [Rac2Planet.Dobbo_Orbit, Rac2Planet.Damosel_Orbit]:
+            self.pcsx2_interface.write_int8(self.addresses.ratchet_state, 95)
+        # Kill Receiver Bot
+        elif self.get_ratchet_state() > 140:
+            current_moby = self.pcsx2_interface.read_int32(self.addresses.current_moby_instance_pointer)
+            pvars = self.pcsx2_interface.read_int32(current_moby + 0x68)
+            self.pcsx2_interface.write_int16(pvars + 0x3BC, 0)
+        # Kill Ratchet
+        else:
+            self.set_nanotech(0)
 
     def set_nanotech(self, new_value) -> None:
         if not (0 <= new_value <= 0xFF):

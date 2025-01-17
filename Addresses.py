@@ -28,7 +28,7 @@ class Addresses:
             self.siberius_thief_defeated: int = 0x139771
             self.selectable_planets: int = 0x139948
             self.ratchet_position: int = 0x189EA0
-            self.moby_instances_pointer: int = 0x18C0B0
+            self.current_moby_instance_pointer: int = 0x18C0B0
             self.ratchet_state: int = 0x18C0B4
             self.current_nanotech: int = 0x18C2EC
             self.clank_disabled: int = 0x18C31C
@@ -96,6 +96,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
                     skill_point_text=0x1874090,
+                    camara_state=0x1B1B20,
                 ),
                 6: PlanetAddresses(
                     segment_pointers=0x1BFBC0,
@@ -126,6 +127,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
                     skill_point_text=0x1649420,
+                    camara_state=0x1B1B20,
                 ),
                 11: PlanetAddresses(
                     segment_pointers=0x1C0C40,
@@ -156,6 +158,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2140,
                     skill_point_text=0x16734E0,
+                    camara_state=0x1B1BF0,
                 ),
                 16: PlanetAddresses(
                     segment_pointers=0x1BFE80,
@@ -210,6 +213,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1BC0,
                     skill_point_text=0xE13140,
+                    camara_state=0x1B1670,
                 ),
                 26: PlanetAddresses(
                     segment_pointers=0x1BEF00,
@@ -231,6 +235,7 @@ class PlanetAddresses:
     planet_switch_trigger: Optional[int] = None
     next_planet: Optional[int] = None
     skill_point_text: Optional[int] = None
+    camara_state: Optional[int] = None
 
 
 

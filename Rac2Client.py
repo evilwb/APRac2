@@ -33,6 +33,13 @@ class Rac2CommandProcessor(ClientCommandProcessor):
         """Display the memory segment table."""
         logger.info(self.ctx.game_interface.get_segment_pointer_table())
 
+    def _cmd_test_deathlink(self, deaths: str):
+        """Queue up specified number of deaths."""
+        if isinstance(self.ctx, Rac2Context):
+            logger.info(f"Queuing {deaths} deaths.")
+            self.ctx.notification_manager.queue_notification("Received test deathlink")
+            self.ctx.queued_deaths = int(deaths)
+
     def _cmd_deathlink(self):
         """Toggle deathlink from client. Overrides default setting."""
         if isinstance(self.ctx, Rac2Context):
@@ -162,13 +169,18 @@ async def handle_check_goal_complete(ctx: Rac2Context):
     pass
 
 
-async def handle_check_deathlink(ctx: Rac2Context):
-    health = ctx.game_interface.get_current_nanotech()
-    if health <= 0 and not ctx.is_pending_death_link_reset:
-        await ctx.send_death(ctx.player_names[ctx.slot] + " ran out of Nanotech.")
-        ctx.is_pending_death_link_reset = True
-    elif health > 0 and ctx.is_pending_death_link_reset:
-        ctx.is_pending_death_link_reset = False
+async def handle_deathlink(ctx: Rac2Context):
+    if ctx.game_interface.get_alive():
+        if ctx.is_pending_death_link_reset:
+            ctx.is_pending_death_link_reset = False
+        if ctx.queued_deaths > 0 and ctx.game_interface.get_pause_state() == 0:
+            ctx.is_pending_death_link_reset = True
+            ctx.game_interface.kill_player()
+            ctx.queued_deaths -= 1
+    else:
+        if not ctx.is_pending_death_link_reset:
+            await ctx.send_death(ctx.player_names[ctx.slot] + " ran out of Nanotech.")
+            ctx.is_pending_death_link_reset = True
 
 
 async def _handle_game_ready(ctx: Rac2Context):
@@ -207,7 +219,7 @@ async def _handle_game_ready(ctx: Rac2Context):
         await handle_check_goal_complete(ctx)
 
         if ctx.death_link_enabled:
-            await handle_check_deathlink(ctx)
+            await handle_deathlink(ctx)
         await asyncio.sleep(0.5)
     else:
         message = "Waiting for player to connect to server"
