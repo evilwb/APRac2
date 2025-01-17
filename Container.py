@@ -32,8 +32,9 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
         with open(iso_path, "rb") as iso:
             basemd5.update(mmap.mmap(iso.fileno(), 0, access=mmap.ACCESS_READ))
         if basemd5.hexdigest() not in {SCUS_97268_HASH}:
-            raise Exception("Supplied Base ISO does not match known MD5 for US or JP release. "
-                            "Get the correct game and version, then dump it")
+            raise Exception("Supplied Base ISO does not match known MD5 for a supported release."
+                            "\nPlease verify that you are using the correct version of the game."
+                            "\nYou should delete `Archipelago/Ratchet & Clank 2.iso' if you want to try again with a different ISO")
 
     @staticmethod
     def apply_tokens_mmap(caller: APProcedurePatch, rom: mmap, token_file: str) -> None:
@@ -67,9 +68,9 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
 
     def patch_mmap(self, target: str, notifier: Callable[[str, float], None]) -> None:
         self.read()
-        notifier("Checking Hash", 0)
+        notifier("Verifying game version...", 0)
         self.check_hash(settings.get_settings().rac2_options.iso_file)
-        notifier("Hash was Good. Copying ISO", 0)
+        notifier("Game version supported. \n\nCopying and patching ISO...", 0)
         shutil.copy(settings.get_settings().rac2_options.iso_file, target)
         notifier("Patching ISO", 0)
         with open(target, "r+b") as file:

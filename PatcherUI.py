@@ -1,6 +1,7 @@
 import threading
 from typing import TYPE_CHECKING, Callable
 from logging import Logger
+import textwrap
 
 import kvui
 from kivy.app import App
@@ -51,6 +52,10 @@ class PatcherUI(App):
 
         aprac2 = Rac2ProcedurePatch()
         aprac2.read(self.aprac2_path)
-        aprac2.patch_mmap(self.output_path, update_progress)
+        try:
+            aprac2.patch_mmap(self.output_path, update_progress)
+        except Exception as e:
+            self.progresstext.text = f"Error\n\n{e.args[0]}\n\nYou can close this window when you done reading."
+
 
 
