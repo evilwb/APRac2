@@ -32,7 +32,7 @@ description: Default Ratchet & Clank 2 Template
 
 game: Ratchet & Clank 2
 requires:
-  version: 0.6.0 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.5.0 # Version of Archipelago required for this yaml to work as expected.
 
 Ratchet & Clank 2:
   # Game Options
