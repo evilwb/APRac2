@@ -18,7 +18,7 @@ The end goal of the randomizer game is to defeat the giant mutated Protopet on p
 All Gadgets/Items, Platinum Bolts and Planet Coordinates can be shuffled in other players' worlds.
 
 
-## What does another world's item look like in Metroid Prime?
+## What does another world's item look like in Ratchet & Clank 2?
 There is no model replacement support yet so all items will their vanilla appearance.
 
 
