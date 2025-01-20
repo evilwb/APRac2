@@ -173,7 +173,6 @@ feltzin_location_table = {
 }
 
 notak_location_table = {
-    # TODO: Double check requirements on these locations
     LocationName.Notak_Top_Pier_Telescreen: LocationData(
         LocationName.Notak_Top_Pier_Telescreen, 60,
         lambda state, player: can_improved_jump(state, player) and can_therminate(state, player)
@@ -296,7 +295,6 @@ todano_location_table = {
             and can_infiltrate(state, player)
     ),
     LocationName.Todano_Stuart_Zurgo_Trade: LocationData(
-        # TODO: Double check if clank is needed
         LocationName.Todano_Stuart_Zurgo_Trade, 121,
         lambda state, player:
             can_electrolyze(state, player)
@@ -304,7 +302,6 @@ todano_location_table = {
             and has_qwark_statuette(state, player)
     ),
     LocationName.Todano_Near_Stuart_Zurgo_PB: LocationData(
-        # TODO: Double check if clank is needed
         LocationName.Todano_Near_Stuart_Zurgo_PB, 122,
         lambda state, player: can_electrolyze(state, player) and can_tractor(state, player)
     ),
@@ -389,7 +386,6 @@ snivelak_location_table = {
 smolg_location_table = {
     LocationName.Smolg_Balloon_Transmission: LocationData(
         LocationName.Smolg_Balloon_Transmission, 170,
-        # TODO: Try without Clank
         lambda state, player:
             can_improved_jump(state, player)
             and can_dynamo(state, player)
@@ -415,7 +411,6 @@ smolg_location_table = {
     ),
     LocationName.Smolg_Warehouse_PB: LocationData(
         LocationName.Smolg_Warehouse_PB, 174,
-        # TODO: Try without Clank
         lambda state, player: can_improved_jump(state, player) and can_dynamo(state, player)
     ),
 }
