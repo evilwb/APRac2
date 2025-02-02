@@ -1,112 +1,110 @@
 from typing import Dict, TYPE_CHECKING
 
-from worlds.rac2 import every_location, LocationName, ItemName, item_table
-from worlds.rac2.Rac2Interface import PLANET_LIST_SIZE, INVENTORY_SIZE, NANOTECH_BOOST_MAX
-from worlds.rac2.data.Planets import Planet
-from .data import Weapons
+from .Rac2Interface import PLANET_LIST_SIZE, INVENTORY_SIZE, NANOTECH_BOOST_MAX
+from .data import Planets, Locations, Items
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
 
 PLANET_UNLOCK_TO_LOCATION_ID: Dict[int, int] = {
-    Planet.Maktar_Nebula.number: every_location[LocationName.Oozla_End_Store_Cutscene].id,
-    Planet.Endako.number: every_location[LocationName.Maktar_Photo_Booth].id,
-    Planet.Barlow.number: every_location[LocationName.Maktar_Deactivate_Jamming_Array].id,
-    Planet.Feltzin_System.number: every_location[LocationName.Barlow_Hoverbike_Race_Transmission].id,
-    Planet.Notak.number: every_location[LocationName.Feltzin_Defeat_Thug_Ships].id,
-    Planet.Siberius.number: every_location[LocationName.Notak_Worker_Bots].id,
-    Planet.Tabora.number: every_location[LocationName.Siberius_Defeat_Thief].id,
-    Planet.Dobbo.number: every_location[LocationName.Tabora_Meet_Angela].id,
-    Planet.Hrugis_Cloud.number: every_location[LocationName.Dobbo_Facility_Terminal].id,
-    Planet.Joba.number: every_location[LocationName.Dobbo_Defeat_Thug_Leader].id,
-    Planet.Todano.number: every_location[LocationName.Hrugis_Destroy_Defenses].id,
-    Planet.Boldan.number: every_location[LocationName.Todano_Search_Rocket_Silo].id,
-    Planet.Aranos_Prison.number: every_location[LocationName.Boldan_Find_Fizzwidget].id,
-    Planet.Gorn.number: every_location[LocationName.Aranos_Control_Room].id,
-    Planet.Snivelak.number: every_location[LocationName.Gorn_Defeat_Thug_Fleet].id,
-    Planet.Smolg.number: every_location[LocationName.Snivelak_Rescue_Angela].id,
-    Planet.Damosel.number: every_location[LocationName.Smolg_Mutant_Crab].id,
-    Planet.Grelbin.number: every_location[LocationName.Smolg_Balloon_Transmission].id,
-    Planet.Yeedil.number: every_location[LocationName.Grelbin_Find_Angela].id,
-    Planet.Ship_Shack.number: every_location[LocationName.Notak_Top_Pier_Telescreen].id
+    Planets.MAKTAR_NEBULA.number: Locations.OOZLA_END_STORE_CUTSCENE.location_id,
+    Planets.ENDAKO.number: Locations.MAKTAR_PHOTO_BOOTH.location_id,
+    Planets.BARLOW.number: Locations.MAKTAR_DEACTIVATE_JAMMING_ARRAY.location_id,
+    Planets.FELTZIN_SYSTEM.number: Locations.BARLOW_HOVERBIKE_RACE_TRANSMISSION.location_id,
+    Planets.NOTAK.number: Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id,
+    Planets.SIBERIUS.number: Locations.NOTAK_WORKER_BOTS.location_id,
+    Planets.TABORA.number: Locations.SIBERIUS_DEFEAT_THIEF.location_id,
+    Planets.DOBBO.number: Locations.TABORA_MEET_ANGELA.location_id,
+    Planets.HRUGIS_CLOUD.number: Locations.DOBBO_FACILITY_TERMINAL.location_id,
+    Planets.JOBA.number: Locations.DOBBO_DEFEAT_THUG_LEADER.location_id,
+    Planets.TODANO.number: Locations.HRUGIS_DESTROY_DEFENSES.location_id,
+    Planets.BOLDAN.number: Locations.TODANO_SEARCH_ROCKET_SILO.location_id,
+    Planets.ARANOS_PRISON.number: Locations.BOLDAN_FIND_FIZZWIDGET.location_id,
+    Planets.GORN.number: Locations.ARANOS_CONTROL_ROOM.location_id,
+    Planets.SNIVELAK.number: Locations.GORN_DEFEAT_THUG_FLEET.location_id,
+    Planets.SMOLG.number: Locations.SNIVELAK_RESCUE_ANGELA.location_id,
+    Planets.DAMOSEL.number: Locations.SMOLG_MUTANT_CRAB.location_id,
+    Planets.GRELBIN.number: Locations.SMOLG_BALLOON_TRANSMISSION.location_id,
+    Planets.YEEDIL.number: Locations.GRELBIN_FIND_ANGELA.location_id,
+    Planets.SHIP_SHACK.number: Locations.NOTAK_TOP_PIER_TELESCREEN.location_id
 }
 
 INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
-    item_table[ItemName.Heli_Pack].offset: every_location[LocationName.Endako_Rescue_Clank_Heli].id,
-    item_table[ItemName.Thruster_Pack].offset: every_location[LocationName.Endako_Rescue_Clank_Thruster].id,
-    item_table[ItemName.Mapper].offset: every_location[LocationName.Damosel_Defeat_Mothership].id,
-    item_table[ItemName.Armor_Magnetizer].offset: every_location[LocationName.Todano_Stuart_Zurgo_Trade].id,
-    item_table[ItemName.Levitator].offset: every_location[LocationName.Joba_Shady_Salesman].id,
-    item_table[ItemName.Swingshot].offset: every_location[LocationName.Endako_Clank_Apartment_SS].id,
-    item_table[ItemName.Gravity_Boots].offset: every_location[LocationName.Joba_Arena_Battle].id,
-    item_table[ItemName.Grind_Boots].offset: every_location[LocationName.Endako_Clank_Apartment_GB].id,
-    item_table[ItemName.Glider].offset: every_location[LocationName.Tabora_Underground_Mines_End].id,
-    item_table[ItemName.Dynamo].offset: every_location[LocationName.Oozla_Outside_Megacorp_Store].id,
-    item_table[ItemName.Electrolyzer].offset: every_location[LocationName.Maktar_Arena_Challenge].id,
-    item_table[ItemName.Thermanator].offset: every_location[LocationName.Barlow_Inventor].id,
-    item_table[ItemName.Tractor_Beam].offset: every_location[LocationName.Oozla_Megacorp_Scientist].id,
-    item_table[ItemName.Qwark_Statuette].offset: every_location[LocationName.Aranos_Plumber].id,
-    item_table[ItemName.Box_Breaker].offset: every_location[LocationName.Oozla_Swamp_MonsterII].id,
-    item_table[ItemName.Infiltrator].offset: every_location[LocationName.Joba_Arena_Cage_Match].id,
-    item_table[ItemName.Charge_Boots].offset: every_location[LocationName.Joba_First_Hoverbike_Race].id,
-    item_table[ItemName.Hypnomatic].offset: every_location[LocationName.Damosel_Hypnotist].id,
-    item_table[Weapons.SHEEPINATOR.name].offset: every_location[LocationName.Todano_Facility_Interior].id
+    Items.HELI_PACK.offset: Locations.ENDAKO_RESCUE_CLANK_HELI.location_id,
+    Items.THRUSTER_PACK.offset: Locations.ENDAKO_RESCUE_CLANK_THRUSTER.location_id,
+    Items.MAPPER.offset: Locations.DAMOSEL_DEFEAT_MOTHERSHIP.location_id,
+    Items.ARMOR_MAGNETIZER.offset: Locations.TODANO_STUART_ZURGO_TRADE.location_id,
+    Items.LEVITATOR.offset: Locations.JOBA_SHADY_SALESMAN.location_id,
+    Items.SWINGSHOT.offset: Locations.ENDAKO_CLANK_APARTMENT_SS.location_id,
+    Items.GRAVITY_BOOTS.offset: Locations.JOBA_ARENA_BATTLE.location_id,
+    Items.GRIND_BOOTS.offset: Locations.ENDAKO_CLANK_APARTMENT_GB.location_id,
+    Items.GLIDER.offset: Locations.TABORA_UNDERGROUND_MINES_END.location_id,
+    Items.DYNAMO.offset: Locations.OOZLA_OUTSIDE_MEGACORP_STORE.location_id,
+    Items.ELECTROLYZER.offset: Locations.MAKTAR_ARENA_CHALLENGE.location_id,
+    Items.THERMANATOR.offset: Locations.BARLOW_INVENTOR.location_id,
+    Items.TRACTOR_BEAM.offset: Locations.OOZLA_MEGACORP_SCIENTIST.location_id,
+    Items.QWARK_STATUETTE.offset: Locations.ARANOS_PLUMBER.location_id,
+    Items.BOX_BREAKER.offset: Locations.OOZLA_SWAMP_MONSTER_II.location_id,
+    Items.INFILTRATOR.offset: Locations.JOBA_ARENA_CAGE_MATCH.location_id,
+    Items.CHARGE_BOOTS.offset: Locations.JOBA_FIRST_HOVERBIKE_RACE.location_id,
+    Items.HYPNOMATIC.offset: Locations.DAMOSEL_HYPNOTIST.location_id,
+    Items.SHEEPINATOR.offset: Locations.TODANO_FACILITY_INTERIOR.location_id
 }
 
 PLAT_BOLT_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
-    Planet.Oozla.number * 4 + 1: every_location[LocationName.Oozla_Swamp_Ruins_PB].id,
-    Planet.Oozla.number * 4 + 2: every_location[LocationName.Oozla_Tractor_Puzzle_PB].id,
-    Planet.Maktar_Nebula.number * 4 + 1: every_location[LocationName.Maktar_Crane_PB].id,
-    Planet.Jamming_Array.number * 4 + 1: every_location[LocationName.Maktar_Jamming_Array_PB].id,
-    Planet.Endako.number * 4 + 1: every_location[LocationName.Endako_Crane_PB].id,
-    Planet.Endako.number * 4 + 3: every_location[LocationName.Endako_Ledge_PB].id,
-    Planet.Barlow.number * 4: every_location[LocationName.Barlow_Hound_Cave_PB].id,
-    Planet.Barlow.number * 4 + 1: every_location[LocationName.Barlow_Hoverbike_Race_PB].id,
-    Planet.Feltzin_System.number * 4: every_location[LocationName.Feltzin_Race_PB].id,
-    Planet.Notak.number * 4: every_location[LocationName.Notak_Timed_Dynamo_PB].id,
-    Planet.Notak.number * 4 + 1: every_location[LocationName.Notak_Promenade_Sign_PB].id,
-    Planet.Notak.number * 4 + 2: every_location[LocationName.Notak_Behind_Building_PB].id,
-    Planet.Siberius.number * 4: every_location[LocationName.Siberius_Flamebot_Ledge_PB].id,
-    Planet.Siberius.number * 4 + 1: every_location[LocationName.Siberius_Fenced_Area_PB].id,
-    Planet.Tabora.number * 4: every_location[LocationName.Tabora_Canyon_Glide_PB].id,
-    Planet.Tabora.number * 4 + 1: every_location[LocationName.Tabora_Northeast_Desert_PB].id,
-    Planet.Tabora.number * 4 + 2: every_location[LocationName.Tabora_Underground_Mines_PB].id,
-    Planet.Dobbo.number * 4 + 1: every_location[LocationName.Dobbo_Spiderbot_Room_PB].id,
-    Planet.Dobbo.number * 4 + 3: every_location[LocationName.Dobbo_Facility_Glide_PB].id,
-    Planet.Hrugis_Cloud.number * 4: every_location[LocationName.Hrugis_Race_PB].id,
-    Planet.Joba.number * 4: every_location[LocationName.Joba_Hidden_Cliff_PB].id,
-    Planet.Joba.number * 4 + 1: every_location[LocationName.Joba_Levitator_Tower_PB].id,
-    Planet.Todano.number * 4: every_location[LocationName.Todano_Spiderbot_Conveyor_PB].id,
-    Planet.Todano.number * 4 + 1: every_location[LocationName.Todano_End_Tour_PB].id,
-    Planet.Todano.number * 4 + 2: every_location[LocationName.Todano_Near_Stuart_Zurgo_PB].id,
-    Planet.Boldan.number * 4: every_location[LocationName.Boldan_Floating_Platform_PB].id,
-    Planet.Boldan.number * 4 + 1: every_location[LocationName.Boldan_Spiderbot_Alley_PB].id,
-    Planet.Boldan.number * 4 + 3: every_location[LocationName.Boldan_Upper_Dome_PB].id,
-    Planet.Aranos_Prison.number * 4: every_location[LocationName.Aranos_Under_Ship_PB].id,
-    Planet.Gorn.number * 4: every_location[LocationName.Gorn_Race_PB].id,
-    Planet.Snivelak.number * 4: every_location[LocationName.Snivelak_Dynamo_Platforms_PB].id,
-    Planet.Smolg.number * 4 + 1: every_location[LocationName.Smolg_Warehouse_PB].id,
-    Planet.Smolg.number * 4 + 2: every_location[LocationName.Smolg_Floating_Platform_PB].id,
-    Planet.Damosel.number * 4: every_location[LocationName.Damosel_Frozen_Fountain_PB].id,
-    Planet.Damosel.number * 4 + 1: every_location[LocationName.Damosel_Pyramid_PB].id,
-    Planet.Grelbin.number * 4 + 1: every_location[LocationName.Grelbin_Underwater_Tunnel_PB].id,
-    Planet.Grelbin.number * 4 + 2: every_location[LocationName.Grelbin_Yeti_Cave_PB].id,
-    Planet.Grelbin.number * 4 + 3: every_location[LocationName.Grelbin_Ice_Plains_PB].id,
-    Planet.Yeedil.number * 4 + 1: every_location[LocationName.Yeedil_Tractor_Pillar_PB].id,
-    Planet.Yeedil.number * 4 + 2: every_location[LocationName.Yeedil_Bridge_Grindrail_PB].id,
+    Planets.OOZLA.number * 4 + 1: Locations.OOZLA_SWAMP_RUINS_PB.location_id,
+    Planets.OOZLA.number * 4 + 2: Locations.OOZLA_TRACTOR_PUZZLE_PB.location_id,
+    Planets.MAKTAR_NEBULA.number * 4 + 1: Locations.MAKTAR_CRANE_PB.location_id,
+    Planets.JAMMING_ARRAY.number * 4 + 1: Locations.MAKTAR_JAMMING_ARRAY_PB.location_id,
+    Planets.ENDAKO.number * 4 + 1: Locations.ENDAKO_CRANE_PB.location_id,
+    Planets.ENDAKO.number * 4 + 3: Locations.ENDAKO_LEDGE_PB.location_id,
+    Planets.BARLOW.number * 4: Locations.BARLOW_HOUND_CAVE_PB.location_id,
+    Planets.BARLOW.number * 4 + 1: Locations.BARLOW_HOVERBIKE_RACE_PB.location_id,
+    Planets.FELTZIN_SYSTEM.number * 4: Locations.FELTZIN_RACE_PB.location_id,
+    Planets.NOTAK.number * 4: Locations.NOTAK_TIMED_DYNAMO_PB.location_id,
+    Planets.NOTAK.number * 4 + 1: Locations.NOTAK_PROMENADE_SIGN_PB.location_id,
+    Planets.NOTAK.number * 4 + 2: Locations.NOTAK_BEHIND_BUILDING_PB.location_id,
+    Planets.SIBERIUS.number * 4: Locations.SIBERIUS_FLAMEBOT_LEDGE_PB.location_id,
+    Planets.SIBERIUS.number * 4 + 1: Locations.SIBERIUS_FENCED_AREA_PB.location_id,
+    Planets.TABORA.number * 4: Locations.TABORA_CANYON_GLIDE_PB.location_id,
+    Planets.TABORA.number * 4 + 1: Locations.TABORA_NORTHEAST_DESERT_PB.location_id,
+    Planets.TABORA.number * 4 + 2: Locations.TABORA_UNDERGROUND_MINES_PB.location_id,
+    Planets.DOBBO.number * 4 + 1: Locations.DOBBO_SPIDERBOT_ROOM_PB.location_id,
+    Planets.DOBBO.number * 4 + 3: Locations.DOBBO_FACILITY_GLIDE_PB.location_id,
+    Planets.HRUGIS_CLOUD.number * 4: Locations.HRUGIS_RACE_PB.location_id,
+    Planets.JOBA.number * 4: Locations.JOBA_HIDDEN_CLIFF_PB.location_id,
+    Planets.JOBA.number * 4 + 1: Locations.JOBA_LEVITATOR_TOWER_PB.location_id,
+    Planets.TODANO.number * 4: Locations.TODANO_SPIDERBOT_CONVEYOR_PB.location_id,
+    Planets.TODANO.number * 4 + 1: Locations.TODANO_END_TOUR_PB.location_id,
+    Planets.TODANO.number * 4 + 2: Locations.TODANO_NEAR_STUART_ZURGO_PB.location_id,
+    Planets.BOLDAN.number * 4: Locations.BOLDAN_FLOATING_PLATFORM_PB.location_id,
+    Planets.BOLDAN.number * 4 + 1: Locations.BOLDAN_SPIDERBOT_ALLEY_PB.location_id,
+    Planets.BOLDAN.number * 4 + 3: Locations.BOLDAN_UPPER_DOME_PB.location_id,
+    Planets.ARANOS_PRISON.number * 4: Locations.ARANOS_UNDER_SHIP_PB.location_id,
+    Planets.GORN.number * 4: Locations.GORN_RACE_PB.location_id,
+    Planets.SNIVELAK.number * 4: Locations.SNIVELAK_DYNAMO_PLATFORMS_PB.location_id,
+    Planets.SMOLG.number * 4 + 1: Locations.SMOLG_WAREHOUSE_PB.location_id,
+    Planets.SMOLG.number * 4 + 2: Locations.SMOLG_FLOATING_PLATFORM_PB.location_id,
+    Planets.DAMOSEL.number * 4: Locations.DAMOSEL_FROZEN_FOUNTAIN_PB.location_id,
+    Planets.DAMOSEL.number * 4 + 1: Locations.DAMOSEL_PYRAMID_PB.location_id,
+    Planets.GRELBIN.number * 4 + 1: Locations.GRELBIN_UNDERWATER_TUNNEL_PB.location_id,
+    Planets.GRELBIN.number * 4 + 2: Locations.GRELBIN_YETI_CAVE_PB.location_id,
+    Planets.GRELBIN.number * 4 + 3: Locations.GRELBIN_ICE_PLAINS_PB.location_id,
+    Planets.YEEDIL.number * 4 + 1: Locations.YEEDIL_TRACTOR_PILLAR_PB.location_id,
+    Planets.YEEDIL.number * 4 + 2: Locations.YEEDIL_BRIDGE_GRINDRAIL_PB.location_id,
 }
 
 NANOTECH_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
-    0: every_location[LocationName.Notak_Promenade_End_NT].id,
-    1: every_location[LocationName.Endako_Crane_NT].id,
-    2: every_location[LocationName.Tabora_Canyon_Glide_Pillar_NT].id,
-    3: every_location[LocationName.Joba_Timed_Dynamo_NT].id,
-    4: every_location[LocationName.Joba_Hoverbike_Race_Shortcut_NT].id,
-    5: every_location[LocationName.Snivelak_Swingshot_Tower_NT].id,
-    6: every_location[LocationName.Feltzin_Cargo_Bay_NT].id,
-    7: every_location[LocationName.Todano_Rocket_Silo_NT].id,
-    8: every_location[LocationName.Boldan_Fountain_NT].id,
-    9: every_location[LocationName.Dobbo_Facility_Glide_NT].id,
+    0: Locations.NOTAK_PROMENADE_END_NT.location_id,
+    1: Locations.ENDAKO_CRANE_NT.location_id,
+    2: Locations.TABORA_CANYON_GLIDE_PILLAR_NT.location_id,
+    3: Locations.JOBA_TIMED_DYNAMO_NT.location_id,
+    4: Locations.JOBA_HOVERBIKE_RACE_SHORTCUT_NT.location_id,
+    5: Locations.SNIVELAK_SWINGSHOT_TOWER_NT.location_id,
+    6: Locations.FELTZIN_CARGO_BAY_NT.location_id,
+    7: Locations.TODANO_ROCKET_SILO_NT.location_id,
+    8: Locations.BOLDAN_FOUNTAIN_NT.location_id,
+    9: Locations.DOBBO_FACILITY_GLIDE_NT.location_id,
 }
 
 
@@ -141,14 +139,14 @@ async def handle_checked_location(ctx: 'Rac2Context'):
 
     # check for hypnomatic parts
     if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part1) == 1:
-        cleared_locations.add(every_location[LocationName.Smolg_Distribution_Facility_End].id)
+        cleared_locations.add(Locations.SMOLG_DISTRIBUTION_FACILITY_END.location_id)
     if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part2) == 1:
-        cleared_locations.add(every_location[LocationName.Damosel_Train_Rails].id)
+        cleared_locations.add(Locations.DAMOSEL_TRAIN_RAILS.location_id)
     if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part3) == 1:
-        cleared_locations.add(every_location[LocationName.Grelbin_Mystic_More_Moonstones].id)
+        cleared_locations.add(Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id)
 
     cleared_locations = cleared_locations.difference(ctx.checked_locations)
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])
     for location_number in cleared_locations:
-        location_name = [location.name for location in every_location.values() if location.id == location_number].pop()
+        location_name = [location.name for location in Planets.ALL_LOCATIONS if location.location_id == location_number].pop()
         ctx.game_interface.logger.info(f"Location checked: {location_name}")

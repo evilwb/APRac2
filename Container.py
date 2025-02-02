@@ -5,9 +5,8 @@ from typing import Any, Callable, TYPE_CHECKING
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from worlds.rac2 import LocationName
 from .Rac2Options import ShuffleWeaponVendors
-from .data import Weapons
+from .data import Items, IsoAddresses
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -31,10 +30,12 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
         basemd5 = hashlib.md5()
         with open(iso_path, "rb") as iso:
             basemd5.update(mmap.mmap(iso.fileno(), 0, access=mmap.ACCESS_READ))
-        if basemd5.hexdigest() not in {SCUS_97268_HASH}:
+        md5_hash = basemd5.hexdigest()
+        if md5_hash not in {SCUS_97268_HASH}:
             raise Exception("Supplied Base ISO does not match known MD5 for a supported release."
                             "\nPlease verify that you are using the correct version of the game."
                             "\nYou should delete `Archipelago/Ratchet & Clank 2.iso' if you want to try again with a different ISO")
+        Rac2ProcedurePatch.hash = md5_hash
 
     @staticmethod
     def apply_tokens_mmap(caller: APProcedurePatch, rom: mmap, token_file: str) -> None:
@@ -81,79 +82,82 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
         super().__init__(*args, **kwargs)
 
 
-def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePatch, instruction=None) -> None:
+def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=None) -> None:
     # TODO: use for other game versions
+    # if world.options.game_version is ...
+    #     addresses = IsoAddresses.Addresses*
+    #     patch.hash = ...
     if True:
-        from .IsoAddressesSCUS97268 import Addresses
+        addresses = IsoAddresses.AddressesSCUS97268
 
     """---------------
     Core
     ---------------"""
     # Set 'Planet Loaded' byte to 1 when a new planet is done loading and about to start running.
-    patch.write_token(APTokenTypes.WRITE, Addresses.MAIN_LOOP_FUNC + 0x1C, bytes([0x01, 0x00, 0x11, 0x24]))
-    patch.write_token(APTokenTypes.WRITE, Addresses.MAIN_LOOP_FUNC + 0x24, bytes([0xF5, 0x8B, 0x91, 0xA3]))
+    patch.write_token(APTokenTypes.WRITE, addresses.MAIN_LOOP_FUNC + 0x1C, bytes([0x01, 0x00, 0x11, 0x24]))
+    patch.write_token(APTokenTypes.WRITE, addresses.MAIN_LOOP_FUNC + 0x24, bytes([0xF5, 0x8B, 0x91, 0xA3]))
 
     """---------------
     Multiple planets
     ---------------"""
     # Change new game starting planet to Slim's Ship Shack
-    for address in Addresses.GO_STARTING_PLANET_FUNCS:
+    for address in addresses.GO_STARTING_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x38, bytes([0x18, 0x00, 0x04, 0x64]))
 
     # Set 'Planet Loaded' byte to 0 when a new planet starts loading.
-    for address in Addresses.PLANET_MAIN_FUNCS:
+    for address in addresses.PLANET_MAIN_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0xD2C, bytes([0xF5, 0x8B, 0x80, 0xA3]))
-    patch.write_token(APTokenTypes.WRITE, Addresses.TITLE_SCREEN_MAIN_FUNC + 0x8F0, bytes([0xF5, 0x8B, 0x80, 0xA3]))
-    patch.write_token(APTokenTypes.WRITE, Addresses.QUIT_TITLE_MAIN_FUNC + 0x830, bytes([0xF5, 0x8B, 0x80, 0xA3]))
+    patch.write_token(APTokenTypes.WRITE, addresses.TITLE_SCREEN_MAIN_FUNC + 0x8F0, bytes([0xF5, 0x8B, 0x80, 0xA3]))
+    patch.write_token(APTokenTypes.WRITE, addresses.QUIT_TITLE_MAIN_FUNC + 0x830, bytes([0xF5, 0x8B, 0x80, 0xA3]))
 
     # Disable game failsafe that unlocks any planet we land on if we don't have it unlocked already.
-    for address in Addresses.SETUP_PLANET_FUNCS:
+    for address in addresses.SETUP_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x07, 0x00, 0x00, 0x10]))
 
     # Make it so the vendor only unlocks weapons that are new to a planet but not all weapons from prior planets.
-    for address in Addresses.IS_BUYABLE_FUNCS:
+    for address in addresses.IS_BUYABLE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x68, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x6C, bytes([0x03, 0x00, 0x50, 0x14]))
 
     # Disable game failsafe that disable Clank if you don't have heli-pack unlocked when loading into a planet.
-    for address in Addresses.SETUP_RATCHET_FUNCS:
+    for address in addresses.SETUP_RATCHET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
 
     # prevent planets from getting added to the ship menu when a new planet is unlocked
-    for address in Addresses.UNLOCK_PLANET_FUNCS:
+    for address in addresses.UNLOCK_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x4C, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x58, bytes([0x10, 0x00, 0x00, 0x10]))
 
     # prevent all planet unlock message popups
-    for address in Addresses.PLANET_UNLOCK_MESSAGE_FUNCS:
+    for address in addresses.PLANET_UNLOCK_MESSAGE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x10, bytes([0x42, 0x00, 0x00, 0x10]))
 
     # prevent normal platinum bolt received message
-    for address in Addresses.PLAT_BOLT_UPDATE_FUNCS:
+    for address in addresses.PLAT_BOLT_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x27C, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x43C, NOP)
 
     # disable nanotech boost help message
-    for address in Addresses.NANOTECH_BOOST_UPDATE_FUNCS:
+    for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
     is done to decouple the platinum bolt count from platinum bolt locations checked. This same concept is also applied 
     to nanotech boosts below. """
-    for address in Addresses.PLAT_BOLT_COUNT_FUNCS:
+    for address in addresses.PLAT_BOLT_COUNT_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x4, bytes([0x13, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
 
     # Same for nanotech boosts
-    for address in Addresses.NANOTECH_COUNT_FUNCS:
+    for address in addresses.NANOTECH_COUNT_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))
         patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))
         patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x09, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))
 
     # Prevent Platinum Bolt received message popup at the end of ship races.
-    for address in Addresses.RACE_CONTROLLER_FUNCS:
+    for address in addresses.RACE_CONTROLLER_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
 
@@ -161,12 +165,12 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Shuffle Weapons Vendors
     ----------------------"""
     # Handle "weapons" mode.
-    if multiworld.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
-        weapons = Weapons.get_all()
-        weapons.remove(Weapons.CLANK_ZAPPER)
-        weapons.remove(Weapons.SHEEPINATOR)
+    if world.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
+        weapons = Items.WEAPONS
+        weapons.remove(Items.CLANK_ZAPPER)
+        weapons.remove(Items.SHEEPINATOR)
         unlock_planets = [1, 1, 3, 3, 4, 6, 8, 8, 9, 11, 11, 12, 14, 14]
-        multiworld.random.shuffle(weapons)
+        world.random.shuffle(weapons)
 
         first_weapon = weapons[0]
         second_weapon = weapons[1]
@@ -174,7 +178,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
         gadgetron_weapons = weapons[len(unlock_planets) + 2:]
 
         # Patch starting weapons.
-        for address in Addresses.AVAILABLE_ITEM_FUNCS:
+        for address in addresses.AVAILABLE_ITEM_FUNCS:
             # First weapon.
             weapon_id = first_weapon.offset
             low = (0x7AF8 + weapon_id).to_bytes(2, "little")
@@ -193,13 +197,13 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
             patch.write_token(APTokenTypes.WRITE, address + 0x5C, bytes([0x40, 0x00, 0x83, 0x34]))
 
         # Patch Megacorp vendor.
-        for address in Addresses.VENDOR_REQUIREMENT_TABLES:
+        for address in addresses.VENDOR_REQUIREMENT_TABLES:
             for i, planet in enumerate(unlock_planets):
                 patch.write_token(APTokenTypes.WRITE, address + i * 8, megacorp_weapons[i].offset.to_bytes(4, "little"))
                 patch.write_token(APTokenTypes.WRITE, address + i * 8 + 4, planet.to_bytes(4, "little"))
 
         # Patch Gadgetron vendor.
-        for address in Addresses.POPULATE_VENDOR_SLOT_FUNCS:
+        for address in addresses.POPULATE_VENDOR_SLOT_FUNCS:
             for i, offset in enumerate(range(0x8C0, 0x8D8, 4)):
                 patch.write_token(APTokenTypes.WRITE, address + offset, gadgetron_weapons[i].offset.to_bytes(1, "little"))
 
@@ -207,7 +211,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Oozla 
     ---------"""
     # Megacorp Scientist
-    address = Addresses.MEGACORP_SCIENTIST_FUNC
+    address = addresses.MEGACORP_SCIENTIST_FUNC
     # check secondary inventory table instead of primary when determining if the purchase has already occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0x5E, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x49C, bytes([0x5E, 0x7B, 0x42, 0x90]))
@@ -221,7 +225,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x518, NOP)
 
     # Dynamo Pickup
-    address = Addresses.DYNAMO_PICKUP_FUNC
+    address = addresses.DYNAMO_PICKUP_FUNC
     # check secondary inventory table instead of primary when determining if pickup has already occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x58, bytes([0x54, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x49C, bytes([0x54, 0x7B, 0x42, 0x90]))
@@ -236,7 +240,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x1EC, NOP)
 
     # Box Breaker Pickup
-    address = Addresses.BOX_BREAKER_PICKUP_FUNC
+    address = addresses.BOX_BREAKER_PICKUP_FUNC
     # check secondary inventory table instead of primary when determining if pickup has already occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x62, 0x7B, 0x42, 0x90]))
     # Replace code that calls give_item and display_pickup_message with code that just sets secondary
@@ -246,20 +250,20 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x598, bytes([0x62, 0x7B, 0x44, 0xA0]))
 
     # Swamp Monster Gate
-    address = Addresses.SWAMP_MONSTER_GATE_FUNC
+    address = addresses.SWAMP_MONSTER_GATE_FUNC
     # check secondary inventory table instead of primary when determining if boss kill has already occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x110, bytes([0x62, 0x7B, 0x42, 0x90]))
 
     # Prevent spawning at Scientist when Tractor Beam is collected.
-    patch.write_token(APTokenTypes.WRITE, Addresses.OOZLA_CONTROLLER_FUNC + 0x108, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.OOZLA_CONTROLLER_FUNC + 0x108, NOP)
 
     """--------- 
     Maktar
     ---------"""
     # Prevent spawning at Arena exit when Electrolyzer is collected but Electrolyzer puzzles are not completed
-    patch.write_token(APTokenTypes.WRITE, Addresses.MAKTAR_CONTROLLER_FUNC + 0x6B0, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_CONTROLLER_FUNC + 0x6B0, NOP)
     # Arena Controller
-    address = Addresses.ARENA_CONTROLLER_FUNC
+    address = addresses.ARENA_CONTROLLER_FUNC
     # Replace code that calls give_item and equip_item with code that just sets secondary inventory flag.
     patch.write_token(APTokenTypes.WRITE, address + 0x30F4, bytes([0x1A, 0x00, 0x05, 0x3C]))
     patch.write_token(APTokenTypes.WRITE, address + 0x30F8, bytes([0x01, 0x00, 0x04, 0x24]))
@@ -273,21 +277,21 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Endako   
     ---------"""
     # Endako Controller
-    address = Addresses.ENDAKO_CONTROLLER_FUNC
+    address = addresses.ENDAKO_CONTROLLER_FUNC
     # Use Secondary Inventory to determine if location has been checked
     patch.write_token(APTokenTypes.WRITE, address + 0x54, bytes([0x3D, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0xA8, bytes([0x3D, 0x7B, 0x42, 0x90]))
     # Disable hard checkpoint at Swingshot tutorial when reloading the planet
     patch.write_token(APTokenTypes.WRITE, address + 0x64, bytes([0x0F, 0x00, 0x00, 0x10]))
     # Controller sub-function
-    address = Addresses.APARTMENT_PICKUP_FUNC
+    address = addresses.APARTMENT_PICKUP_FUNC
     # Replace code that calls give_item and equip_item with code that just sets secondary inventory flag.
     patch.write_token(APTokenTypes.WRITE, address + 0x34, bytes([0x3D, 0x7B, 0x22, 0xA0]))
     patch.write_token(APTokenTypes.WRITE, address + 0x38, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x40, NOP)
 
     # Post Clank Button
-    address = Addresses.POST_CLANK_BUTTON_FUNC
+    address = addresses.POST_CLANK_BUTTON_FUNC
     # Disable hard checkpoint at Heli-Pack tutorial when reloading the planet
     patch.write_token(APTokenTypes.WRITE, address + 0x210, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x26C, NOP)
@@ -295,7 +299,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x278, bytes([0x00 for _ in range(14 * 4)]))
     patch.write_token(APTokenTypes.WRITE, address + 0x1EC, NOP)
     # Sub-function
-    address = Addresses.FREE_RATCHET_FUNC
+    address = addresses.FREE_RATCHET_FUNC
     # Prevent Clank from being enabled
     patch.write_token(APTokenTypes.WRITE, address + 0x2C, NOP)
     # Prevent Heli-Pack and Thruster-Pack from being added to Primary Inventory
@@ -306,7 +310,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Barlow   
     ---------"""
     # Inventor
-    address = Addresses.INVENTOR_FUNC
+    address = addresses.INVENTOR_FUNC
     # Use Secondary Inventory slot instead Primary when checking to see if purchase has occurred
     patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x57, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x638, bytes([0x57, 0x7B, 0x42, 0x90]))
@@ -321,39 +325,39 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x694, bytes([0x33, 0x00, 0x05, 0x24]))
 
     # # Biker One
-    # address = Addresses.BIKER_ONE_FUNC
+    # address = addresses.BIKER_ONE_FUNC
     # # Replace code that calls give_item and planet_unlock_message with code that just sets secondary inventory flag.
     # patch.write_token(APTokenTypes.WRITE, address + 0x240, bytes([0x1A, 0x00, 0x02, 0x3C]))
     # patch.write_token(APTokenTypes.WRITE, address + 0x244, bytes([0x01, 0x00, 0x04, 0x24]))
     # patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x60, 0x7B, 0x44, 0xA0]))
 
     # Prevent spawning at Gadgetron Inventor when Thermanator is collected.
-    patch.write_token(APTokenTypes.WRITE, Addresses.BARLOW_SPAWN_CONTROLLER_FUNC + 0x7C, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.BARLOW_SPAWN_CONTROLLER_FUNC + 0x7C, NOP)
     # Don't skip ship landing cutscene.
-    for address in Addresses.PLANET_MAIN_FUNCS:
+    for address in addresses.PLANET_MAIN_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x284, NOP)
 
     """--------- 
     Notak 
     ---------"""
     # The planet unlock message for Ship Shack gets called in a unique way that we disable here.
-    patch.write_token(APTokenTypes.WRITE, Addresses.SECRET_MESSAGE_FUNC + 0x24, NOP)
-    patch.write_token(APTokenTypes.WRITE, Addresses.SECRET_MESSAGE_FUNC + 0x4C, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.SECRET_MESSAGE_FUNC + 0x24, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.SECRET_MESSAGE_FUNC + 0x4C, NOP)
 
     """--------- 
     Siberius
     ---------"""
     # Change the forced ship travel after defeating the boss to go back to the Ship Shack instead of Tabora
-    patch.write_token(APTokenTypes.WRITE, Addresses.THIEF_FUNC + 0x880, bytes([0x18, 0x00, 0x04, 0x24]))
+    patch.write_token(APTokenTypes.WRITE, addresses.THIEF_FUNC + 0x880, bytes([0x18, 0x00, 0x04, 0x24]))
 
     """--------- 
     Tabora
     ---------"""
     # Have planet controller check Secondary Inventory to determine if the Glider location has been checked.
-    patch.write_token(APTokenTypes.WRITE, Addresses.TABORA_CONTROLLER_FUNC + 0x37C, bytes([0x45, 0x7B, 0x42, 0x90]))
+    patch.write_token(APTokenTypes.WRITE, addresses.TABORA_CONTROLLER_FUNC + 0x37C, bytes([0x45, 0x7B, 0x42, 0x90]))
 
     # Glider Pickup
-    address = Addresses.GLIDER_PICKUP_FUNC
+    address = addresses.GLIDER_PICKUP_FUNC
     # Have Glider pickup check Secondary Inventory to determine if the Glider location has been checked.
     patch.write_token(APTokenTypes.WRITE, address + 0x58, bytes([0x45, 0x7B, 0x42, 0x90]))
     # Replace code that gives item and displays message with code that just sets secondary inventory flag.
@@ -366,7 +370,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Joba
     ---------"""
     # Biker Two
-    address = Addresses.BIKER_TWO_FUNC
+    address = addresses.BIKER_TWO_FUNC
     # Check Secondary Inventory to determine if the Charge Boots location has been checked.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x66, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x228, bytes([0x66, 0x7B, 0x63, 0x90]))
@@ -377,7 +381,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x248, NOP)
 
     # Shady Merchant
-    address = Addresses.SHADY_MERCHANT_FUNC
+    address = addresses.SHADY_MERCHANT_FUNC
     # Check Secondary Inventory to determine if the Levitator has been purchased.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x38, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x394, bytes([0x38, 0x7B, 0x42, 0x90]))
@@ -388,7 +392,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x410, NOP)
 
     # Arena
-    address = Addresses.ARENA2_REWARD_FUNC
+    address = addresses.ARENA2_REWARD_FUNC
     # Replace code that gives / equips Gravity Boots with code that just sets Secondary Inventory flag.
     patch.write_token(APTokenTypes.WRITE, address + 0x64, bytes([0x01, 0x00, 0x04, 0x24]))
     patch.write_token(APTokenTypes.WRITE, address + 0x68, bytes([0x53, 0x8B, 0x84, 0xA3]))
@@ -397,16 +401,16 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0xB4, bytes([0x01, 0x00, 0x04, 0x24]))
     patch.write_token(APTokenTypes.WRITE, address + 0xB8, bytes([0x73, 0x8B, 0x84, 0xA3]))
     # Only exit arena on back side if you have the Infiltrator
-    patch.write_token(APTokenTypes.WRITE, Addresses.ARENA2_EXIT_FUNC + 0x84, bytes([0x3B, 0x8B, 0x83, 0x93]))
+    patch.write_token(APTokenTypes.WRITE, addresses.ARENA2_EXIT_FUNC + 0x84, bytes([0x3B, 0x8B, 0x83, 0x93]))
 
     # Prevent spawning at the Infiltrator puzzle when entering the planet with the Infiltrator
-    patch.write_token(APTokenTypes.WRITE, Addresses.JOBA_CONTROLLER_FUNC + 0x108, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.JOBA_CONTROLLER_FUNC + 0x108, NOP)
 
     """--------- 
     Todano
     ---------"""
     # Stuart Zurgo
-    address = Addresses.STUART_ZURGO_FUNC
+    address = addresses.STUART_ZURGO_FUNC
     # Check Secondary Inventory to determine if the trade has been done.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x37, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x39C, bytes([0x37, 0x7B, 0x42, 0x90]))
@@ -419,7 +423,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x3C4, NOP)
 
     # Sheepinator Pickup
-    address = Addresses.SHEEPINATOR_PICKUP_FUNC
+    address = addresses.SHEEPINATOR_PICKUP_FUNC
     # Replace code that gives item, displays message and equips item with code that just sets secondary inventory flag.
     patch.write_token(APTokenTypes.WRITE, address + 0x138, bytes([0x1A, 0x00, 0x02, 0x3C]))
     patch.write_token(APTokenTypes.WRITE, address + 0x13C, bytes([0x01, 0x00, 0x04, 0x24]))
@@ -430,13 +434,13 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Boldan
     ---------"""
     # Prevent getting automatically sent to Aranos Prison after the cutscene
-    patch.write_token(APTokenTypes.WRITE, Addresses.BOLDAN_CUTSCENE_TRIGGER_FUNC + 0x570, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.BOLDAN_CUTSCENE_TRIGGER_FUNC + 0x570, NOP)
 
     """--------- 
     Aranos Prison
     ---------"""
     # Planet Controller
-    address = Addresses.PRISON_CONTROLLER_FUNC
+    address = addresses.PRISON_CONTROLLER_FUNC
     # Stop planet from messing with Secondary Inventory when adding/removing Clank
     patch.write_token(APTokenTypes.WRITE, address + 0x18C, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x19C, NOP)
@@ -445,7 +449,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x610, NOP)
     patch.write_token(APTokenTypes.WRITE, address + 0x62C, NOP)
     # Plumber
-    address = Addresses.PLUMBER_FUNC
+    address = addresses.PLUMBER_FUNC
     # Completely ignore check for presence of Armor Magnetizer
     patch.write_token(APTokenTypes.WRITE, address + 0x74, NOP)
     # Check Secondary Inventory to determine if the purchase has been done.
@@ -458,7 +462,7 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     Damosel
     ---------"""
     # Planet Controller
-    address = Addresses.DAMOSEL_CONTROLLER_FUNC
+    address = addresses.DAMOSEL_CONTROLLER_FUNC
     # Check Secondary Inventory to determine if the Mapper location has been checked.
     patch.write_token(APTokenTypes.WRITE, address + 0x38C, bytes([0x35, 0x7B, 0x42, 0x90]))
     # Replace code that gives Mapper with code that just sets Secondary Inventory flag.
@@ -469,10 +473,10 @@ def generate_patch(multiworld: "Rac2World", player: int, patch: Rac2ProcedurePat
     patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
 
     # Allow Hypnomatic part to spawn even if the Hypnomatic has already been collected.
-    patch.write_token(APTokenTypes.WRITE, Addresses.HYPNOMATIC_PART2_FUNC + 0x70, NOP)
+    patch.write_token(APTokenTypes.WRITE, addresses.HYPNOMATIC_PART2_FUNC + 0x70, NOP)
 
     # Hypnotist
-    address = Addresses.HYPNOTIST_FUNC
+    address = addresses.HYPNOTIST_FUNC
     # Check Secondary Inventory to determine if the purchase has occurred.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x67, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x440, bytes([0x67, 0x7B, 0x63, 0x90]))

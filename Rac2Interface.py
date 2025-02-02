@@ -8,9 +8,11 @@ from logging import Logger
 from enum import Enum, IntEnum
 from typing import Optional, List
 
-from .Items import ItemData, item_table, ItemName, equipment_table, planet_coord_table, CLANK_PACKS, QUICK_SELECTABLE
-from .Addresses import Addresses
+from .data import Items
+from .data.RamAddresses import Addresses
+from .data.Items import ItemData, EquipmentData, CoordData, CollectableData
 from .pcsx2_interface.pine import Pine
+from . import Rac2World
 
 _SUPPORTED_VERSIONS = ["SCUS-97268"]
 
@@ -194,16 +196,11 @@ def planet_by_id(planet_id) -> Optional[Rac2Planet]:
     return None
 
 
-class InventoryItemData(ItemData):
-    """Class used to track the player's current items and their quantities"""
-    current_amount: int
-    current_capacity: int
-
-    def __init__(self, item_data: ItemData, current_amount: int, current_capacity: int) -> None:
-        super().__init__(item_data.name, item_data.id, item_data.offset,
-                         item_data.classification, item_data.max_capacity)
-        self.current_amount = current_amount
-        self.current_capacity = current_capacity
+# class InventoryItemData(NamedTuple):
+#     """Class used to track the player's current items and their quantities"""
+#     item: ItemData
+#     current_amount: int
+#     current_capacity: int
 
 
 class Rac2Interface:
@@ -220,77 +217,63 @@ class Rac2Interface:
     def __init__(self, logger) -> None:
         self.logger = logger
 
-    def give_item_to_player(self, item: ItemData, new_amount: int = 1, new_capacity: int = 1):
-        """Gives the player an item with the specified amount and capacity"""
-        assert 0 <= new_amount <= item.max_capacity
-        assert item.name in item_table.keys()
+    def give_equipment_to_player(self, equipment: EquipmentData):
+        self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.offset, 1)
+        # TODO: Auto equip Thruster-Pack if you don't have Heli-Pack.
+        if equipment in Items.QUICK_SELECTABLE:
+            self.add_to_quickselect(equipment)
 
-        if item.name in equipment_table.keys():
-            self.pcsx2_interface.write_int8(self.addresses.inventory + item.offset, new_amount)
-            if item.name in CLANK_PACKS:
-                owned_items = [key for key, value in self.get_current_inventory().items() if value.current_amount == 1]
-                has_clank = any(item in owned_items for item in CLANK_PACKS)
-                self.pcsx2_interface.write_int8(self.addresses.clank_disabled, not has_clank)
-            if item.name in QUICK_SELECTABLE:
-                self.add_to_quickselect(item.id) if new_amount == 1 else self.remove_from_quickselect(item.id)
+    def unlock_planet(self, planet_number: int):
+        planet_list = []
+        for list_idx in range(PLANET_LIST_SIZE):
+            planet_id = self.pcsx2_interface.read_int32(self.addresses.selectable_planets + 4 * list_idx)
+            if planet_id:
+                planet_list.append(planet_id)
+        if Rac2Planet.Ship_Shack not in planet_list:
+            planet_list.insert(0, Rac2Planet.Ship_Shack)
 
-        if item.name in planet_coord_table.keys():
-            planet_list = []
-            for list_idx in range(PLANET_LIST_SIZE):
-                planet_id = self.pcsx2_interface.read_int32(self.addresses.selectable_planets + 4 * list_idx)
-                if planet_id:
-                    planet_list.append(planet_id)
-            if Rac2Planet.Ship_Shack not in planet_list:
-                planet_list.insert(0, Rac2Planet.Ship_Shack)
-            if new_amount > 0:
-                planet_list.append(item.offset)
-            else:
-                planet_list = [i for i in planet_list if i != item.offset]
-            for list_idx in range(PLANET_LIST_SIZE):
-                try:
-                    id_to_write = planet_list[list_idx]
-                except IndexError:
-                    id_to_write = 0
-                self.pcsx2_interface.write_int32(self.addresses.selectable_planets + 4 * list_idx, id_to_write)
+        planet_list.append(planet_number)
 
-        if item.name == ItemName.Platinum_Bolt:
+        for list_idx in range(PLANET_LIST_SIZE):
+            try:
+                id_to_write = planet_list[list_idx]
+            except IndexError:
+                id_to_write = 0
+            self.pcsx2_interface.write_int32(self.addresses.selectable_planets + 4 * list_idx, id_to_write)
+
+    def give_collectable_to_player(self, item: CollectableData, new_amount: int):
+        if item is Items.PLATINUM_BOLT:
             self.pcsx2_interface.write_int8(self.addresses.platinum_bolt_count, new_amount)
 
-        if item.name == ItemName.Nanotech_Boost:
+        if item is Items.NANOTECH_BOOST:
             self.pcsx2_interface.write_int8(self.addresses.nanotech_boost_count, new_amount)
 
-        if item.name == ItemName.Hypnomatic_Part:
+        if item is Items.HYPNOMATIC_PART:
             self.pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
 
-        # TODO: Deal with armor and weapons
+    # TODO: Deal with armor and weapons
 
-    def get_inventory_item(self, item: ItemData) -> Optional[InventoryItemData]:
-        assert item.name in item_table.keys()
-
-        if item.name in equipment_table.keys():
-            result = self.pcsx2_interface.read_int8(self.addresses.inventory + item.offset)
-            return InventoryItemData(item, result, 1)
-        if item.name in planet_coord_table.keys():
+    def count_inventory_item(self, item: ItemData) -> int:
+        if isinstance(item, EquipmentData):
+            return self.pcsx2_interface.read_int8(self.addresses.inventory + item.offset)
+        if isinstance(item, CoordData):
             planet_list = []
             for list_idx in range(PLANET_LIST_SIZE):
                 planet_id = self.pcsx2_interface.read_int32(self.addresses.selectable_planets + 4 * list_idx)
                 if planet_id:
                     planet_list.append(planet_id)
-            return InventoryItemData(item, item.offset in planet_list, 1)
-        if item.name == ItemName.Platinum_Bolt:
-            total_bolts = self.pcsx2_interface.read_int8(self.addresses.platinum_bolt_count)
-            return InventoryItemData(item, total_bolts, item.max_capacity)
-        if item.name == ItemName.Nanotech_Boost:
-            total_boosts = self.pcsx2_interface.read_int8(self.addresses.nanotech_boost_count)
-            return InventoryItemData(item, total_boosts, item.max_capacity)
-        if item.name == ItemName.Hypnomatic_Part:
-            part_count = self.pcsx2_interface.read_int8(self.addresses.hypnomatic_part_count)
-            return InventoryItemData(item, part_count, item.max_capacity)
+            return int(item.planet_number in planet_list)
+        if item is Items.PLATINUM_BOLT:
+            return self.pcsx2_interface.read_int8(self.addresses.platinum_bolt_count)
+        if item is Items.NANOTECH_BOOST:
+            return self.pcsx2_interface.read_int8(self.addresses.nanotech_boost_count)
+        if item is Items.HYPNOMATIC_PART:
+            return self.pcsx2_interface.read_int8(self.addresses.hypnomatic_part_count)
 
-    def get_current_inventory(self) -> dict[str, InventoryItemData]:
-        inventory: dict[str, InventoryItemData] = {}
-        for item in item_table.values():
-            inventory[item.name] = self.get_inventory_item(item)
+    def get_current_inventory(self) -> dict[str, int]:
+        inventory: dict[str, int] = {}
+        for item in Items.ALL:
+            inventory[item.name] = self.count_inventory_item(item)
         return inventory
 
     def get_alive(self) -> bool:
@@ -365,16 +348,16 @@ class Rac2Interface:
         self.pcsx2_interface.write_int8(self.addresses.current_nanotech, new_nanotech_amount)
         return self.get_current_nanotech()
 
-    def add_to_quickselect(self, item_id: int) -> bool:
+    def add_to_quickselect(self, equipment: EquipmentData) -> bool:
         for i in range(8):
             if self.pcsx2_interface.read_int32(self.addresses.quickselect + i * 4) == 0:
-                self.pcsx2_interface.write_int32(self.addresses.quickselect + i * 4, item_id)
+                self.pcsx2_interface.write_int32(self.addresses.quickselect + i * 4, equipment.offset)
                 return True
         return False
 
-    def remove_from_quickselect(self, item_id: int) -> bool:
+    def remove_from_quickselect(self, equipment: EquipmentData) -> bool:
         for i in range(8):
-            if self.pcsx2_interface.read_int32(self.addresses.quickselect + i * 4) == item_id:
+            if self.pcsx2_interface.read_int32(self.addresses.quickselect + i * 4) == equipment.offset:
                 self.pcsx2_interface.write_int32(self.addresses.quickselect + i * 4, 0)
                 return True
         return False
@@ -507,7 +490,6 @@ class Rac2Interface:
             if current_index == index:
                 return self.pcsx2_interface.read_int32(text_address_table + i * 0x10)
             i += 1
-
 
     def get_segment_pointer_table(self) -> Optional[MemorySegmentTable]:
         if self.addresses is None:

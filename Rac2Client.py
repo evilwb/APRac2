@@ -1,18 +1,18 @@
+from typing import Optional
 import asyncio
 import multiprocessing
 import os
 import subprocess
 import traceback
-from typing import Optional
+
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, logger, server_loop, gui_enabled
 from NetUtils import ClientStatus
 import Utils
 from settings import get_settings
-from worlds.rac2 import every_location, LocationName
-from worlds.rac2.ClientCheckLocations import handle_checked_location
-from worlds.rac2.Container import get_version_from_iso, Rac2ProcedurePatch
+from . import Rac2World
+from .ClientCheckLocations import handle_checked_location
 from .Callbacks import update, init
-from .ClientReceiveItems import handle_receive_items
+from .ClientReceiveItems import handle_received_items
 from .NotificationManager import NotificationManager
 from .Rac2Interface import HUD_MESSAGE_DURATION, ConnectionState, Rac2Interface, Rac2Planet
 
@@ -23,15 +23,18 @@ class Rac2CommandProcessor(ClientCommandProcessor):
 
     def _cmd_test_hud(self, *args):
         """Send a message to the game interface."""
-        self.ctx.notification_manager.queue_notification(' '.join(map(str, args)))
+        if isinstance(self.ctx, Rac2Context):
+            self.ctx.notification_manager.queue_notification(' '.join(map(str, args)))
 
     def _cmd_status(self):
         """Display the current PCSX2 connection status."""
-        logger.info(f"Connection status: {'Connected' if self.ctx.is_connected else 'Disconnected'}")
+        if isinstance(self.ctx, Rac2Context):
+            logger.info(f"Connection status: {'Connected' if self.ctx.is_connected else 'Disconnected'}")
 
     def _cmd_segments(self):
         """Display the memory segment table."""
-        logger.info(self.ctx.game_interface.get_segment_pointer_table())
+        if isinstance(self.ctx, Rac2Context):
+            logger.info(self.ctx.game_interface.get_segment_pointer_table())
 
     def _cmd_test_deathlink(self, deaths: str):
         """Queue up specified number of deaths."""
@@ -72,26 +75,7 @@ class Rac2Context(CommonContext):
         super().__init__(server_address, password)
         self.game_interface = Rac2Interface(logger)
         self.notification_manager = NotificationManager(HUD_MESSAGE_DURATION, self.game_interface.send_hud_message)
-        self.locations_scouted = {
-            every_location[LocationName.Oozla_Megacorp_Scientist].id,
-            every_location[LocationName.Maktar_Arena_Challenge].id,
-            every_location[LocationName.Barlow_Inventor].id,
-            every_location[LocationName.Feltzin_Defeat_Thug_Ships].id,
-            every_location[LocationName.Feltzin_Race_PB].id,
-            every_location[LocationName.Notak_Worker_Bots].id,
-            every_location[LocationName.Hrugis_Destroy_Defenses].id,
-            every_location[LocationName.Hrugis_Race_PB].id,
-            every_location[LocationName.Joba_Shady_Salesman].id,
-            every_location[LocationName.Joba_Arena_Battle].id,
-            every_location[LocationName.Joba_Arena_Cage_Match].id,
-            every_location[LocationName.Todano_Stuart_Zurgo_Trade].id,
-            every_location[LocationName.Aranos_Plumber].id,
-            every_location[LocationName.Gorn_Defeat_Thug_Fleet].id,
-            every_location[LocationName.Gorn_Race_PB].id,
-            every_location[LocationName.Smolg_Mutant_Crab].id,
-            every_location[LocationName.Damosel_Hypnotist].id,
-            every_location[LocationName.Grelbin_Mystic_More_Moonstones].id,
-        }
+        self.locations_scouted = set(Rac2World.location_name_to_id.values())
 
     def on_deathlink(self, data: Utils.Dict[str, Utils.Any]) -> None:
         super().on_deathlink(data)
@@ -213,8 +197,8 @@ async def _handle_game_ready(ctx: Rac2Context):
             return
 
         current_inventory = ctx.game_interface.get_current_inventory()
-        if ctx.current_planet is not None and ctx.current_planet > 0:
-            await handle_receive_items(ctx, current_inventory)
+        if ctx.current_planet is not None and ctx.current_planet > 0 and ctx.game_interface.get_pause_state() == 0:
+            await handle_received_items(ctx, current_inventory)
         await handle_checked_location(ctx)
         await handle_check_goal_complete(ctx)
 
@@ -235,21 +219,21 @@ async def _handle_game_not_ready(ctx: Rac2Context):
     await asyncio.sleep(3)
 
 
-async def run_game(romfile):
+async def run_game(iso_file):
     auto_start = get_settings().rac2_options.get("iso_start", True)
 
     if auto_start is True:
         import webbrowser
-        webbrowser.open(romfile)
+        webbrowser.open(iso_file)
     elif os.path.isfile(auto_start):
-        subprocess.Popen([auto_start, romfile],
+        subprocess.Popen([auto_start, iso_file],
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 async def patch_and_run_game(aprac2_file: str):
     aprac2_file = os.path.abspath(aprac2_file)
-    input_iso_path = get_settings().rac2_options.iso_file
-    game_version = get_version_from_iso(input_iso_path)
+    # input_iso_path = get_settings().rac2_options.iso_file
+    # game_version = get_version_from_iso(input_iso_path)
     base_name = os.path.splitext(aprac2_file)[0]
     output_path = base_name + '.iso'
 

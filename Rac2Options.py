@@ -1,4 +1,3 @@
-
 from Options import (
     DeathLink,
     StartInventoryPool,

@@ -1,4 +1,4 @@
-class Addresses:
+class AddressesSCUS97268:
     """ Addresses for important memory locations on the Ratchet and Clank 2 'SCUS-97268' ISO """
     # Addresses in Core memory
     MAIN_LOOP_FUNC: int = 0x0028B518
@@ -150,4 +150,3 @@ class Addresses:
     DAMOSEL_CONTROLLER_FUNC: int = 0xD01ACB40
     HYPNOMATIC_PART2_FUNC: int = 0xD01F3710
     HYPNOTIST_FUNC: int = 0xD01F41B8
-

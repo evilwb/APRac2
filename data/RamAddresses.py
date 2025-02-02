@@ -1,5 +1,6 @@
-from dataclasses import dataclass
-from typing import Optional, Dict
+from typing import Optional, Dict, NamedTuple
+
+from .Planets import *
 
 
 class Addresses:
@@ -64,164 +65,164 @@ class Addresses:
                 -1: PlanetAddresses(
                     segment_pointers=0x1BAEC0,
                 ),
-                0: PlanetAddresses(
+                ARANOS_TUTORIAL.number: PlanetAddresses(
                     segment_pointers=0x1BF140,
                 ),
-                1: PlanetAddresses(
+                OOZLA.number: PlanetAddresses(
                     segment_pointers=0x1BF840,
                     planet_switch_trigger=0x1A8F14,
                     next_planet=0x1B2080,
                     skill_point_text=0x1A900A0,
                 ),
-                2: PlanetAddresses(
+                MAKTAR_NEBULA.number: PlanetAddresses(
                     segment_pointers=0x1C0880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
                     skill_point_text=0x1B9A310,
                 ),
-                3: PlanetAddresses(
+                ENDAKO.number: PlanetAddresses(
                     segment_pointers=0x1BFD00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2540,
                     skill_point_text=0x1C66600,
                 ),
-                4: PlanetAddresses(
+                BARLOW.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2000,
                     skill_point_text=0x1C8DF50,
                 ),
-                5: PlanetAddresses(
+                FELTZIN_SYSTEM.number: PlanetAddresses(
                     segment_pointers=0x1BFA40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
                     skill_point_text=0x1874090,
                     camara_state=0x1B1B20,
                 ),
-                6: PlanetAddresses(
+                NOTAK.number: PlanetAddresses(
                     segment_pointers=0x1BFBC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
                     skill_point_text=0x1C726D0,
                 ),
-                7: PlanetAddresses(
+                SIBERIUS.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1E00,
                     skill_point_text=0x1981130,
                 ),
-                8: PlanetAddresses(
+                TABORA.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
                     skill_point_text=0x1C601C0,
                 ),
-                9: PlanetAddresses(
+                DOBBO.number: PlanetAddresses(
                     segment_pointers=0x1BFD80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2380,
                     skill_point_text=0x1CCE990,
                 ),
-                10: PlanetAddresses(
+                HRUGIS_CLOUD.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2040,
                     skill_point_text=0x1649420,
                     camara_state=0x1B1B20,
                 ),
-                11: PlanetAddresses(
+                JOBA.number: PlanetAddresses(
                     segment_pointers=0x1C0C40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
                     skill_point_text=0x1C4EAD0,
                 ),
-                12: PlanetAddresses(
+                TODANO.number: PlanetAddresses(
                     segment_pointers=0x1C0180,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B29C0,
                     skill_point_text=0x1C44EF0,
                 ),
-                13: PlanetAddresses(
+                BOLDAN.number: PlanetAddresses(
                     segment_pointers=0x1BFC40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2440,
                     skill_point_text=0x1CCBA00,
                 ),
-                14: PlanetAddresses(
+                ARANOS_PRISON.number: PlanetAddresses(
                     segment_pointers=0x1BF880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B20C0,
                     skill_point_text=0x1B5A240,
                 ),
-                15: PlanetAddresses(
+                GORN.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2140,
                     skill_point_text=0x16734E0,
                     camara_state=0x1B1BF0,
                 ),
-                16: PlanetAddresses(
+                SNIVELAK.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2640,
                     skill_point_text=0x1CD5660,
                 ),
-                17: PlanetAddresses(
+                SMOLG.number: PlanetAddresses(
                     segment_pointers=0x1BFF40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2740,
                     skill_point_text=0x1CEA930,
                 ),
-                18: PlanetAddresses(
+                DAMOSEL.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
                     skill_point_text=0x1C6B7F0,
                 ),
-                19: PlanetAddresses(
+                GRELBIN.number: PlanetAddresses(
                     segment_pointers=0x1BFDC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
                     skill_point_text=0x1C49920,
                 ),
-                20: PlanetAddresses(
+                YEEDIL.number: PlanetAddresses(
                     segment_pointers=0x1C0340,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2AC0,
                     skill_point_text=0x1C1B010,
                 ),
-                22: PlanetAddresses(
+                DOBBO_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C0000,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1C40,
                     skill_point_text=0x168B7D0,
                 ),
-                23: PlanetAddresses(
+                DAMOSEL_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C09C0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B22C0,
                     skill_point_text=0x150F110,
                 ),
-                24: PlanetAddresses(
+                SHIP_SHACK.number: PlanetAddresses(
                     segment_pointers=0x1BEA40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B12C0,
                     skill_point_text=0xEDE4B0,
                 ),
-                25: PlanetAddresses(
+                WUPASH_NEBULA.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1BC0,
                     skill_point_text=0xE13140,
                     camara_state=0x1B1670,
                 ),
-                26: PlanetAddresses(
+                JAMMING_ARRAY.number: PlanetAddresses(
                     segment_pointers=0x1BEF00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1740,
                     skill_point_text=0x1171FF0,
                 ),
-                30: PlanetAddresses(
+                INSOMNIAC_MUSEUM.number: PlanetAddresses(
                     segment_pointers=0x1C0140,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2840,
@@ -229,13 +230,9 @@ class Addresses:
             }
 
 
-@dataclass(frozen=True)
-class PlanetAddresses:
+class PlanetAddresses(NamedTuple):
     segment_pointers: Optional[int] = None
     planet_switch_trigger: Optional[int] = None
     next_planet: Optional[int] = None
     skill_point_text: Optional[int] = None
     camara_state: Optional[int] = None
-
-
-
