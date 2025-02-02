@@ -276,6 +276,7 @@ SMOLG_DISTRIBUTION_FACILITY_END = LocationData(
     lambda state, player:
         can_improved_jump(state, player)
         and can_dynamo(state, player)
+        and can_electrolyze(state, player)
         and can_grind(state, player)
         and can_infiltrate(state, player)
 )
