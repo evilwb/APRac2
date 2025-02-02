@@ -3,7 +3,9 @@ An Archipelago implementation for Ratchet & Clank 2
 
 
 ## Setup Guide
-To get started or for troubleshooting, see [the Setup Guide](./docs/setup_en.md).
+To get started or for troubleshooting, see [the Setup Guide](https://github.com/evilwb/APRac2/blob/main/docs/setup_en.md).
+### Installation video tutorial by Scyker
+https://www.youtube.com/watch?v=hRCuEQVgzPE
 
 
 ## What does randomization do to this game?
@@ -34,7 +36,7 @@ The player will immediately have their inventory updated and receive a notificat
 
 
 ## FAQs
-### What happens if I pickup an item without having the client running?
+### What happens if I pick up an item without having the client running?
 In order for Ratchet & Clank 2 to function correctly, the Client should always be running whenever you are playing through your game.  
 The client should be able to detect and resync missing items in most cases, but I wouldn't rely on it.
 
