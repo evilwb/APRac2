@@ -354,8 +354,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     """--------- 
     Tabora
     ---------"""
-    # Have planet controller check Secondary Inventory to determine if the Glider location has been checked.
-    patch.write_token(APTokenTypes.WRITE, addresses.TABORA_CONTROLLER_FUNC + 0x37C, bytes([0x45, 0x7B, 0x42, 0x90]))
+    # Prevent Planet Controller from spawning player at Glider.
+    patch.write_token(APTokenTypes.WRITE, addresses.TABORA_CONTROLLER_FUNC + 0x380, bytes([0x59, 0x00, 0x00, 0x10]))
 
     # Glider Pickup
     address = addresses.GLIDER_PICKUP_FUNC
