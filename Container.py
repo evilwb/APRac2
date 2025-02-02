@@ -169,7 +169,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         weapons = Items.WEAPONS
         weapons.remove(Items.CLANK_ZAPPER)
         weapons.remove(Items.SHEEPINATOR)
-        unlock_planets = [1, 1, 3, 3, 4, 6, 8, 8, 9, 11, 11, 12, 14, 14]
+        weapons.remove(Items.SPIDERBOT_GLOVE)
+        unlock_planets = [1, 1, 3, 3, 4, 6, 8, 8, 9, 11, 12, 14, 14]
         world.random.shuffle(weapons)
 
         first_weapon = weapons[0]
