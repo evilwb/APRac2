@@ -226,7 +226,7 @@ async def run_game(iso_file):
         import webbrowser
         webbrowser.open(iso_file)
     elif os.path.isfile(auto_start):
-        subprocess.Popen([auto_start, iso_file],
+        subprocess.Popen([auto_start, iso_file, "-batch"],
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
