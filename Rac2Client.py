@@ -157,7 +157,7 @@ async def handle_deathlink(ctx: Rac2Context):
     if ctx.game_interface.get_alive():
         if ctx.is_pending_death_link_reset:
             ctx.is_pending_death_link_reset = False
-        if ctx.queued_deaths > 0 and ctx.game_interface.get_pause_state() == 0:
+        if ctx.queued_deaths > 0 and ctx.game_interface.get_pause_state() == 0 and ctx.game_interface.get_ratchet_state() != 97:
             ctx.is_pending_death_link_reset = True
             ctx.game_interface.kill_player()
             ctx.queued_deaths -= 1
