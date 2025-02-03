@@ -464,6 +464,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     ---------"""
     # Planet Controller
     address = addresses.DAMOSEL_CONTROLLER_FUNC
+    # Prevent forced spawn at Hypnotist
+    patch.write_token(APTokenTypes.WRITE, address + 0x228, bytes([0x15, 0x00, 0x00, 0x10]))
     # Check Secondary Inventory to determine if the Mapper location has been checked.
     patch.write_token(APTokenTypes.WRITE, address + 0x38C, bytes([0x35, 0x7B, 0x42, 0x90]))
     # Replace code that gives Mapper with code that just sets Secondary Inventory flag.
