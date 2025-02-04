@@ -105,9 +105,6 @@ function mk_apworld() {
 
     echo "${tag}" > "${destdir}/rac2/version.txt"
 
-    # If this already exists then ovewrite it
-#    rm -rf "${destdir}/rac2/lib"
-#    mv "${destdir}/lib/pcsx2_interface" "${destdir}"
     pushd "${destdir}"
     zip -9r "rac2.apworld" "rac2"
     popd
@@ -121,25 +118,7 @@ function mk_apworld() {
 function cp_data() {
     local root="$1" destdir="$2"
     echo "=> Copying over the extra data"
-    cp --verbose ${root}/LICENSE.md ${destdir}
-    cp --verbose ${root}/README.md ${destdir}
-    cp --verbose "${root}/Ratchet & Clank 2.yaml" ${destdir}
-}
-
-##
-# Create the final bundled archive.
-#
-# Arguments:
-# * $1: The location from where the archive is created.
-# * $2: The path of the output archive.
-##
-function bundle() {
-    local from="$1" out="$2"
-    echo "=> Finalize bundle"
-    [ -f "${out}" ] && rm ${out} ||:
-    pushd "${from}"
-    zip -9r "${out}" "."
-    popd
+    cp --verbose "${root}/Simplified Ratchet & Clank 2.yaml" ${destdir}
 }
 
 ##
@@ -169,19 +148,9 @@ function main() {
         local bundle="${bundle_base}-${tag}"
         local destdir="${target_path}/${bundle}"
 
-#        for platform in "${SUPPORTED_PLATFORMS[@]}"; do
-#            for version in "${PYTHON_VERSIONS[@]}"; do
-#              local requirements_file="${project}/requirements.txt"
-#              get_deps "${platform}" "${version}" ${requirements_file} "${destdir}"
-#              # copy deps to project folder as well for local dev
-#              cp -r "${destdir}/pcsx2_interface" "${project}/lib"
-#            done
-#        done
-
         mk_apworld "${project}" "${destdir}"
         cp_data "${project}" "${destdir}"
-        bundle "${destdir}" "${target_path}/${bundle}.zip"
-        echo "! Bundle finalized as ${target_path}/${bundle}.zip"
+        echo "! Bundle finalized as ${target_path}/${bundle}"
         ;;
     esac
 }

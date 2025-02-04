@@ -2,17 +2,6 @@
 # A. This file contains options which allow you to configure your multiworld experience while allowing
 #    others to play how they want as well.
 #
-# Q. How do I use it?
-# A. The options in this file are weighted. This means the higher number you assign to a value, the
-#    more chances you have for that option to be chosen. For example, an option like this:
-#
-#    map_shuffle:
-#      on: 5
-#      off: 15
-#
-#    Means you have 5 chances for map shuffle to occur, and 15 chances for map shuffle to be turned
-#    off.
-#
 # Q. I've never seen a file like this before. What characters am I allowed to use?
 # A. This is a .yaml file. You are allowed to use most characters.
 #    To test if your yaml is valid or not, you can use this website:
@@ -26,56 +15,41 @@
 #     {number} will be replaced with the counter value of the name.
 #     {NUMBER} will be replaced with the counter value of the name, if the counter value is greater than 1.
 name: Player{number}
-
-# Used to describe your yaml. Useful if you have multiple files.
-description: Default Ratchet & Clank 2 Template
-
 game: Ratchet & Clank 2
 requires:
   version: 0.5.0 # Version of Archipelago required for this yaml to work as expected.
 
 Ratchet & Clank 2:
   # Game Options
-  progression_balancing:
-    # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
-    # 
-    # A lower setting means more getting stuck. A higher setting means less getting stuck.
-    #
-    # You can define additional values between the minimum and maximum values.
-    # Minimum value is 0
-    # Maximum value is 99
-    random: 0
-    random-low: 0
-    random-high: 0
-    disabled: 0 # equivalent to 0
-    normal: 50 # equivalent to 50
-    extreme: 0 # equivalent to 99
 
-  accessibility:
-    # Set rules for reachability of your items/locations.
-    # 
-    # **Full:** ensure everything can be reached and acquired.
-    # 
-    # **Minimal:** ensure what is needed to reach your goal can be acquired.
-    full: 50
-    minimal: 0
+  # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
+  #
+  # A lower setting means more getting stuck. A higher setting means less getting stuck.
+  #
+  # Minimum value is 0
+  # Maximum value is 99
+  progression_balancing: 50
 
-  death_link:
-    # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
-    'false': 50
-    'true': 0
+  # Set rules for reachability of your items/locations.
+  #
+  # full: ensure everything can be reached and acquired.
+  #
+  # minimal: ensure what is needed to reach your goal can be acquired.
+  accessibility: full
 
-  shuffle_weapon_vendors:
-    # Shuffle what items appear at the Megacorp and Gadgetron vendors. Also shuffles your two starting weapons.
-    # Off: The vendors will stay unmodified.
-    # Weapons: All weapons that are normally available at the vendors will be shuffled among the vendor slots.
-    'off': 50
-    weapons: 0
+  # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+  death_link: false
 
-  skip_wupash_nebula:
-    # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
-    'false': 0
-    'true': 50
+  # Shuffle what items appear at the Megacorp and Gadgetron vendors. Also shuffles your two starting weapons.
+  #
+  # off: The vendors will stay unmodified.
+  #
+  # weapons: All weapons that are normally available at the vendors will be shuffled among the vendor slots.
+  shuffle_weapon_vendors: off
+
+  # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
+  skip_wupash_nebula: true
+
 
   # Item & Location Options
   local_items:
