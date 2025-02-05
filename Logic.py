@@ -40,7 +40,7 @@ def can_charge(state: CollectionState, player: int) -> bool:
 
 
 def can_hypnotize(state: CollectionState, player: int) -> bool:
-    return state.has(HYPNOMATIC_PART.name, player)
+    return state.has(HYPNOMATIC.name, player)
 
 
 def can_glide(state: CollectionState, player: int) -> bool:
