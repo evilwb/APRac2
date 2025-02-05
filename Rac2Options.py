@@ -3,6 +3,7 @@ from Options import (
     StartInventoryPool,
     PerGameCommonOptions,
     Choice,
+    DefaultOnToggle,
     Toggle,
 )
 from dataclasses import dataclass
@@ -26,9 +27,15 @@ class SkipWupashNebula(Toggle):
     default = True
 
 
+class AllowFirstPersonMode(DefaultOnToggle):
+    """Gives access to first person mode in 'Special' menu without being in New Game+."""
+    display_name = "Allow First Person Mode"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     shuffle_weapon_vendors: ShuffleWeaponVendors
     skip_wupash_nebula: SkipWupashNebula
+    allow_first_person_mode: AllowFirstPersonMode
