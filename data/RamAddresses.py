@@ -32,6 +32,7 @@ class Addresses:
             self.current_moby_instance_pointer: int = 0x18C0B0
             self.ratchet_state: int = 0x18C0B4
             self.current_nanotech: int = 0x18C2EC
+            self.wrench_weapon_id: int = 0x139572
             self.clank_disabled: int = 0x18C31C
             self.platinum_bolt_table: int = 0x19B278
             self.checkpoint_data: int = 0x19B2E8

@@ -276,6 +276,19 @@ class Rac2Interface:
             inventory[item.name] = self.count_inventory_item(item)
         return inventory
 
+    def upgrade_wrench(self):
+        try:
+            wrench_id = self.pcsx2_interface.read_int8(self.addresses.wrench_weapon_id)
+            if wrench_id == 0x0A:
+                wrench_id = 0x4A
+            elif wrench_id == 0x4A:
+                wrench_id = 0x4A  # TODO: Find Second upgrade ID
+            self.pcsx2_interface.write_int8(self.addresses.wrench_weapon_id, wrench_id)
+            # TODO: See what TABORA::30a8f8 does to update wrench skin, and replicate it here
+            return True
+        except RuntimeError:
+            return False
+
     def get_alive(self) -> bool:
         planet = self.get_current_planet()
         if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:
