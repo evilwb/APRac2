@@ -53,4 +53,4 @@ class PatcherUI(App):
         try:
             aprac2.patch_mmap(self.output_path, update_progress)
         except Exception as e:
-            self.progresstext.text = f"Error\n\n{e.args[0]}\n\nYou can close this window when you done reading."
+            self.progresstext.text = f"Error\n\n{e.args[0]}\n\nYou can close this window when you are done reading."
