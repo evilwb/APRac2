@@ -68,8 +68,7 @@ def create_planets(world: "Rac2World") -> list["Item"]:
 
 
 def create_equipment(world: "Rac2World") -> list["Item"]:
-    equipment_to_add: list[EquipmentData] = Items.EQUIPMENT
-    equipment_to_add += [Items.SHEEPINATOR, Items.SPIDERBOT_GLOVE]
+    equipment_to_add: list[EquipmentData] = Items.EQUIPMENT + [Items.SHEEPINATOR, Items.SPIDERBOT_GLOVE]
     precollected_ids: list[int] = [item.code for item in world.multiworld.precollected_items[world.player]]
     equipment_to_add = [equipment for equipment in equipment_to_add if equipment.item_id not in precollected_ids]
 

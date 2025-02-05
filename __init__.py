@@ -101,14 +101,15 @@ class Rac2World(World):
         items_to_add += ItemPool.create_planets(self)
         items_to_add += ItemPool.create_equipment(self)
         items_to_add += ItemPool.create_collectables(self)
-        self.multiworld.itempool += items_to_add
 
         # add platinum bolts in whatever slots we have left
         remain = (len(Planets.ALL_LOCATIONS) - 1) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
         print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
         for _ in range(remain):
-            self.multiworld.itempool += [self.create_item(Items.PLATINUM_BOLT.name, ItemClassification.filler)]
+            items_to_add.append(self.create_item(Items.PLATINUM_BOLT.name, ItemClassification.filler))
+
+        self.multiworld.itempool += items_to_add
 
     def set_rules(self) -> None:
         boss_location = self.multiworld.get_location(Locations.YEEDIL_DEFEAT_MUTATED_PROTOPET.name, self.player)
