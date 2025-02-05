@@ -62,7 +62,7 @@ MINITURRET_GLOVE = WeaponData(119, "Miniturret Glove", 41)
 GRAVITY_BOMB = WeaponData(120, "Gravity Bomb", 42)
 ZODIAC = WeaponData(121, "Zodiac", 43)
 RYNO_II = WeaponData(122, "RYNO II", 44)
-SHIELD_CHARGER = WeaponData(1123, "Shield Charger", 45)
+SHIELD_CHARGER = WeaponData(123, "Shield Charger", 45)
 WALLOPER = WeaponData(124, "Walloper", 53)
 
 
