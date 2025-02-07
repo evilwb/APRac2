@@ -276,10 +276,6 @@ class Rac2Interface:
             inventory[item.name] = self.count_inventory_item(item)
         return inventory
 
-    def upgrade_wrench(self):
-        try:
-            wrench_id = self.pcsx2_interface.read_int8(self.addresses.wrench_weapon_id)
-            if wrench_id == 0x0A:
     def get_wrench_level(self) -> int:
         wrench_id = self.pcsx2_interface.read_int8(self.addresses.wrench_weapon_id)
         if wrench_id == 0x4A:
@@ -296,7 +292,6 @@ class Rac2Interface:
             elif level == 2:
                 wrench_id = 0x4B
             self.pcsx2_interface.write_int8(self.addresses.wrench_weapon_id, wrench_id)
-            # TODO: See what TABORA::30a8f8 does to update wrench skin, and replicate it here
             return True
         except RuntimeError:
             return False
