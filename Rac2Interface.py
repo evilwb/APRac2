@@ -276,6 +276,36 @@ class Rac2Interface:
             inventory[item.name] = self.count_inventory_item(item)
         return inventory
 
+    def get_wrench_level(self) -> int:
+        wrench_id = self.pcsx2_interface.read_int8(self.addresses.wrench_weapon_id)
+        if wrench_id == 0x4A:
+            return 1
+        elif wrench_id == 0x4B:
+            return 2
+        return 0
+
+    def set_wrench_level(self, level: int):
+        try:
+            wrench_id = 0x0A
+            if level == 1:
+                wrench_id = 0x4A
+            elif level == 2:
+                wrench_id = 0x4B
+            self.pcsx2_interface.write_int8(self.addresses.wrench_weapon_id, wrench_id)
+            return True
+        except RuntimeError:
+            return False
+
+    def get_armor_level(self) -> int:
+        return self.pcsx2_interface.read_int8(self.addresses.current_armor_level)
+
+    def set_armor_level(self, level: int):
+        try:
+            self.pcsx2_interface.write_int8(self.addresses.current_armor_level, level)
+            return True
+        except RuntimeError:
+            return False
+
     def get_alive(self) -> bool:
         planet = self.get_current_planet()
         if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:

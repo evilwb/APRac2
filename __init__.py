@@ -101,6 +101,7 @@ class Rac2World(World):
         items_to_add += ItemPool.create_planets(self)
         items_to_add += ItemPool.create_equipment(self)
         items_to_add += ItemPool.create_collectables(self)
+        items_to_add += ItemPool.create_upgrades(self)
 
         # add platinum bolts in whatever slots we have left
         remain = (len(Planets.ALL_LOCATIONS) - 1) - len(items_to_add)
