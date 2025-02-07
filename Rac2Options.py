@@ -26,9 +26,24 @@ class SkipWupashNebula(Toggle):
     default = True
 
 
+class ExperienceGain(Choice):
+    """Defines the way experience is calculated in the game:
+    - Vanilla: enemies killed several times are worth less XP, and revisiting a planet also applies a global malus
+    - No Revisit Malus: enemies killed several times are worth less, but revisiting a planet does not reduce obtained XP
+    - No Malus: an enemy always gives the same amount of XP when killed
+    """
+
+    display_name = "Experience Gain"
+    option_vanilla = 0
+    option_no_revisit_malus = 1
+    option_no_malus = 2
+    default = 0
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     shuffle_weapon_vendors: ShuffleWeaponVendors
     skip_wupash_nebula: SkipWupashNebula
+    experience_gain: ExperienceGain

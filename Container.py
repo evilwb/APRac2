@@ -5,7 +5,7 @@ from typing import Any, Callable, TYPE_CHECKING
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from .Rac2Options import ShuffleWeaponVendors
+from .Rac2Options import ShuffleWeaponVendors, ExperienceGain
 from .data import Items, IsoAddresses
 
 if TYPE_CHECKING:
@@ -140,6 +140,16 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # disable nanotech boost help message
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
+
+    # handle experience gain changes
+    if world.options.experience_gain in [ExperienceGain.option_no_revisit_malus, ExperienceGain.option_no_malus]:
+        # When writing enemy data in the enemy structures, write base XP where revisit XP should be
+        for address in addresses.ENEMY_DATA_FILL_FUNC:
+            patch.write_token(APTokenTypes.WRITE, address + 0x4, bytes([0xB4, 0x00, 0x77, 0xA6]))  # sh s7,0xB4(s3)
+    if world.options.experience_gain == ExperienceGain.option_no_malus:
+        # Replace all factors in XP multiplier tables by "100%" to remove maluses from successive kills
+        for address in addresses.XP_MULT_TABLES:
+            patch.write_token(APTokenTypes.WRITE, address, bytes([100] * 32))
 
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
