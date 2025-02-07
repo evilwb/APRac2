@@ -37,7 +37,7 @@ class Addresses:
             self.current_ratchet_xp: int = 0x1A7A0C
             self.challenge_mode_flag: int = 0x1A7A0A
             self.wrench_weapon_id: int = 0x139572
-            self.current_armor_level: int = 0x1A7A19
+            self.current_armor_level: int = 0x1A7A18
             self.joba_hoverbike_1_victories: int = 0x13960F
             self.clank_disabled: int = 0x18C31C
             self.platinum_bolt_table: int = 0x19B278
