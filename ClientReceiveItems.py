@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from . import Rac2World
 from .data import Items
-from .data.Items import EquipmentData, CoordData
+from .data.Items import EquipmentData, CoordData, ProgressiveUpgradeData
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -28,6 +28,18 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
                 message += f" from {ctx.player_names[network_item.player]}"
             ctx.notification_manager.queue_notification(message)
 
+        if isinstance(item, ProgressiveUpgradeData):
+            max_level = len(item.progressive_names)
+            received_count = len([recv for recv in ctx.items_received if recv.item == item.item_id])
+            new_level = min(received_count, max_level)
+            current_level = 0
+            if item == Items.WRENCH_UPGRADE:
+                current_level = ctx.game_interface.get_wrench_level()
+                if current_level < new_level:
+                    ctx.game_interface.set_wrench_level(received_count)
+            if current_level < new_level:
+                message = f"Received \14{item.progressive_names[new_level - 1]}\10"
+                ctx.notification_manager.queue_notification(message)
     handle_received_collectables(ctx, current_items)
 
 

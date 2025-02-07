@@ -144,6 +144,7 @@ class AddressesSCUS97268:
     # Aranos Prison
     PLUMBER_FUNC: int = 0xC63FD794
     PRISON_CONTROLLER_FUNC: int = 0xC63FE09C
+    PRISON_WRENCH_INIT_FUNC: int = 0xC63CCA7C
 
     # Smolg
     # HYPNOMATIC_PART1_FUNC: int = 0xCDAA8084

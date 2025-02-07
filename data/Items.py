@@ -104,6 +104,18 @@ PLATINUM_BOLT = CollectableData(301, "Platinum Bolt", 40)
 NANOTECH_BOOST = CollectableData(302, "Nanotech Boost", 10)
 HYPNOMATIC_PART = CollectableData(303, "Hypnomatic Part", 3)
 
+
+@dataclass
+class ProgressiveUpgradeData(ItemData):
+    progressive_names: list[str]
+
+
+WRENCH_UPGRADE = ProgressiveUpgradeData(401, "OmniWrench Upgrade", ["OmniWrench 10000", "OmniWrench 12000"])
+# ARMOR_UPGRADE = UpgradeData(402, "Armor Upgrade", [
+#   "Tetrafiber Armor", "Duraplate Armor", "Electrosteel Armor", "Carbonox Armor"
+# ])
+
+
 EQUIPMENT: list[EquipmentData] = [
     HELI_PACK,
     THRUSTER_PACK,
@@ -185,7 +197,11 @@ COLLECTABLES: list[CollectableData] = [
     NANOTECH_BOOST,
     HYPNOMATIC_PART,
 ]
-ALL: list[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES]
+UPGRADES: list[ProgressiveUpgradeData] = [
+    WRENCH_UPGRADE,
+    # ARMOR_UPGRADE
+]
+ALL: list[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES, *UPGRADES]
 QUICK_SELECTABLE: list[ItemData] = [
     *WEAPONS,
     SWINGSHOT,

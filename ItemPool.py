@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
 from .data import Items
-from .data.Items import CoordData, EquipmentData
+from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -40,7 +40,7 @@ def get_classification(_world: "Rac2World", item_name: str) -> ItemClassificatio
         Items.NANOTECH_BOOST,
     ]:
         return ItemClassification.useful
-    if item in Items.WEAPONS:
+    if item in Items.WEAPONS or item in Items.UPGRADES:
         return ItemClassification.useful
 
     return ItemClassification.filler
@@ -102,3 +102,11 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
         collectable_items.append(world.create_item(Items.HYPNOMATIC_PART.name))
 
     return collectable_items
+
+
+def create_upgrades(world: "Rac2World") -> list["Item"]:
+    upgrades_to_add: list[ProgressiveUpgradeData] = Items.UPGRADES
+    # There are two wrench upgrades, add one more
+    upgrades_to_add.append(Items.WRENCH_UPGRADE)
+
+    return [world.create_item(upgrade.name) for upgrade in upgrades_to_add]

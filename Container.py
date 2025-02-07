@@ -358,20 +358,19 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, addresses.TABORA_CONTROLLER_FUNC + 0x380, bytes([0x59, 0x00, 0x00, 0x10]))
 
     # Wrench Pickup
-    # Have Wrench pickup check Secondary Inventory to determine if it has been checked.
+    # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.TABORA_WRENCH_INIT_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x27C, NOP * 16)  # 0xB30D8AA0
-    patch.write_token(APTokenTypes.WRITE, address + 0x2BC, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1a
-    patch.write_token(APTokenTypes.WRITE, address + 0x2C0, bytes([0x61, 0x7B, 0x62, 0x90]))  # lbu v0,0x7B61(v1)
+    patch.write_token(APTokenTypes.WRITE, address + 0x27C, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x280, bytes([0xE7, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D19(v1)
+    patch.write_token(APTokenTypes.WRITE, address + 0x284, NOP * 16)
 
-    # Replace the code that upgrades wrench and displays a message by code that just sets secondary inventory flag.
-    address = addresses.TABORA_WRENCH_CUTSCENE_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x50, NOP * 7)  # 0x3f74dc
-    patch.write_token(APTokenTypes.WRITE, address + 0x6C, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1a
-    patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x61, 0x7B, 0x44, 0xA0]))  # sb a0,0x7B61(v0)
-    # Remove the wrench skin change + HUD message
-    patch.write_token(APTokenTypes.WRITE, address + 0x74, NOP*4)
+    # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
+    # Also removes the wrench skin change + HUD message on pickup.
+    address = addresses.TABORA_WRENCH_CUTSCENE_FUNC  # 0x3f74dc
+    patch.write_token(APTokenTypes.WRITE, address + 0x50, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
+    patch.write_token(APTokenTypes.WRITE, address + 0x54, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x58, bytes([0xE7, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D19(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x5c, NOP * 10)
 
     # Glider Pickup
     address = addresses.GLIDER_PICKUP_FUNC
@@ -474,6 +473,23 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4BC, bytes([0x61, 0x7B, 0x42, 0x90]))
     # Just set Secondary Inventory flag when you make the purchase.
     patch.write_token(APTokenTypes.WRITE, address + 0x4D4, NOP)
+
+    # Wrench Pickup
+    # Have Wrench pickup check a custom flag to determine if it has been checked.
+    # ARANOS_PRSN::003f5024
+    address = addresses.PRISON_WRENCH_INIT_FUNC
+    patch.write_token(APTokenTypes.WRITE, address + 0x84, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x88, bytes([0xE8, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D18(v1)
+    patch.write_token(APTokenTypes.WRITE, address + 0x8C, NOP * 8)
+
+    # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
+    # Also removes the wrench skin change + HUD message on pickup.
+    # Unlike Tabora, everything is in one big function here, so no need to change the base address
+    # ARANOS_PRSN::003f5190
+    patch.write_token(APTokenTypes.WRITE, address + 0x1F8, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
+    patch.write_token(APTokenTypes.WRITE, address + 0x1FC, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x200, bytes([0xE8, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D18(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP * 9)
 
     """--------- 
     Damosel
