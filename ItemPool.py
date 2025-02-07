@@ -109,4 +109,8 @@ def create_upgrades(world: "Rac2World") -> list["Item"]:
     # There are two wrench upgrades, add one more
     upgrades_to_add.append(Items.WRENCH_UPGRADE)
 
+    # Remove the armor upgrade from the pool, as it currently is only for debug purpose
+    # TODO: Remove this line once armor locations get implemented
+    upgrades_to_add.remove(Items.ARMOR_UPGRADE)
+
     return [world.create_item(upgrade.name) for upgrade in upgrades_to_add]

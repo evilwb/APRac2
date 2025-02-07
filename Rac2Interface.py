@@ -296,6 +296,16 @@ class Rac2Interface:
         except RuntimeError:
             return False
 
+    def get_armor_level(self) -> int:
+        return self.pcsx2_interface.read_int8(self.addresses.current_armor_level)
+
+    def set_armor_level(self, level: int):
+        try:
+            self.pcsx2_interface.write_int8(self.addresses.current_armor_level, level)
+            return True
+        except RuntimeError:
+            return False
+
     def get_alive(self) -> bool:
         planet = self.get_current_planet()
         if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:

@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 from abc import ABC
+from typing import Callable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..Rac2Interface import Rac2Interface
 
 
 @dataclass
@@ -108,13 +112,18 @@ HYPNOMATIC_PART = CollectableData(303, "Hypnomatic Part", 3)
 @dataclass
 class ProgressiveUpgradeData(ItemData):
     progressive_names: list[str]
+    get_level_func: Callable[['Rac2Interface'], int]
+    set_level_func: Callable[['Rac2Interface', int], bool]
 
 
-WRENCH_UPGRADE = ProgressiveUpgradeData(401, "OmniWrench Upgrade", ["OmniWrench 10000", "OmniWrench 12000"])
-# ARMOR_UPGRADE = UpgradeData(402, "Armor Upgrade", [
-#   "Tetrafiber Armor", "Duraplate Armor", "Electrosteel Armor", "Carbonox Armor"
-# ])
+WRENCH_UPGRADE = ProgressiveUpgradeData(401, "OmniWrench Upgrade", ["OmniWrench 10000", "OmniWrench 12000"],
+                                        lambda interface: interface.get_wrench_level(),
+                                        lambda interface, level: interface.set_wrench_level(level))
 
+ARMOR_UPGRADE = ProgressiveUpgradeData(402, "Armor Upgrade", ["Tetrafiber Armor", "Duraplate Armor",
+                                                              "Electrosteel Armor", "Carbonox Armor"],
+                                       lambda interface: interface.get_armor_level(),
+                                       lambda interface, level: interface.set_armor_level(level))
 
 EQUIPMENT: list[EquipmentData] = [
     HELI_PACK,
@@ -199,7 +208,7 @@ COLLECTABLES: list[CollectableData] = [
 ]
 UPGRADES: list[ProgressiveUpgradeData] = [
     WRENCH_UPGRADE,
-    # ARMOR_UPGRADE
+    ARMOR_UPGRADE
 ]
 ALL: list[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES, *UPGRADES]
 QUICK_SELECTABLE: list[ItemData] = [
