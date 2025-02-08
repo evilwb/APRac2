@@ -26,9 +26,15 @@ class SkipWupashNebula(Toggle):
     default = True
 
 
+class EnableBoltMultiplier(Toggle):
+    """Enables the bolt multiplier feature without being in New Game+."""
+    display_name = "Enable Bolt Multiplier"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
     shuffle_weapon_vendors: ShuffleWeaponVendors
     skip_wupash_nebula: SkipWupashNebula
+    enable_bolt_multiplier: EnableBoltMultiplier
