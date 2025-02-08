@@ -1,12 +1,13 @@
 class AddressesSCUS97268:
     """ Addresses for important memory locations on the Ratchet and Clank 2 'SCUS-97268' ISO """
-    # Addresses in Core memory
+    # Addresses in the ELF (0x00258800 - 0x004D7D3B)
     MAIN_LOOP_FUNC: int = 0x0028B518
     WUPASH_COMPLETE_FLAG: int = 0x00301381
+    TITLE_SCREEN_MAIN_FUNC: int = 0x003C8568
 
     # Addresses that appear and multiple planets
     GO_STARTING_PLANET_FUNCS: list[int] = [0x0044FBD8, 0x94A54B44]
-    TITLE_SCREEN_MAIN_FUNC: int = 0x003C8568
+
     QUIT_TITLE_MAIN_FUNC: int = 0x949CE704
     PLANET_MAIN_FUNCS: list[int] = [
         0x9D2B762C, 0x9EB45A94, 0xA19640F8, 0xA5E015C0, 0xA8F28FBC, 0xACAC3ECC, 0xAE3F2CCC, 0xB0734480, 0xB2F97F7C,
