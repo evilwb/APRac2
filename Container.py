@@ -161,6 +161,13 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
 
+    # Allow first-person mode outside of NG+ if requested in options
+    if world.options.allow_first_person_mode:
+        for address in addresses.SPECIAL_MENU_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x1a0, NOP)  # bnel v0,zero,0x0a
+            patch.write_token(APTokenTypes.WRITE, address + 0x1c4, NOP)  # beq zero,zero,0x10
+            patch.write_token(APTokenTypes.WRITE, address + 0x1f4, NOP * 4)  # sw a2,0x40(v0) ... sw a1,0x5c(v0)
+
     """----------------------
     Shuffle Weapons Vendors
     ----------------------"""
