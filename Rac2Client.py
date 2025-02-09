@@ -1,4 +1,6 @@
-from typing import Optional
+import json
+import zipfile
+from typing import Optional, cast, Dict, Any
 import asyncio
 import multiprocessing
 import os
@@ -244,6 +246,14 @@ async def patch_and_run_game(aprac2_file: str):
     Utils.async_start(run_game(output_path))
 
 
+def get_name_from_aprac2(aprac2_path: str) -> str:
+    with zipfile.ZipFile(aprac2_path) as zip_file:
+        with zip_file.open("archipelago.json") as file:
+            archipelago_json = file.read().decode("utf-8")
+            archipelago_json = json.loads(archipelago_json)
+    return cast(Dict[str, Any], archipelago_json)["player_name"]
+
+
 def launch():
     Utils.init_logging("RAC2 Client")
 
@@ -255,11 +265,12 @@ def launch():
                             help='Path to an aprac2 file')
         args = parser.parse_args()
 
+        ctx = Rac2Context(args.connect, args.password)
+
         if os.path.isfile(args.aprac2_file):
             logger.info("aprac2 file supplied, beginning patching process...")
             await patch_and_run_game(args.aprac2_file)
-
-        ctx = Rac2Context(args.connect, args.password)
+            ctx.auth = get_name_from_aprac2(args.aprac2_file)
 
         logger.info("Connecting to server...")
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
