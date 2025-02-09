@@ -26,10 +26,13 @@ class SkipWupashNebula(Toggle):
     display_name = "Skip Wupash Nebula"
     default = True
 
-
 class AllowFirstPersonMode(DefaultOnToggle):
     """Gives access to first person mode in 'Special' menu without being in New Game+."""
     display_name = "Allow First Person Mode"
+
+class EnableBoltMultiplier(Toggle):
+    """Enables the bolt multiplier feature without being in New Game+."""
+    display_name = "Enable Bolt Multiplier"
 
 
 @dataclass
@@ -39,3 +42,4 @@ class Rac2Options(PerGameCommonOptions):
     shuffle_weapon_vendors: ShuffleWeaponVendors
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
+    enable_bolt_multiplier: EnableBoltMultiplier
