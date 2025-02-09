@@ -148,7 +148,7 @@ async def handle_checked_location(ctx: 'Rac2Context'):
     cleared_locations = cleared_locations.difference(ctx.checked_locations)
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])
     for location_id in cleared_locations:
-        location_name = [loc for loc in Planets.ALL_LOCATIONS if loc.location_id == location_id].pop()
+        location_name = [loc for loc in Planets.ALL_LOCATIONS if loc.location_id == location_id].pop().name
         ctx.game_interface.logger.info(f"Location checked: {location_name}")
 
         net_item = ctx.locations_info[location_id]
