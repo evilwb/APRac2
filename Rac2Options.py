@@ -3,6 +3,7 @@ from Options import (
     StartInventoryPool,
     PerGameCommonOptions,
     Choice,
+    DefaultOnToggle,
     Toggle,
 )
 from dataclasses import dataclass
@@ -25,6 +26,9 @@ class SkipWupashNebula(Toggle):
     display_name = "Skip Wupash Nebula"
     default = True
 
+class AllowFirstPersonMode(DefaultOnToggle):
+    """Gives access to first person mode in 'Special' menu without being in New Game+."""
+    display_name = "Allow First Person Mode"
 
 class EnableBoltMultiplier(Toggle):
     """Enables the bolt multiplier feature without being in New Game+."""
@@ -37,4 +41,5 @@ class Rac2Options(PerGameCommonOptions):
     death_link: DeathLink
     shuffle_weapon_vendors: ShuffleWeaponVendors
     skip_wupash_nebula: SkipWupashNebula
+    allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier

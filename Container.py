@@ -161,10 +161,27 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
 
+
+    # Reuse "Short Cuts" button on special manu to travel to Ship Shack.
+    for address in addresses.SPECIAL_MENU_FUNCS:
+        # Enable button outside of Challenge Mode.
+        patch.write_token(APTokenTypes.WRITE, address + 0x1B8, NOP * 2)
+    for address in addresses.SHORTCUT_MENU_FUNCS:
+        # Branch directly to switch planet function call.
+        patch.write_token(APTokenTypes.WRITE, address + 0x20, bytes([0x63, 0x00, 0x00, 0x10]))
+        # Set arg0 to 0x18 for ship shack
+        patch.write_token(APTokenTypes.WRITE, address + 0x24, bytes([0x18, 0x00, 0x04, 0x24]))
+
+    # Allow first-person mode outside of NG+ if requested in options
+    if world.options.allow_first_person_mode:
+        for address in addresses.SPECIAL_MENU_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x1B0, NOP * 2)
+            
     # Enable bolt multiplier outside of NG+ if requested in options
     if world.options.enable_bolt_multiplier:
         for address in addresses.TRACK_KILL_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
+
 
     """----------------------
     Shuffle Weapons Vendors
