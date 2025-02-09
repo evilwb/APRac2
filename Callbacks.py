@@ -26,10 +26,6 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
         new_text = "Ship Shack"
         ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
 
-    # Force Clank and Hydro-Pack to be enabled at all times.
-    game_interface.pcsx2_interface.write_int8(game_interface.addresses.clank_disabled, 0)
-    game_interface.pcsx2_interface.write_int8(game_interface.addresses.inventory + 4, 1)
-
     # Ship Wupash if option is enabled.
     if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
         game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)

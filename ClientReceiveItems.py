@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+import pcsx2_interface
+
 from . import Rac2World
 from .data import Items
 from .data.Items import EquipmentData, CoordData
@@ -29,6 +31,7 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
             ctx.notification_manager.queue_notification(message)
 
     handle_received_collectables(ctx, current_items)
+    handle_clank(ctx, current_items)
 
 
 def handle_received_collectables(ctx: 'Rac2Context', current_items: dict[str, int]):
@@ -49,3 +52,13 @@ def handle_received_collectables(ctx: 'Rac2Context', current_items: dict[str, in
             if diff == 1 and last_sender != ctx.slot:
                 message += f" ({ctx.player_names[last_sender]})"
             ctx.notification_manager.queue_notification(message)
+
+
+def handle_clank(ctx: 'Rac2Context', current_items: dict[str, int]):
+    ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.clank_disabled, 0)
+    ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.inventory + 4, 1)
+    received_item_ids = [item.item for item in ctx.items_received]
+    ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.inventory + Items.HELI_PACK.offset,
+                                                  Items.HELI_PACK.item_id in received_item_ids)
+    ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.inventory + Items.THRUSTER_PACK.offset,
+                                                  Items.THRUSTER_PACK.item_id in received_item_ids)
