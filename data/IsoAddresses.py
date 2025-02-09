@@ -79,6 +79,8 @@ class AddressesSCUS97268:
         0xCA52B9A4, 0xCD8F30A4, 0xD00260DC, 0xD2388C48, 0xD66FCD7C, 0xDAE57FA4, 0xDCC1D164, 0xDE7DAE44, 0xDF997A04,
         0xE05F6170, 0xE1493EB4
     ]
+    # 4 tables (8 bytes long each) containing factors applied on XP and bolt values depending on how many times
+    # a given enemy was killed. Two first tables are for bolts, the two others are for XP (values in percent)
     KILL_COUNT_MULT_TABLES: list[int] = [
         0x00301FD8, 0x9490C210, 0x9D1BC5D8, 0x9EA485D8, 0xA1865DD8, 0xA5CFFDD8, 0xA8E065D8, 0xAC9B05D8, 0xAE2B85D8,
         0xB0638DD8, 0xB2E8A5D8, 0xB6AA9DD8, 0xB969E5D8, 0xBAE6A5D8, 0xBF8785D8, 0xC31C05D8, 0xC61805D8, 0xC8DDEDD8,

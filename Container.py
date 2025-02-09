@@ -141,17 +141,18 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
-    # handle experience gain changes
-    if world.options.experience_gain in [ExperienceGain.option_no_revisit_malus, ExperienceGain.option_no_malus]:
+    # Handle experience gain changes
+    if world.options.experience_gain != ExperienceGain.option_vanilla:
         # When loading both base XP and revisit XP to write them in the moby instance, put base XP in both instead
         for address in addresses.RESET_MOBY_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x139C, bytes([0x00, 0x00, 0x47, 0x8E]))  # lw a3,(s2)
             patch.write_token(APTokenTypes.WRITE, address + 0x13A0, bytes([0x04, 0x00, 0x52, 0x26]))  # addiu s2,s2,0x4
-    if world.options.experience_gain == ExperienceGain.option_no_malus:
-        # Replace all factors in XP multiplier tables by "100%" to remove maluses from successive kills
+        # Replace factors in the revisit XP multiplier table depending on the option choice
         for address in addresses.KILL_COUNT_MULT_TABLES:
-            # Two first 8-byte tables are for bolts, the two others are for XP
-            patch.write_token(APTokenTypes.WRITE, address + 0x10, bytes([100] * 16))
+            if world.options.experience_gain == ExperienceGain.option_no_revisit_malus:
+                patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([100, 50, 40, 30, 25, 20, 15, 10]))
+            elif world.options.experience_gain == ExperienceGain.option_no_malus:
+                patch.write_token(APTokenTypes.WRITE, address + 0x10, bytes([100] * 16))
 
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
