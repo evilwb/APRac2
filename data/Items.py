@@ -212,7 +212,7 @@ UPGRADES: Sequence[ProgressiveUpgradeData] = [
     WRENCH_UPGRADE,
     ARMOR_UPGRADE
 ]
-ALL: Sequence[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES]
+ALL: Sequence[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES, *UPGRADES]
 QUICK_SELECTABLE: Sequence[ItemData] = [
     *WEAPONS,
     SWINGSHOT,
