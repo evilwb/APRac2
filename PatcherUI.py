@@ -19,19 +19,22 @@ class PatcherUI(App):
         self.aprac2_path = aprac2_path
         self.output_path = output_path
         self.logger = logger
+        self.errored = False
         super(PatcherUI, self).__init__()
 
     def build(self) -> Layout:
         self.container = GridLayout()
         self.container.cols = 1
 
-        self.progresstext = Label(text="Progress")
+        self.progresstext = Label(text="Initializing")
         self.container.add_widget(self.progresstext)
         self.indicatorbar = ProgressBar(size_hint_y=None, height=3)
+        self.indicatorbar_moving = True
         self.container.add_widget(self.indicatorbar)
 
         def update_bar(dt):
-            self.indicatorbar.value = (self.indicatorbar.value + 1) % self.indicatorbar.max
+            if not self.errored:
+                self.indicatorbar.value = (self.indicatorbar.value + 1) % self.indicatorbar.max
 
         Clock.schedule_interval(update_bar, 1/60)
 
@@ -50,7 +53,6 @@ class PatcherUI(App):
 
         aprac2 = Rac2ProcedurePatch()
         aprac2.read(self.aprac2_path)
-        try:
-            aprac2.patch_mmap(self.output_path, update_progress)
-        except Exception as e:
-            self.progresstext.text = f"Error\n\n{e.args[0]}\n\nYou can close this window when you are done reading."
+        if not aprac2.patch_mmap(self.output_path, update_progress):
+            self.errored = True
+
