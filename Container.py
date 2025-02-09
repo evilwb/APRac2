@@ -83,10 +83,20 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
             iso_file = settings.get_settings().rac2_options.iso_file
         except ValueError:
             notifier(
-                "Error"
+                "[color=#FF0000][size=20]Error[/size]"
                 "\n\nThe supplied ISO is not a supported version of the game."
-                "\nOnly US Version 1.01 (SCUS-97268) is supported right now."
-                "\n\nYou can close this window when you are done reading.",
+                "\nOnly [b]US Version 1.01 (SCUS-97268)[/b] is supported right now.[/color]"
+                "\n\n[i]You can close this window when you are done reading.[/i]",
+                0
+            )
+            return False
+        notifier("Verifying game version...", 0)
+        if not self.get_game_version_from_iso(iso_file):
+            notifier(
+                "[color=#FF0000][size=20]Error[/size]"
+                "\n\nThe [b]Ratchet & Clank 2.iso[/b] in the [b]Archipelago Folder[/b] is invalid."
+                "\nPlease remove is and try again.[/color]"
+                "\n\n[i]You can close this window when you are done reading.[/i]",
                 0
             )
             return False

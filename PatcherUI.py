@@ -26,7 +26,7 @@ class PatcherUI(App):
         self.container = GridLayout()
         self.container.cols = 1
 
-        self.progresstext = Label(text="Initializing")
+        self.progresstext = Label(text="Initializing", markup=True)
         self.container.add_widget(self.progresstext)
         self.indicatorbar = ProgressBar(size_hint_y=None, height=3)
         self.indicatorbar_moving = True

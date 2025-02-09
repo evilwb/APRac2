@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-import pcsx2_interface
-
 from . import Rac2World
 from .data import Items
 from .data.Items import EquipmentData, CoordData, ProgressiveUpgradeData
