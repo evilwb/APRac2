@@ -163,8 +163,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
 
     # Enable bolt multiplier outside of NG+ if requested in options
     if world.options.enable_bolt_multiplier:
-        for address in addresses.BOLT_MULTIPLIER_BRANCHES:
-            patch.write_token(APTokenTypes.WRITE, address + 0x08, NOP)  # beq b0,zero,0x1e
+        for address in addresses.TRACK_KILL_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
 
     """----------------------
     Shuffle Weapons Vendors
