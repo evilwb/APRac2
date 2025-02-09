@@ -145,6 +145,12 @@ async def handle_checked_location(ctx: 'Rac2Context'):
     if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part3) == 1:
         cleared_locations.add(Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id)
 
+    # check for wrench cutscene custom flags
+    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.tabora_wrench_cutscene_flag) == 1:
+        cleared_locations.add(Locations.TABORA_OMNIWRENCH_10000.location_id)
+    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.aranos_wrench_cutscene_flag) == 1:
+        cleared_locations.add(Locations.ARANOS_OMNIWRENCH_12000.location_id)
+
     cleared_locations = cleared_locations.difference(ctx.checked_locations)
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])
     for location_id in cleared_locations:

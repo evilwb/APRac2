@@ -4,7 +4,7 @@ import pcsx2_interface
 
 from . import Rac2World
 from .data import Items
-from .data.Items import EquipmentData, CoordData
+from .data.Items import EquipmentData, CoordData, ProgressiveUpgradeData
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -29,6 +29,17 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
             elif network_item.player != ctx.slot:
                 message += f" from {ctx.player_names[network_item.player]}"
             ctx.notification_manager.queue_notification(message)
+
+        if isinstance(item, ProgressiveUpgradeData):
+            current_level = item.get_level_func(ctx.game_interface)
+            max_level = len(item.progressive_names)
+            received_count = len([recv for recv in ctx.items_received if recv.item == item.item_id])
+            new_level = min(received_count, max_level)
+            if current_level != new_level:
+                item.set_level_func(ctx.game_interface, new_level)
+            if current_level < new_level:
+                message = f"Received \14{item.progressive_names[new_level - 1]}\10"
+                ctx.notification_manager.queue_notification(message)
 
     handle_received_collectables(ctx, current_items)
     resync_problem_items(ctx)
