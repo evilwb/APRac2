@@ -188,7 +188,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     ----------------------"""
     # Handle "weapons" mode.
     if world.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
-        weapons = Items.WEAPONS
+        weapons = list(Items.WEAPONS)
         weapons.remove(Items.CLANK_ZAPPER)
         weapons.remove(Items.SHEEPINATOR)
         weapons.remove(Items.SPIDERBOT_GLOVE)

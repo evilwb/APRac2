@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from abc import ABC
+from typing import Sequence
 
 
 @dataclass
@@ -104,7 +105,7 @@ PLATINUM_BOLT = CollectableData(301, "Platinum Bolt", 40)
 NANOTECH_BOOST = CollectableData(302, "Nanotech Boost", 10)
 HYPNOMATIC_PART = CollectableData(303, "Hypnomatic Part", 3)
 
-EQUIPMENT: list[EquipmentData] = [
+EQUIPMENT: Sequence[EquipmentData] = [
     HELI_PACK,
     THRUSTER_PACK,
     MAPPER,
@@ -124,7 +125,7 @@ EQUIPMENT: list[EquipmentData] = [
     CHARGE_BOOTS,
     HYPNOMATIC,
 ]
-WEAPONS: list[EquipmentData] = [
+WEAPONS: Sequence[EquipmentData] = [
     CLANK_ZAPPER,
     BOMB_GLOVE,
     VISIBOMB_GUN,
@@ -150,7 +151,7 @@ WEAPONS: list[EquipmentData] = [
     SHIELD_CHARGER,
     WALLOPER
 ]
-COORDS: list[CoordData] = [
+COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
     MAKTAR_NEBULA_COORDS,
     ENDAKO_COORDS,
@@ -172,7 +173,7 @@ COORDS: list[CoordData] = [
     GRELBIN_COORDS,
     YEEDIL_COORDS,
 ]
-STARTABLE_COORDS: list[CoordData] = [
+STARTABLE_COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
     MAKTAR_NEBULA_COORDS,
     ENDAKO_COORDS,
@@ -180,13 +181,13 @@ STARTABLE_COORDS: list[CoordData] = [
     NOTAK_COORDS,
     TODANO_COORDS,
 ]
-COLLECTABLES: list[CollectableData] = [
+COLLECTABLES: Sequence[CollectableData] = [
     PLATINUM_BOLT,
     NANOTECH_BOOST,
     HYPNOMATIC_PART,
 ]
-ALL: list[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES]
-QUICK_SELECTABLE: list[ItemData] = [
+ALL: Sequence[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES]
+QUICK_SELECTABLE: Sequence[ItemData] = [
     *WEAPONS,
     SWINGSHOT,
     DYNAMO,
