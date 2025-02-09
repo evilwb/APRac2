@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from abc import ABC
-from typing import Callable, TYPE_CHECKING
+
+from typing import Callable, TYPE_CHECKING, Sequence
 
 if TYPE_CHECKING:
     from ..Rac2Interface import Rac2Interface
+
 
 
 @dataclass
@@ -125,7 +127,7 @@ ARMOR_UPGRADE = ProgressiveUpgradeData(402, "Armor Upgrade", ["Tetrafiber Armor"
                                        lambda interface: interface.get_armor_level(),
                                        lambda interface, level: interface.set_armor_level(level))
 
-EQUIPMENT: list[EquipmentData] = [
+EQUIPMENT: Sequence[EquipmentData] = [
     HELI_PACK,
     THRUSTER_PACK,
     MAPPER,
@@ -145,7 +147,7 @@ EQUIPMENT: list[EquipmentData] = [
     CHARGE_BOOTS,
     HYPNOMATIC,
 ]
-WEAPONS: list[EquipmentData] = [
+WEAPONS: Sequence[EquipmentData] = [
     CLANK_ZAPPER,
     BOMB_GLOVE,
     VISIBOMB_GUN,
@@ -171,7 +173,7 @@ WEAPONS: list[EquipmentData] = [
     SHIELD_CHARGER,
     WALLOPER
 ]
-COORDS: list[CoordData] = [
+COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
     MAKTAR_NEBULA_COORDS,
     ENDAKO_COORDS,
@@ -193,7 +195,7 @@ COORDS: list[CoordData] = [
     GRELBIN_COORDS,
     YEEDIL_COORDS,
 ]
-STARTABLE_COORDS: list[CoordData] = [
+STARTABLE_COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
     MAKTAR_NEBULA_COORDS,
     ENDAKO_COORDS,
@@ -201,17 +203,17 @@ STARTABLE_COORDS: list[CoordData] = [
     NOTAK_COORDS,
     TODANO_COORDS,
 ]
-COLLECTABLES: list[CollectableData] = [
+COLLECTABLES: Sequence[CollectableData] = [
     PLATINUM_BOLT,
     NANOTECH_BOOST,
     HYPNOMATIC_PART,
 ]
-UPGRADES: list[ProgressiveUpgradeData] = [
+UPGRADES: Sequence[ProgressiveUpgradeData] = [
     WRENCH_UPGRADE,
     ARMOR_UPGRADE
 ]
-ALL: list[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES, *UPGRADES]
-QUICK_SELECTABLE: list[ItemData] = [
+ALL: Sequence[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES]
+QUICK_SELECTABLE: Sequence[ItemData] = [
     *WEAPONS,
     SWINGSHOT,
     DYNAMO,

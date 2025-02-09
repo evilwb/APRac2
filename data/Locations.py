@@ -64,7 +64,7 @@ NOTAK_TOP_PIER_TELESCREEN = LocationData(
 )
 NOTAK_WORKER_BOTS = LocationData(
     61, "Notak: Worker Bots",
-    lambda state, player: can_improved_jump(state, player) and can_thermanate(state, player)
+    lambda state, player: can_heli(state, player) and can_thermanate(state, player)
 )
 NOTAK_BEHIND_BUILDING_PB = LocationData(62, "Notak: Behind Building - Platinum Bolt")
 NOTAK_PROMENADE_SIGN_PB = LocationData(63, "Notak: Promenade Sign - Platinum Bolt")

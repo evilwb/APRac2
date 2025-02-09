@@ -1,7 +1,7 @@
 import hashlib
 import shutil
 import mmap
-from typing import Any, Callable, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING, Optional
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
@@ -38,6 +38,14 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
         Rac2ProcedurePatch.hash = md5_hash
 
     @staticmethod
+    def get_game_version_from_iso(iso_path: str) -> Optional[str]:
+        with open(iso_path, "rb") as iso:
+            iso.seek(0x828F5)
+            if iso.read(11) == b"SCUS_972.68":
+                return "SCUS-97268"
+        return None
+
+    @staticmethod
     def apply_tokens_mmap(caller: APProcedurePatch, rom: mmap, token_file: str) -> None:
         token_data = caller.get_file(token_file)
         token_count = int.from_bytes(token_data[0:4], "little")
@@ -67,16 +75,28 @@ class Rac2ProcedurePatch(APProcedurePatch, APTokenMixin):
             bpr += 9 + size
         return
 
-    def patch_mmap(self, target: str, notifier: Callable[[str, float], None]) -> None:
+    def patch_mmap(self, target: str, notifier: Callable[[str, float], None]) -> bool:
         self.read()
-        notifier("Verifying game version...", 0)
-        self.check_hash(settings.get_settings().rac2_options.iso_file)
-        notifier("Game version supported. \n\nCopying and patching ISO...", 0)
-        shutil.copy(settings.get_settings().rac2_options.iso_file, target)
-        notifier("Patching ISO", 0)
+        notifier("First time setup. This may take some time.", 0)
+        settings.FilePath.md5s = [SCUS_97268_HASH]
+        try:
+            iso_file = settings.get_settings().rac2_options.iso_file
+        except ValueError:
+            notifier(
+                "Error"
+                "\n\nThe supplied ISO is not a supported version of the game."
+                "\nOnly US Version 1.01 (SCUS-97268) is supported right now."
+                "\n\nYou can close this window when you are done reading.",
+                0
+            )
+            return False
+        notifier("Game version supported. \n\nCreating new copy of ISO...", 0)
+        shutil.copy(iso_file, target)
+        notifier("Patching ISO...", 0)
         with open(target, "r+b") as file:
             self.apply_tokens_mmap(self, mmap.mmap(file.fileno(), 0), "token_data.bin")
         notifier("Patching complete!", 100)
+        return True
 
     def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
@@ -161,12 +181,34 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
 
+
+    # Reuse "Short Cuts" button on special manu to travel to Ship Shack.
+    for address in addresses.SPECIAL_MENU_FUNCS:
+        # Enable button outside of Challenge Mode.
+        patch.write_token(APTokenTypes.WRITE, address + 0x1B8, NOP * 2)
+    for address in addresses.SHORTCUT_MENU_FUNCS:
+        # Branch directly to switch planet function call.
+        patch.write_token(APTokenTypes.WRITE, address + 0x20, bytes([0x63, 0x00, 0x00, 0x10]))
+        # Set arg0 to 0x18 for ship shack
+        patch.write_token(APTokenTypes.WRITE, address + 0x24, bytes([0x18, 0x00, 0x04, 0x24]))
+
+    # Allow first-person mode outside of NG+ if requested in options
+    if world.options.allow_first_person_mode:
+        for address in addresses.SPECIAL_MENU_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x1B0, NOP * 2)
+            
+    # Enable bolt multiplier outside of NG+ if requested in options
+    if world.options.enable_bolt_multiplier:
+        for address in addresses.TRACK_KILL_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
+
+
     """----------------------
     Shuffle Weapons Vendors
     ----------------------"""
     # Handle "weapons" mode.
     if world.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
-        weapons = Items.WEAPONS
+        weapons = list(Items.WEAPONS)
         weapons.remove(Items.CLANK_ZAPPER)
         weapons.remove(Items.SHEEPINATOR)
         weapons.remove(Items.SPIDERBOT_GLOVE)

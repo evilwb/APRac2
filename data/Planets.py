@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from .Locations import *
 from .Locations import LocationData
@@ -176,7 +176,7 @@ LOGIC_PLANETS = [
     YEEDIL,
 ]
 
-ALL_LOCATIONS: list[LocationData] = [
+ALL_LOCATIONS: Sequence[LocationData] = [
     location
     for locations in [planet.locations for planet in LOGIC_PLANETS]
     for location in locations

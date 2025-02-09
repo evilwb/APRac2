@@ -47,7 +47,7 @@ def get_classification(_world: "Rac2World", item_name: str) -> ItemClassificatio
     
 
 def create_planets(world: "Rac2World") -> list["Item"]:
-    coords_to_add: list[CoordData] = Items.COORDS
+    coords_to_add: list[CoordData] = list(Items.COORDS)
     world.multiworld.random.shuffle(coords_to_add)
     precollected_ids: list[int] = [item.code for item in world.multiworld.precollected_items[world.player]]
 
@@ -68,7 +68,7 @@ def create_planets(world: "Rac2World") -> list["Item"]:
 
 
 def create_equipment(world: "Rac2World") -> list["Item"]:
-    equipment_to_add: list[EquipmentData] = Items.EQUIPMENT + [Items.SHEEPINATOR, Items.SPIDERBOT_GLOVE]
+    equipment_to_add: list[EquipmentData] = list(Items.EQUIPMENT) + [Items.SHEEPINATOR, Items.SPIDERBOT_GLOVE]
     precollected_ids: list[int] = [item.code for item in world.multiworld.precollected_items[world.player]]
     equipment_to_add = [equipment for equipment in equipment_to_add if equipment.item_id not in precollected_ids]
 
