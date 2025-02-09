@@ -105,7 +105,7 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
 
 
 def create_upgrades(world: "Rac2World") -> list["Item"]:
-    upgrades_to_add: list[ProgressiveUpgradeData] = Items.UPGRADES
+    upgrades_to_add: list[ProgressiveUpgradeData] = list(Items.UPGRADES)
     # There are two wrench upgrades, add one more
     upgrades_to_add.append(Items.WRENCH_UPGRADE)
 
