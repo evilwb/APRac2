@@ -359,18 +359,17 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
 
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
-    address = addresses.TABORA_WRENCH_INIT_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x27C, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x280, bytes([0xE7, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D19(v1)
-    patch.write_token(APTokenTypes.WRITE, address + 0x284, NOP * 16)
+    address = addresses.TABORA_CONTROLLER_FUNC
+    patch.write_token(APTokenTypes.WRITE, address + 0x194, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x198, bytes([0xE7, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D19(v1)
+    patch.write_token(APTokenTypes.WRITE, address + 0x19C, NOP * 16)
 
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
-    address = addresses.TABORA_WRENCH_CUTSCENE_FUNC  # 0x3f74dc
-    patch.write_token(APTokenTypes.WRITE, address + 0x50, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x54, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x58, bytes([0xE7, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D19(v0)
-    patch.write_token(APTokenTypes.WRITE, address + 0x5c, NOP * 10)
+    patch.write_token(APTokenTypes.WRITE, address + 0x6C4, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
+    patch.write_token(APTokenTypes.WRITE, address + 0x6C8, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
+    patch.write_token(APTokenTypes.WRITE, address + 0x6CC, bytes([0xE7, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D19(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x6D0, NOP * 10)
 
     # Glider Pickup
     address = addresses.GLIDER_PICKUP_FUNC
