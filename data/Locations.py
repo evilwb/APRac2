@@ -1,4 +1,4 @@
-from typing import Optional, Callable, NamedTuple
+from typing import Optional, NamedTuple
 
 from ..Logic import *
 
@@ -96,7 +96,7 @@ TABORA_CANYON_GLIDE_PILLAR_NT = LocationData(
     85, "Tabora: Canyon Glide Pillar - Nanotech Boost",
     lambda state, player: can_thermanate(state, player) and can_glide(state, player)
 )
-TABORA_OMNIWRENCH_10000 = LocationData(85, "Tabora: OmniWrench 10000", can_improved_jump)
+TABORA_OMNIWRENCH_10000 = LocationData(86, "Tabora: OmniWrench 10000", can_improved_jump)
 
 """ Dobbo """
 DOBBO_DEFEAT_THUG_LEADER = LocationData(
