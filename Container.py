@@ -5,7 +5,7 @@ from typing import Any, Callable, TYPE_CHECKING
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from .Rac2Options import ShuffleWeaponVendors, ExperienceGain
+from .Rac2Options import ShuffleWeaponVendors
 from .data import Items, IsoAddresses
 
 if TYPE_CHECKING:
