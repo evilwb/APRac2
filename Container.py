@@ -212,6 +212,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         for address in addresses.TRACK_KILL_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
 
+    if world.options.free_challenge_selection:
+        patch_free_challenge_selection(patch, addresses)
 
     """----------------------
     Shuffle Weapons Vendors
@@ -590,6 +592,30 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4F0, NOP)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
+    # Show spaceship challenge as unlocked without winning the previous one
+    for address in addresses.SPACESHIP_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x58C, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x7A0, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x914, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x924, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x934, NOP)
+    # Enable starting spaceship challenge without winning the previous one
+    for address in addresses.START_SPACESHIP_CHALLENGE_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x134, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x144, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x150, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x160, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x170, NOP)
+    # Show hoverbike race as unlocked without winning previous one
+    for address in addresses.HOVERBIKE_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x5D0, NOP)
+    # Allow starting hoverbike race without winning previous one
+    for address in addresses.START_HOVERBIKE_CHALLENGE_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x214, NOP)
 
 
 def get_version_from_iso(iso_path: str) -> str:

@@ -26,13 +26,21 @@ class SkipWupashNebula(Toggle):
     display_name = "Skip Wupash Nebula"
     default = True
 
+
 class AllowFirstPersonMode(DefaultOnToggle):
     """Gives access to first person mode in 'Special' menu without being in New Game+."""
     display_name = "Allow First Person Mode"
 
+
 class EnableBoltMultiplier(Toggle):
     """Enables the bolt multiplier feature without being in New Game+."""
     display_name = "Enable Bolt Multiplier"
+
+
+class FreeChallengeSelection(Toggle):
+    """Makes all hoverbike and spaceship challenges selectable right away, which means you don't have to win a
+    challenge to access the next one."""
+    display_name = "Free Challenge Selection"
 
 
 @dataclass
@@ -43,3 +51,4 @@ class Rac2Options(PerGameCommonOptions):
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier
+    free_challenge_selection: FreeChallengeSelection
