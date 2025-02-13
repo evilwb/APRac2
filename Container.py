@@ -212,6 +212,10 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         for address in addresses.TRACK_KILL_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
 
+    if world.options.nanotech_xp_multiplier != 100:
+        alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
+    if world.options.weapon_xp_multiplier != 100:
+        alter_weapon_xp_tables(patch, addresses, world.options.weapon_xp_multiplier.value)
 
     """----------------------
     Shuffle Weapons Vendors
@@ -590,6 +594,59 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4F0, NOP)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def alter_nanotech_xp_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, mult_percent: int):
+    DEFAULT_NANO_XP_TABLE: list[int] = [
+        0x00B4, 0x00D2, 0x00F0, 0x010E, 0x012C, 0x014A, 0x0168, 0x0186,
+        0x01A4, 0x01C2, 0x01E0, 0x01F4, 0x0208, 0x0208, 0x0208, 0x0208,
+        0x0208, 0x0208, 0x0208, 0x0208, 0x0208, 0x0212, 0x0212, 0x0230,
+        0x0244, 0x0258, 0x026C, 0x0280, 0x0294, 0x02A8, 0x02BC, 0x02D0,
+        0x02E4, 0x02F8, 0x030C, 0x0320, 0x0348, 0x032A, 0x03B1, 0x0438,
+        0x04BF, 0x0546, 0x05CD, 0x0654, 0x06DB, 0x0762, 0x07E9, 0x0870,
+        0x08CA, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924,
+        0x0924, 0x0924, 0x0951, 0x09AB, 0x09D8, 0x0A32, 0x0A8C, 0x0AE6,
+        0x0B40, 0x0BB8
+    ]
+    # Multiplier given as input is meant to represent gained XP, while this table represents required XP to level up.
+    # Therefore, we need to use the multiplicative inverse of that mult to get the factor we need to apply to this
+    # table to mimic the effect of gained XP increase / decrease.
+    factor = 1.0 / (mult_percent * 0.01)
+    nanotech_xp_table = [int(x * factor) for x in DEFAULT_NANO_XP_TABLE]
+    for address in addresses.NANOTECH_XP_TABLES:
+        for xp_amount in nanotech_xp_table:
+            patch.write_token(APTokenTypes.WRITE, address + 0x4, xp_amount.to_bytes(2, 'little'))
+            address += 0x4
+
+
+def alter_weapon_xp_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, mult_percent: int):
+    # None values are either 0x0000 or 0xFFFF and must be left as-is
+    DEFAULT_WEAPON_XP_TABLE: list[int] = [
+        None,   None,   None,   None,   None,   None,   None,   None,
+        None,   0x09C4, None,   None,   None,   None,   None,   None,
+        0x0384, None,   None,   None,   None,   None,   0x0190, 0x0096,
+        0x041A, 0x0DAC, 0x02EE, 0x0FA0, 0x0834, 0x0578, 0x0118, 0x04B0,
+        0x03E8, None,   0x2710, None,   None,   0x06A4, None,   None,
+        0x2710, 0x02EE, 0x00C8, None,   None,   0x01C2, None,   None,
+        None,   None,   None,   None,   None,   None,   None,   None,
+        None,   None,   None,   None,   None,   None,   None,   None,
+        None,   None,   None,   None,   None,   None,   None,   None,
+        None,   None,   None,   None,   None,   None,   None,   0x1F40,
+        None,   0x2EE0, None,   0x1388, None,   0x2968, None,   0x1130,
+        None,   0x1770, None,   0x1B58, None,   0x0FA0, None,   0x0FA0,
+        None,   0x1388, None,   0x1F40, None,   0x1F40, None,   0x2710,
+        None,   0x1F40, None,   0x1770, None,   0x1388
+    ]
+    # Multiplier given as input is meant to represent gained XP, while this table represents required XP to level up.
+    # Therefore, we need to use the multiplicative inverse of that mult to get the factor we need to apply to this
+    # table to mimic the effect of gained XP increase / decrease.
+    factor = 1.0 / (mult_percent * 0.01)
+    weapon_xp_table = [int(x * factor) if x is not None else None for x in DEFAULT_WEAPON_XP_TABLE]
+    for address in addresses.WEAPON_DATA_TABLES:
+        for xp_amount in weapon_xp_table:
+            if xp_amount is not None:
+                patch.write_token(APTokenTypes.WRITE, address + 0x6C, xp_amount.to_bytes(2, 'little'))
+            address += 0xE0
 
 
 def get_version_from_iso(iso_path: str) -> str:

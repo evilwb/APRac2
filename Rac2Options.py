@@ -4,7 +4,7 @@ from Options import (
     PerGameCommonOptions,
     Choice,
     DefaultOnToggle,
-    Toggle,
+    Toggle, Range,
 )
 from dataclasses import dataclass
 
@@ -35,6 +35,22 @@ class EnableBoltMultiplier(Toggle):
     display_name = "Enable Bolt Multiplier"
 
 
+class NanotechExperienceMultiplier(Range):
+    """A multiplier applied to experience gained for Nanotech levels, in percent."""
+    display_name = "Nanotech XP Multiplier"
+    range_start = 10
+    range_end = 400
+    default = 100
+
+
+class WeaponExperienceMultiplier(Range):
+    """A multiplier applied to experience gained for weapon levels, in percent."""
+    display_name = "Weapon XP Multiplier"
+    range_start = 10
+    range_end = 400
+    default = 100
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -43,3 +59,5 @@ class Rac2Options(PerGameCommonOptions):
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier
+    nanotech_xp_multiplier: NanotechExperienceMultiplier
+    weapon_xp_multiplier: WeaponExperienceMultiplier
