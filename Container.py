@@ -171,6 +171,26 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
+    # Handle options altering rewards
+    if world.options.no_revisit_reward_change:
+        # When loading both base XP and revisit XP to write them in the moby instance, put base XP in both instead
+        for address in addresses.RESET_MOBY_FUNCS:
+            # Use base bolts as revisit bolts
+            patch.write_token(APTokenTypes.WRITE, address + 0x1384, bytes([0x00, 0x00, 0x45, 0x8E]))  # lw a3,(s2)
+            patch.write_token(APTokenTypes.WRITE, address + 0x1388, bytes([0x04, 0x00, 0x52, 0x26]))  # addiu s2,s2,0x4
+            # Use base XP as revisit XP
+            patch.write_token(APTokenTypes.WRITE, address + 0x139C, bytes([0x00, 0x00, 0x47, 0x8E]))  # lw a3,(s2)
+            patch.write_token(APTokenTypes.WRITE, address + 0x13A0, bytes([0x04, 0x00, 0x52, 0x26]))  # addiu s2,s2,0x4
+
+    # Replace factors in the reward degradation by values which depend on
+    for address in addresses.KILL_COUNT_MULT_TABLES:
+        if world.options.no_kill_reward_degradation:
+            # Put 100% XP & Bolts in every case
+            patch.write_token(APTokenTypes.WRITE, address, bytes([100] * 32))
+        elif world.options.no_revisit_reward_change:
+            # Put the base scaling from vanilla game for XP & Bolts even for revisits
+            patch.write_token(APTokenTypes.WRITE, address, bytes([100, 50, 40, 30, 25, 20, 15, 10] * 4))
+
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
     is done to decouple the platinum bolt count from platinum bolt locations checked. This same concept is also applied 
@@ -190,7 +210,6 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.RACE_CONTROLLER_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
-
 
     # Reuse "Short Cuts" button on special manu to travel to Ship Shack.
     for address in addresses.SPECIAL_MENU_FUNCS:
