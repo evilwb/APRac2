@@ -26,9 +26,11 @@ class SkipWupashNebula(Toggle):
     display_name = "Skip Wupash Nebula"
     default = True
 
+
 class AllowFirstPersonMode(DefaultOnToggle):
     """Gives access to first person mode in 'Special' menu without being in New Game+."""
     display_name = "Allow First Person Mode"
+
 
 class EnableBoltMultiplier(Toggle):
     """Enables the bolt multiplier feature without being in New Game+."""
@@ -51,6 +53,12 @@ class NoKillRewardDegradation(Toggle):
     display_name = "Remove Kill Rewards Degradation"
 
 
+class FreeChallengeSelection(Toggle):
+    """Makes all hoverbike and spaceship challenges selectable right away, which means you don't have to win a
+    challenge to access the next one."""
+    display_name = "Free Challenge Selection"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -61,3 +69,4 @@ class Rac2Options(PerGameCommonOptions):
     enable_bolt_multiplier: EnableBoltMultiplier
     no_revisit_reward_change: NoRevisitRewardChange
     no_kill_reward_degradation: NoKillRewardDegradation
+    free_challenge_selection: FreeChallengeSelection
