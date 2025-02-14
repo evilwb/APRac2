@@ -1,11 +1,48 @@
 from typing import TYPE_CHECKING
 
+from NetUtils import NetworkItem
 from . import Rac2World
+from .TextManager import colorize_item_name
 from .data import Items
 from .data.Items import EquipmentData, CoordData, ProgressiveUpgradeData
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
+
+
+def show_item_reception_message(ctx: 'Rac2Context', item: NetworkItem, item_name: str = None, qty: int = 1):
+    """
+    Queues an in-game message which informs the player they received an item.
+
+    :param ctx: The client context
+    :param item: The NetworkItem that was received
+    :param item_name: The name to use for the item (if unspecified, it is obtained from the NetworkItem)
+    :param qty: The amount obtained
+    """
+    if item_name is None:
+        item_name = ctx.item_names.lookup_in_slot(item.item, item.player)
+    if qty > 1:
+        item_name += f" x{qty}"
+    item_name = colorize_item_name(item_name, item.flags)
+
+    if item.location == -2:
+        # This is a starting item, mention it in the message
+        item_data = Items.from_id(item.item)
+        if isinstance(item_data, CoordData):
+            message = f"Received {item_name} (Starting Planet)"
+        else:
+            message = f"Received {item_name} (Starting Item)"
+    elif qty > 1:
+        # This is a group of packed collectables, don't indicate where they come from
+        message = f"Received {item_name}"
+    elif item.player == ctx.slot:
+        # This is an item we found by ourselves
+        message = f"Found {item_name}"
+    else:
+        # This is an item we received from someone
+        player_name = ctx.player_names.get(item.player, "???")
+        message = f"Received {item_name} from {player_name}"
+    ctx.notification_manager.queue_notification(message)
 
 
 async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int]):
@@ -14,19 +51,11 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
 
         if isinstance(item, EquipmentData) and current_items[item.name] == 0:
             ctx.game_interface.give_equipment_to_player(item)
-            message = f"Received \14{item.name}\10"
-            if network_item.player != ctx.slot:
-                message += f" from {ctx.player_names[network_item.player]}"
-            ctx.notification_manager.queue_notification(message)
+            show_item_reception_message(ctx, network_item)
 
         if isinstance(item, CoordData) and current_items[item.name] == 0:
             ctx.game_interface.unlock_planet(item.planet_number)
-            message = f"Received \14{item.name}\10"
-            if network_item.location == -2:
-                message += " (Starting Planet)"
-            elif network_item.player != ctx.slot:
-                message += f" from {ctx.player_names[network_item.player]}"
-            ctx.notification_manager.queue_notification(message)
+            show_item_reception_message(ctx, network_item)
 
         if isinstance(item, ProgressiveUpgradeData):
             current_level = item.get_level_func(ctx.game_interface)
@@ -36,8 +65,7 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
             if current_level != new_level:
                 item.set_level_func(ctx.game_interface, new_level)
             if current_level < new_level:
-                message = f"Received \14{item.progressive_names[new_level - 1]}\10"
-                ctx.notification_manager.queue_notification(message)
+                show_item_reception_message(ctx, network_item, item.progressive_names[new_level - 1])
 
     handle_received_collectables(ctx, current_items)
     resync_problem_items(ctx)
@@ -46,21 +74,17 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
 def handle_received_collectables(ctx: 'Rac2Context', current_items: dict[str, int]):
     for item in Items.COLLECTABLES:
         item_id = Rac2World.item_name_to_id[item.name]
-        received_collectable = [received_item for received_item in ctx.items_received if received_item.item == item_id]
+        received_collectables = [received_item for received_item in ctx.items_received if received_item.item == item_id]
         in_game_amount = current_items[item.name]
-        received_amount = len(received_collectable)
+        received_amount = len(received_collectables)
         if received_amount < 1:
             continue
-        last_sender = received_collectable[-1].player
 
         diff = received_amount - in_game_amount
         if diff > 0 and in_game_amount < item.max_capacity:
             new_amount = min(received_amount, item.max_capacity)
             ctx.game_interface.give_collectable_to_player(item, new_amount)
-            message = f"Received {diff} \14{item.name}\10"
-            if diff == 1 and last_sender != ctx.slot:
-                message += f" ({ctx.player_names[last_sender]})"
-            ctx.notification_manager.queue_notification(message)
+            show_item_reception_message(ctx, received_collectables[-1], None, diff)
 
 
 def resync_problem_items(ctx: 'Rac2Context'):
