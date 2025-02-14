@@ -510,7 +510,7 @@ class Rac2Interface:
     def nop_instruction(self, address: int):
         self.write_instruction(address, 0x0)
 
-    def get_text_address(self, index: int) -> Optional[int]:
+    def get_text_offset_addr(self, index: int) -> Optional[int]:
         text_address_table = self.get_segment_pointer_table().help_messages
         i = 0
         while True:
@@ -518,8 +518,18 @@ class Rac2Interface:
             if current_index > 0x2000000:
                 return None
             if current_index == index:
-                return self.pcsx2_interface.read_int32(text_address_table + i * 0x10)
+                return text_address_table + i * 0x10
             i += 1
+
+    def get_text_address(self, index: int) -> Optional[int]:
+        offset_addr = self.get_text_offset_addr(index)
+        if offset_addr:
+            return self.pcsx2_interface.read_int32(offset_addr)
+
+    def set_text_address(self, index: int, addr: int):
+        offset_addr = self.get_text_offset_addr(index)
+        if offset_addr:
+            self.pcsx2_interface.write_int32(offset_addr, addr)
 
     def get_segment_pointer_table(self) -> Optional[MemorySegmentTable]:
         if self.addresses is None:
