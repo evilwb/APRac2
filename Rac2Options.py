@@ -5,6 +5,7 @@ from Options import (
     Choice,
     DefaultOnToggle,
     Toggle,
+    Range,
 )
 from dataclasses import dataclass
 
@@ -59,6 +60,22 @@ class FreeChallengeSelection(Toggle):
     display_name = "Free Challenge Selection"
 
 
+class NanotechExperienceMultiplier(Range):
+    """A multiplier applied to experience gained for Nanotech levels, in percent."""
+    display_name = "Nanotech XP Multiplier"
+    range_start = 10
+    range_end = 400
+    default = 100
+
+
+class WeaponExperienceMultiplier(Range):
+    """A multiplier applied to experience gained for weapon levels, in percent."""
+    display_name = "Weapon XP Multiplier"
+    range_start = 10
+    range_end = 400
+    default = 100
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -70,3 +87,5 @@ class Rac2Options(PerGameCommonOptions):
     no_revisit_reward_change: NoRevisitRewardChange
     no_kill_reward_degradation: NoKillRewardDegradation
     free_challenge_selection: FreeChallengeSelection
+    nanotech_xp_multiplier: NanotechExperienceMultiplier
+    weapon_xp_multiplier: WeaponExperienceMultiplier
