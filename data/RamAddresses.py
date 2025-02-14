@@ -30,6 +30,7 @@ class Addresses:
             self.selectable_planets: int = 0x139948
             self.ratchet_position: int = 0x189EA0
             self.current_moby_instance_pointer: int = 0x18C0B0
+            self.raritanium_count: int = 0x1A79FC
             self.ratchet_state: int = 0x18C0B4
             self.current_nanotech: int = 0x18C2EC
             self.current_bolts: int = 0x1A79F8

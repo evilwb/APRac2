@@ -171,6 +171,26 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
+    # Handle options altering rewards
+    if world.options.no_revisit_reward_change:
+        # When loading both base XP and revisit XP to write them in the moby instance, put base XP in both instead
+        for address in addresses.RESET_MOBY_FUNCS:
+            # Use base bolts as revisit bolts
+            patch.write_token(APTokenTypes.WRITE, address + 0x1384, bytes([0x00, 0x00, 0x45, 0x8E]))  # lw a3,(s2)
+            patch.write_token(APTokenTypes.WRITE, address + 0x1388, bytes([0x04, 0x00, 0x52, 0x26]))  # addiu s2,s2,0x4
+            # Use base XP as revisit XP
+            patch.write_token(APTokenTypes.WRITE, address + 0x139C, bytes([0x00, 0x00, 0x47, 0x8E]))  # lw a3,(s2)
+            patch.write_token(APTokenTypes.WRITE, address + 0x13A0, bytes([0x04, 0x00, 0x52, 0x26]))  # addiu s2,s2,0x4
+
+    # Replace factors in the reward degradation by values which depend on
+    for address in addresses.KILL_COUNT_MULT_TABLES:
+        if world.options.no_kill_reward_degradation:
+            # Put 100% XP & Bolts in every case
+            patch.write_token(APTokenTypes.WRITE, address, bytes([100] * 32))
+        elif world.options.no_revisit_reward_change:
+            # Put the base scaling from vanilla game for XP & Bolts even for revisits
+            patch.write_token(APTokenTypes.WRITE, address, bytes([100, 50, 40, 30, 25, 20, 15, 10] * 4))
+
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
     is done to decouple the platinum bolt count from platinum bolt locations checked. This same concept is also applied 
@@ -190,7 +210,6 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.RACE_CONTROLLER_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x1FC, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x36C, NOP)
-
 
     # Reuse "Short Cuts" button on special manu to travel to Ship Shack.
     for address in addresses.SPECIAL_MENU_FUNCS:
@@ -212,8 +231,12 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         for address in addresses.TRACK_KILL_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x9C, NOP)  # beq b0,zero,0x1e
 
+    if world.options.free_challenge_selection:
+        patch_free_challenge_selection(patch, addresses)
+
     if world.options.nanotech_xp_multiplier != 100:
         alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
+
     if world.options.weapon_xp_multiplier != 100:
         alter_weapon_xp_tables(patch, addresses, world.options.weapon_xp_multiplier.value)
 
@@ -594,6 +617,47 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4F0, NOP)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
+    # Make Maktar arena challenges selectable
+    address = addresses.MAKTAR_ARENA_MENU_FUNC
+    patch.write_token(APTokenTypes.WRITE, address + 0xDC, NOP)  # Enable pressing right
+    patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP)  # Enable pressing left
+    patch.write_token(APTokenTypes.WRITE, address + 0x348, NOP)  # Enable starting a challenge without requirements
+    patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_PREV_FUNC + 0x290, NOP)  # Display "previous"
+    patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_NEXT_FUNC + 0x324, NOP)  # Display "next"
+
+    # Make Joba arena challenges selectable
+    address = addresses.JOBA_ARENA_MENU_FUNC
+    patch.write_token(APTokenTypes.WRITE, address + 0xDC, NOP)  # Enable pressing right
+    patch.write_token(APTokenTypes.WRITE, address + 0x1CC, NOP)  # Enable pressing left
+    patch.write_token(APTokenTypes.WRITE, address + 0x2F0, NOP)  # Enable starting a challenge without requirements
+    patch.write_token(APTokenTypes.WRITE, addresses.JOBA_ARENA_DISPLAY_PREV_FUNC + 0x288, NOP)  # Display "previous"
+    patch.write_token(APTokenTypes.WRITE, addresses.JOBA_ARENA_DISPLAY_NEXT_FUNC + 0x364, NOP)  # Display "next"
+
+    # Show spaceship challenge as unlocked without winning the previous one
+    for address in addresses.SPACESHIP_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x58C, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x7A0, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x914, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x924, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x934, NOP)
+    # Enable starting spaceship challenge without winning the previous one
+    for address in addresses.START_SPACESHIP_CHALLENGE_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x134, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x144, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x150, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x160, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x170, NOP)
+
+    # Show hoverbike race as unlocked without winning previous one
+    for address in addresses.HOVERBIKE_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x5D0, NOP)
+    # Allow starting hoverbike race without winning previous one
+    for address in addresses.START_HOVERBIKE_CHALLENGE_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x214, NOP)
 
 
 def alter_nanotech_xp_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, mult_percent: int):
