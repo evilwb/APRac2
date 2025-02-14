@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from . import Locations
 from .Rac2Interface import Rac2Planet
+from .TextManager import TextManager
 from .data import Items
 
 if TYPE_CHECKING:
@@ -17,14 +18,7 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     if planet is Rac2Planet.Title_Screen or planet is None:
         return
 
-    if ap_connected:
-        replace_text(ctx)
-
-    # Replace "Short Cut" button text with "Ship Shack"
-    text_address = ctx.game_interface.get_text_address(0x3202)
-    if text_address:
-        new_text = "Ship Shack"
-        ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+    replace_text(ctx, ap_connected)
 
     # Ship Wupash if option is enabled.
     if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
@@ -63,157 +57,87 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
     """Called once when a new planet is loaded."""
 
 
-def replace_text(ctx: 'Rac2Context'):
+def replace_text(ctx: 'Rac2Context', ap_connected: bool):
     try:
+        manager = TextManager(ctx)
+
+        # Replace "Short Cuts" button text with "Go to Ship Shack", since that's what the button does now
+        manager.inject(0x3202, "Go to Ship Shack")
+
+        if not ap_connected:
+            return
+
         if ctx.current_planet is Rac2Planet.Oozla:
-            net_item = ctx.locations_info[Locations.OOZLA_MEGACORP_SCIENTIST.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27AE)
-            new_text = f"You need %d bolts for \x0C{item_name[:19]}\x08"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27AC)
-            new_text = f"\x12 Buy \x0C{item_name[:13]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+            item_name = manager.get_formatted_item_name(Locations.OOZLA_MEGACORP_SCIENTIST.location_id)
+            manager.inject(0x27AE, f"You need %d bolts for {item_name}")
+            manager.inject(0x27AC, f"\x12 Buy {item_name} for %d bolts")
 
-        if ctx.current_planet is Rac2Planet.Maktar_Nebula:
-            net_item = ctx.locations_info[Locations.MAKTAR_ARENA_CHALLENGE.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2F46)
-            new_text = f"You have earned \x0C{item_name[:17]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Maktar_Nebula:
+            item_name = manager.get_formatted_item_name(Locations.MAKTAR_ARENA_CHALLENGE.location_id)
+            manager.inject(0x2F46, f"You have earned {item_name}")
 
-        if ctx.current_planet is Rac2Planet.Barlow:
-            net_item = ctx.locations_info[Locations.BARLOW_INVENTOR.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27A0)
-            new_text = f"You need %d bolts for \x0C{item_name[:19]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x279F)
-            new_text = f"\x12 Buy \x0C{item_name[:13]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Barlow:
+            item_name = manager.get_formatted_item_name(Locations.BARLOW_INVENTOR.location_id)
+            manager.inject(0x27A0, f"You need %d bolts for {item_name}")
+            manager.inject(0x279F, f"\x12 Buy {item_name} for %d bolts")
 
-        if ctx.current_planet is Rac2Planet.Feltzin_System:
-            net_item = ctx.locations_info[Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x11F5)
-            new_text = f"Received \x0C{item_name[:42]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
+        elif ctx.current_planet is Rac2Planet.Feltzin_System:
+            item_name = manager.get_formatted_item_name(Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id)
+            manager.inject(0x11F5, f"Received {item_name}")
+            item_name = manager.get_formatted_item_name(Locations.FELTZIN_RACE_PB.location_id)
+            manager.inject(0x2FDF, f"Perfect Ring Bonus: {item_name}")
 
-            net_item = ctx.locations_info[Locations.FELTZIN_RACE_PB.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2FDF)
-            new_text = f"Perfect Ring Bonus: \x0C{item_name[:91]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
+        elif ctx.current_planet is Rac2Planet.Notak:
+            item_name = manager.get_formatted_item_name(Locations.NOTAK_WORKER_BOTS.location_id)
+            manager.inject(0x27CE, f"You need %d bolts for {item_name}")
+            manager.inject(0x27CF, f"\x12 Buy {item_name} for %d bolts")
 
-        if ctx.current_planet is Rac2Planet.Notak:
-            net_item = ctx.locations_info[Locations.NOTAK_WORKER_BOTS.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27CE)
-            new_text = f"You need %d bolts for \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27CF)
-            new_text = f"\x12 Buy \x0C{item_name[:13]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Hrugis_Cloud:
+            item_name = manager.get_formatted_item_name(Locations.HRUGIS_DESTROY_DEFENSES.location_id)
+            manager.inject(0x11FB, f"Received {item_name}")
+            item_name = manager.get_formatted_item_name(Locations.HRUGIS_RACE_PB.location_id)
+            manager.inject(0x2FEB, f"Perfect Ring Bonus: {item_name}")
 
-        if ctx.current_planet is Rac2Planet.Hrugis_Cloud:
-            net_item = ctx.locations_info[Locations.HRUGIS_DESTROY_DEFENSES.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x11FB)
-            new_text = f"Received \x0C{item_name[:46]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
+        elif ctx.current_planet is Rac2Planet.Joba:
+            item_name = manager.get_formatted_item_name(Locations.JOBA_SHADY_SALESMAN.location_id)
+            manager.inject(0x27BB, f"\x12 Buy {item_name} for %d bolts")
+            manager.inject(0x27BC, f"You need %d bolts for {item_name}")
+            item_name = manager.get_formatted_item_name(Locations.JOBA_ARENA_BATTLE.location_id)
+            manager.inject(0x2F66, f"Battle for {item_name}")
+            manager.inject(0x2F96, f"You have earned {item_name}")
+            item_name = manager.get_formatted_item_name(Locations.JOBA_ARENA_CAGE_MATCH.location_id)
+            manager.inject(0x2F67, f"Cage Match for {item_name}")
+            manager.inject(0x2F97, f"You have earned {item_name}")
 
-            net_item = ctx.locations_info[Locations.HRUGIS_RACE_PB.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2FEB)
-            new_text = f"Perfect Ring Bonus: \x0C{item_name[:91]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
+        elif ctx.current_planet is Rac2Planet.Todano:
+            item_name = manager.get_formatted_item_name(Locations.TODANO_STUART_ZURGO_TRADE.location_id)
+            manager.inject(0x27D3, f"You need the Qwark action figure for {item_name}")
+            manager.inject(0x27D4, f"Trade Qwark action figure for {item_name}")
 
-        if ctx.current_planet is Rac2Planet.Joba:
-            net_item = ctx.locations_info[Locations.JOBA_SHADY_SALESMAN.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27BB)
-            new_text = f"\x12 Buy \x0C{item_name[:7]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
-            text_address = ctx.game_interface.get_text_address(0x27BC)
-            new_text = f"You need %d bolts for \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
+        elif ctx.current_planet is Rac2Planet.Aranos_Prison:
+            item_name = manager.get_formatted_item_name(Locations.ARANOS_PLUMBER.location_id)
+            manager.inject(0x27D5, f"You need %d bolts for {item_name}")
+            manager.inject(0x27D6, f"\x12 Buy {item_name} for %d bolts")
 
-            net_item = ctx.locations_info[Locations.JOBA_ARENA_BATTLE.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2F66)
-            new_text = f"Battle for \x0C{item_name[:18]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x2F96)
-            new_text = f"You have earned \x0C{item_name[:17]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Gorn:
+            item_name = manager.get_formatted_item_name(Locations.GORN_DEFEAT_THUG_FLEET.location_id)
+            manager.inject(0x11FF, f"Received {item_name}")
+            item_name = manager.get_formatted_item_name(Locations.GORN_RACE_PB.location_id)
+            manager.inject(0x2FF2, f"Perfect Ring Bonus: {item_name}")
 
-            net_item = ctx.locations_info[Locations.JOBA_ARENA_CAGE_MATCH.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2F67)
-            new_text = f"Cage Match for \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x2F97)
-            new_text = f"You have earned \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Smolg:
+            item_name = manager.get_formatted_item_name(Locations.SMOLG_MUTANT_CRAB.location_id)
+            manager.inject(0x27D7, f"You need %d bolts for {item_name}")
+            manager.inject(0x27D8, f"\x12 Buy {item_name} for %d bolts")
 
-        if ctx.current_planet is Rac2Planet.Todano:
-            net_item = ctx.locations_info[Locations.TODANO_STUART_ZURGO_TRADE.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27D4)
-            new_text = f"Trade Qwark action figure for \x0C{item_name[:19]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Damosel:
+            item_name = manager.get_formatted_item_name(Locations.DAMOSEL_HYPNOTIST.location_id)
+            manager.inject(0x27DA, f"You need %d bolts for {item_name}")
+            manager.inject(0x27DB, f"\x12 Trade parts and %d bolts for {item_name}")
 
-        if ctx.current_planet is Rac2Planet.Aranos_Prison:
-            net_item = ctx.locations_info[Locations.ARANOS_PLUMBER.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27D5)
-            new_text = f"You need %d bolts for \01 \x0C{item_name[:33]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27D6)
-            new_text = f"\x12 Buy \x0C{item_name[:23]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-
-        if ctx.current_planet is Rac2Planet.Gorn:
-            net_item = ctx.locations_info[Locations.GORN_DEFEAT_THUG_FLEET.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x11FF)
-            new_text = f"Received \x0C{item_name[:50]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
-
-            net_item = ctx.locations_info[Locations.GORN_RACE_PB.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x2FF2)
-            new_text = f"Perfect Ring Bonus: \x0C{item_name[:87]}\x08."
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\00')
-
-        if ctx.current_planet is Rac2Planet.Smolg:
-            net_item = ctx.locations_info[Locations.SMOLG_MUTANT_CRAB.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27D7)
-            new_text = f"You need %d bolts for \01 \x0C{item_name[:21]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27D8)
-            new_text = f"\x12 Buy \x0C{item_name[:21]}\x08 for %d bolts"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-
-        if ctx.current_planet is Rac2Planet.Damosel:
-            net_item = ctx.locations_info[Locations.DAMOSEL_HYPNOTIST.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27DA)
-            new_text = f"You need %d bolts for \01 \x0C{item_name[:13]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27DB)
-            new_text = f"\x12 Trade parts + %dB for \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-
-        if ctx.current_planet is Rac2Planet.Grelbin:
-            net_item = ctx.locations_info[Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id]
-            item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
-            text_address = ctx.game_interface.get_text_address(0x27DE)
-            new_text = f"You need 16 \x0CMoonstones\x08 for \x0C{item_name[:20]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
-            text_address = ctx.game_interface.get_text_address(0x27DF)
-            new_text = f"\x12 Trade 16 \x0CMoonstones\x08 for \x0C{item_name[:15]}"
-            ctx.game_interface.pcsx2_interface.write_bytes(text_address, new_text.encode() + b'\x00')
+        elif ctx.current_planet is Rac2Planet.Grelbin:
+            item_name = manager.get_formatted_item_name(Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id)
+            manager.inject(0x27DE, f"You need 16 \x0CMoonstones\x08 for {item_name}")
+            manager.inject(0x27DF, f"\x12 Trade 16 \x0CMoonstones\x08 for {item_name}")
     except TypeError:
         return
