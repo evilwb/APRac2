@@ -35,6 +35,22 @@ class EnableBoltMultiplier(Toggle):
     display_name = "Enable Bolt Multiplier"
 
 
+class NoRevisitRewardChange(Toggle):
+    """In the vanilla game, rewards given when killing enemies change when you come back to a previously visited planet
+    (bolts & experience). Enabling this option removes this behavior, making the experience and bolts obtained more
+    stable throughout the seed.
+    """
+    display_name = "Remove Revisit Rewards Change"
+
+
+class NoKillRewardDegradation(Toggle):
+    """In the vanilla game, rewards given by a specific enemy decrease each time you kill it (bolts & experience).
+    Enabling this option removes this behavior, making the experience and bolts obtained more stable throughout
+    the seed.
+    """
+    display_name = "Remove Kill Rewards Degradation"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -43,3 +59,5 @@ class Rac2Options(PerGameCommonOptions):
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier
+    no_revisit_reward_change: NoRevisitRewardChange
+    no_kill_reward_degradation: NoKillRewardDegradation
