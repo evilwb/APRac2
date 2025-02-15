@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from time import sleep
 from logging import Logger
 from enum import Enum, IntEnum
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from .TextManager import wrap_text
 from .data import Items
@@ -212,6 +212,7 @@ class Rac2Interface:
     game_id_error: str = None
     game_rev_error: int = None
     current_game: Optional[str] = None
+    text_ids_cache: Dict[int, int] = {}
 
     def __init__(self, logger) -> None:
         self.logger = logger
@@ -507,26 +508,43 @@ class Rac2Interface:
     def nop_instruction(self, address: int):
         self.write_instruction(address, 0x0)
 
-    def get_text_offset_addr(self, index: int) -> Optional[int]:
+    def get_text_offset_addr(self, text_id: int) -> Optional[int]:
         text_address_table = self.get_segment_pointer_table().help_messages
+
+        # If text segment starts with "WAD", it means the game is currently performing a light reload
+        # (e.g. after a death) and writing over this data would most likely crash the game.
+        header = self.pcsx2_interface.read_int32(text_address_table)
+        if header & 0x00FFFFFF == 0x444157:  # "WAD"
+            return None
+
+        # Since the order of text IDs is always the same in the table for a given version of the game, we store the
+        # position of each text ID we encounter to avoid looping over that table ever again.
+        if text_id in self.text_ids_cache:
+            return text_address_table + self.text_ids_cache[text_id] * 0x10
+
+        # Perform a lookup on the text offsets table to know the address of the string referenced by the given text ID
+        # Cache all offsets in this table inside the dictionary to not have to perform that lookup next time.
         i = 0
         while True:
-            current_index = self.pcsx2_interface.read_int32(text_address_table + i * 0x10 + 0x4)
-            if current_index > 0x2000000:
+            current_text_id = self.pcsx2_interface.read_int32(text_address_table + i * 0x10 + 0x4)
+            self.text_ids_cache[current_text_id] = i
+            if current_text_id > 0x2000000:
                 return None
-            if current_index == index:
+            if current_text_id == text_id:
                 return text_address_table + i * 0x10
             i += 1
 
-    def get_text_address(self, index: int) -> Optional[int]:
-        offset_addr = self.get_text_offset_addr(index)
+    def get_text_address(self, text_id: int) -> Optional[int]:
+        offset_addr = self.get_text_offset_addr(text_id)
         if offset_addr:
             return self.pcsx2_interface.read_int32(offset_addr)
 
-    def set_text_address(self, index: int, addr: int):
-        offset_addr = self.get_text_offset_addr(index)
+    def set_text_address(self, text_id: int, addr: int) -> bool:
+        offset_addr = self.get_text_offset_addr(text_id)
         if offset_addr:
             self.pcsx2_interface.write_int32(offset_addr, addr)
+            return True
+        return False
 
     def get_segment_pointer_table(self) -> Optional[MemorySegmentTable]:
         if self.addresses is None:

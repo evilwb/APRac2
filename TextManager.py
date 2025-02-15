@@ -106,9 +106,9 @@ class TextManager:
             remaining_bytes = chunk[1] - chunk[0]
             if len(text_bytes) <= remaining_bytes:
                 # We found a chunk with enough room to inject the string, do it
-                self.ctx.game_interface.pcsx2_interface.write_bytes(chunk[0], text_bytes)
-                self.ctx.game_interface.set_text_address(vanilla_text_id, chunk[0])
-                chunk[0] += len(text_bytes)
+                if self.ctx.game_interface.set_text_address(vanilla_text_id, chunk[0]):
+                    self.ctx.game_interface.pcsx2_interface.write_bytes(chunk[0], text_bytes)
+                    chunk[0] += len(text_bytes)
                 return
 
         self.ctx.game_interface.logger.error(f"Not enough space to inject game text, please report this issue!")
