@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from NetUtils import NetworkItem
+
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
 
@@ -10,7 +12,7 @@ COLOR_VIOLET = '\x0B'
 COLOR_ORANGE = '\x0C'
 
 
-def colorize_item_name(item_name: str, item_flags: int):
+def colorize_item_name(item_name: str, item_flags: int) -> str:
     # Take a color depending on item's usefulness
     color = COLOR_GREEN  # Filler / Trap = Green
     if item_flags & 0b001:
@@ -20,10 +22,7 @@ def colorize_item_name(item_name: str, item_flags: int):
     return f"{color}{item_name}{COLOR_WHITE}"
 
 
-def get_formatted_item_name(ctx: 'Rac2Context', location_id: int, player_name_after: bool = False):
-    net_item = ctx.locations_info.get(location_id, None)
-    if net_item is None:
-        return "???"
+def get_rich_item_name(ctx: 'Rac2Context', net_item: NetworkItem, player_name_after: bool = False) -> str:
     item_name = ctx.item_names.lookup_in_slot(net_item.item, net_item.player)
     item_name = colorize_item_name(item_name, net_item.flags)
 
@@ -38,7 +37,14 @@ def get_formatted_item_name(ctx: 'Rac2Context', location_id: int, player_name_af
         return f"{player_name}'s {item_name}"
 
 
-def add_line_breaks(text: str, max_word_size: int, max_line_size: int) -> str:
+def get_rich_item_name_from_location(ctx: 'Rac2Context', location_id: int) -> str:
+    net_item = ctx.locations_info.get(location_id, None)
+    if net_item is None:
+        return "???"
+    return get_rich_item_name(ctx, net_item)
+
+
+def wrap_text(text: str, max_word_size: int, max_line_size: int) -> str:
     """
     Formats the given string with line breaks and ellipsis where relevant.
 
@@ -63,7 +69,11 @@ def add_line_breaks(text: str, max_word_size: int, max_line_size: int) -> str:
         # Propagate color to next line if it wasn't white and there will be another line
         if len(words) > 0:
             for char in current_line[::-1]:
+                if ord(char) == 0x08:
+                    # Last color was white, nothing to do
+                    break
                 if 0x09 <= ord(char) <= 0x0f:
+                    # Last color was not white, propagate it to next line
                     words[0] = char + words[0]
                     break
 
@@ -90,7 +100,7 @@ class TextManager:
         new address. This is needed when replacement string have a chance of exceeding original string size, otherwise
         prefer using `replace`.
         """
-        text_bytes = add_line_breaks(text, 32, 40).encode() + b'\x00'
+        text_bytes = wrap_text(text, 32, 40).encode() + b'\x00'
 
         for chunk in self.injectable_chunks:
             remaining_bytes = chunk[1] - chunk[0]

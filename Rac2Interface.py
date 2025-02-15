@@ -1,18 +1,17 @@
 import array
 import dataclasses
 import struct
-import textwrap
 from dataclasses import dataclass, field
 from time import sleep
 from logging import Logger
 from enum import Enum, IntEnum
 from typing import Optional, List
 
+from .TextManager import wrap_text
 from .data import Items
 from .data.RamAddresses import Addresses
 from .data.Items import ItemData, EquipmentData, CoordData, CollectableData
 from .pcsx2_interface.pine import Pine
-from . import Rac2World
 
 _SUPPORTED_VERSIONS = ["SCUS-97268"]
 
@@ -442,10 +441,8 @@ class Rac2Interface:
         ):
             return False
 
-        message = "\1".join(textwrap.wrap(message, width=35, replace_whitespace=False, break_long_words=False))
-
         try:
-            payload_message = message.encode() + b"\00"
+            payload_message = wrap_text(message, 25, 35).encode() + b"\00"
             message_address = self.addresses.planet[self.get_current_planet()].skill_point_text
 
             if not message_address:

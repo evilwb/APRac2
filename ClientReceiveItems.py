@@ -20,7 +20,7 @@ def show_item_reception_message(ctx: 'Rac2Context', item: NetworkItem, item_name
     :param qty: The amount obtained
     """
     if item_name is None:
-        item_name = ctx.item_names.lookup_in_slot(item.item, item.player)
+        item_name = ctx.item_names.lookup_in_slot(item.item, ctx.slot)
     if qty > 1:
         item_name += f" x{qty}"
     item_name = colorize_item_name(item_name, item.flags)

@@ -1,7 +1,7 @@
 from typing import Dict, TYPE_CHECKING
 
 from .Rac2Interface import PLANET_LIST_SIZE, INVENTORY_SIZE, NANOTECH_BOOST_MAX
-from .TextManager import get_formatted_item_name
+from .TextManager import get_rich_item_name
 from .data import Planets, Locations, Items
 
 if TYPE_CHECKING:
@@ -158,5 +158,7 @@ async def handle_checked_location(ctx: 'Rac2Context'):
         location_name = [loc for loc in Planets.ALL_LOCATIONS if loc.location_id == location_id].pop().name
         ctx.game_interface.logger.info(f"Location checked: {location_name}")
 
-        item_to_player_names = get_formatted_item_name(ctx, location_id, True)
-        ctx.notification_manager.queue_notification(f"Sent {item_to_player_names}")
+        net_item = ctx.locations_info.get(location_id, None)
+        if net_item is not None and net_item.player != ctx.slot:
+            item_to_player_names = get_rich_item_name(ctx, net_item, True)
+            ctx.notification_manager.queue_notification(f"Sent {item_to_player_names}")
