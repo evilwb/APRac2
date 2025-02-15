@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from NetUtils import NetworkItem
-from . import Rac2World
+from . import Rac2World, ItemPool
 from .TextManager import colorize_item_name
 from .data import Items
 from .data.Items import EquipmentData, CoordData, ProgressiveUpgradeData
@@ -19,11 +19,15 @@ def show_item_reception_message(ctx: 'Rac2Context', item: NetworkItem, item_name
     :param item_name: The name to use for the item (if unspecified, it is obtained from the NetworkItem)
     :param qty: The amount obtained
     """
+    item_classification = item.flags
     if item_name is None:
         item_name = ctx.item_names.lookup_in_slot(item.item, ctx.slot)
+    if item.location == -2:
+        # For some reason, starting items don't have their classification flags set properly
+        item_classification = ItemPool.get_classification(item_name).as_flag()
     if qty > 1:
         item_name += f" x{qty}"
-    item_name = colorize_item_name(item_name, item.flags)
+    item_name = colorize_item_name(item_name, item_classification)
 
     if item.location == -2:
         # This is a starting item, mention it in the message

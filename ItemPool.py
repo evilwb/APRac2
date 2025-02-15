@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from . import Rac2World
 
 
-def get_classification(_world: "Rac2World", item_name: str) -> ItemClassification:
+def get_classification(item_name: str) -> ItemClassification:
     item = Items.from_name(item_name)
     if item in Items.COORDS:
         return ItemClassification.progression
