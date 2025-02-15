@@ -85,7 +85,7 @@ class Rac2World(World):
     def create_item(self, name: str, override: Optional[ItemClassification] = None) -> "Item":
         if override:
             return Rac2Item(name, override, self.item_name_to_id[name], self.player)
-        return Rac2Item(name, ItemPool.get_classification(self, name), self.item_name_to_id[name], self.player)
+        return Rac2Item(name, ItemPool.get_classification(name), self.item_name_to_id[name], self.player)
 
     def create_event(self, name: str) -> "Item":
         return Rac2Item(name, ItemClassification.progression, None, self.player)
