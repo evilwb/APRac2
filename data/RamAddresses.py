@@ -36,6 +36,8 @@ class Addresses:
             self.current_bolts: int = 0x1A79F8
             self.current_bolt_multiplier: int = 0x1A7A32
             self.current_ratchet_xp: int = 0x1A7A0C
+            self.current_lancer_xp: int = 0x1398E0
+            self.current_gravity_bomb_xp: int = 0x139910
             self.challenge_mode_flag: int = 0x1A7A0A
             self.wrench_weapon_id: int = 0x139572
             self.current_armor_level: int = 0x1A7A18
@@ -60,6 +62,7 @@ class Addresses:
             self.hypnomatic_part_count: int = self.platinum_bolt_table + 0x6E
             self.tabora_wrench_cutscene_flag: int = self.platinum_bolt_table + 0x6F
             self.aranos_wrench_cutscene_flag: int = self.platinum_bolt_table + 0x70
+            self.custom_text_notification_trigger: int = self.platinum_bolt_table + 0x71
 
             # Pause state is at 0x1A8F00 on all planets except for Oozla where it's at 0x1A8F40.
             self.pause_state: int = 0x1A8F00
@@ -69,6 +72,66 @@ class Addresses:
             self.oozla_box_breaker_func: int = 0x416440
             self.endako_free_ratchet_func: int = 0x3D20F8
             self.hrugis_race_controller_func: int = 0x42D1F0
+
+            self.spaceish_wars_func: Sequence[int] = [
+                None,      # Aranos Tutorial
+                0x3B0598,  # Oozla      V
+                0x3C1128,  # Maktar     V
+                0x3BD338,  # Endako     V
+                0x3DDE78,  # Barlow     V
+                0x3CB760,  # Feltzin    V
+                0x3FEED0,  # Notak      V
+                0x3AD8E8,  # Siberius   V
+                0x3CAEF0,  # Tabora     V
+                0x3B9790,  # Dobbo      V
+                0x3CDE80,  # Hrugis     V
+                0x3CDC88,  # Joba       V
+                0x3BF8A0,  # Todano     V
+                0x3C3688,  # Boldan     ? (Crashing? TODO)
+                0x3C2F78,  # Aranos     V
+                0x3D22C0,  # Gorn       V
+                0x3B4828,  # Snivelak   ? (Crashing? TODO)
+                0x3BE100,  # Smolg      V
+                0x3D7B40,  # Damosel    ? (Crashing? TODO)
+                0x3BA820,  # Grelbin    V
+                0x3D6F20,  # Yeedil     V
+                None,  # Dobbo Orbit? TODO
+                0x3CB7A0,  # Damosel Orbit?
+                0x3AB298,  # Ship Shack?        X  TODO
+                None,  # Wupash? TODO
+                None,  # Jamming Array? TODO
+                None   # Insomniac Museum? TODO
+            ]
+
+            self.display_skill_point_message_func: Sequence[int] = [
+                None,      # Aranos Tutorial
+                0x31BEC0,  # Oozla
+                0x32B018,  # Maktar
+                0x326870,  # Endako
+                0x348848,  # Barlow
+                0x33CD60,  # Feltzin
+                0x3662A0,  # Notak
+                0x31CBC8,  # Siberius
+                0x334920,  # Tabora
+                0x3226B8,  # Dobbo
+                0x33EAC0,  # Hrugis
+                0x3384D8,  # Joba
+                0x3297E8,  # Todano
+                0x32F340,  # Boldan
+                0x32E0B8,  # Aranos
+                0x33E460,  # Gorn
+                0x31E9E8,  # Snivelak
+                0x327FA8,  # Smolg
+                0x340D18,  # Damosel
+                0x323968,  # Grelbin
+                0x33B2A8,  # Yeedil
+                None,  # Dobbo Orbit? TODO
+                0x32F598,  # Damosel Orbit?
+                0x321FE0,  # Ship Shack?
+                None,  # Wupash? TODO
+                None,  # Jamming Array? TODO
+                None   # Insomniac Museum? TODO
+            ]
 
             # Addresses for data that exists on all/most planets but has a different address per planet
             self.planet: Dict[int, PlanetAddresses] = {

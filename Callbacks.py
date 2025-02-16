@@ -61,6 +61,11 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
     try:
         manager = TextManager(ctx)
 
+        # Handle HUD notifications
+        if ctx.notification_manager.has_message_to_display() and ctx.game_interface.can_trigger_hud_notification():
+            manager.set_hud_notification_text(ctx.notification_manager.pop_message_from_queue())
+            ctx.game_interface.trigger_hud_notification_display()
+
         # Replace "Short Cuts" button text with "Go to Ship Shack", since that's what the button does now
         manager.inject(0x3202, "Go to Ship Shack")
 

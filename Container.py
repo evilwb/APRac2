@@ -6,7 +6,8 @@ from typing import Any, Callable, TYPE_CHECKING, Optional
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
 from .Rac2Options import ShuffleWeaponVendors
-from .data import Items, IsoAddresses
+from .data import Items, IsoAddresses, RamAddresses
+from . import MIPS, TextManager
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -119,6 +120,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     #     patch.hash = ...
     if True:
         addresses = IsoAddresses.AddressesSCUS97268
+        ram = RamAddresses.Addresses("SCUS-97268")
 
     """---------------
     Core
@@ -200,11 +202,19 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
 
     # Same for nanotech boosts
-    for address in addresses.NANOTECH_COUNT_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x09, 0x00, 0x00, 0x10]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))
+    for wad_index, address in enumerate(addresses.NANOTECH_COUNT_FUNCS):
+        # Inject a custom procedure run on each tick of the main loop of each planet.
+        # It will be called through the NANOTECH_COUNT_FUNC since we are removing a few instructions there,
+        # leaving space for a call.
+        patch.write_token(APTokenTypes.WRITE, addresses.SPACEISH_WARS_FUNCS[wad_index], custom_main_loop(ram, wad_index))
+
+        patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))  # lbu a1,-0x4D1B(a1)
+        patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))  # lw a0,0x0(sp)
+        patch.write_token(APTokenTypes.WRITE, address + 0x78, bytes([0x21, 0x10, 0x85, 0x00]))  # addu v0,a0,a1
+        patch.write_token(APTokenTypes.WRITE, address + 0x7C, MIPS.jal(ram.spaceish_wars_func[wad_index]))
+        patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))  # sw v0,0x0(sp)
+        patch.write_token(APTokenTypes.WRITE, address + 0x84, bytes([0x07, 0x00, 0x00, 0x10]))  # beq zero,zero,0x7
+        patch.write_token(APTokenTypes.WRITE, address + 0x88, MIPS.nop())
 
     # Prevent Platinum Bolt received message popup at the end of ship races.
     for address in addresses.RACE_CONTROLLER_FUNCS:
@@ -617,6 +627,36 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4F0, NOP)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def custom_main_loop(ram: RamAddresses.Addresses, wad_index: int) -> bytes:
+    func = bytes()
+
+    upper_half, lower_half = MIPS.get_address_halves(ram.custom_text_notification_trigger)
+    text_id_to_display = TextManager.RESERVED_HUD_NOTIFICATION_TEXT_ID.to_bytes(2, 'little')
+
+    # Store return address on the stack
+    func += bytes([0xF8, 0xFF, 0xBD, 0x27])   # addiu sp,sp,-0x8
+    func += bytes([0x00, 0x00, 0xBF, 0xFF])   # sd ra,(sp)
+
+    # Read some custom variable managed by the client, and display a message if it is non-zero
+    func += upper_half + bytes([0x04, 0x3C])  # lui a0,0x001a
+    func += lower_half + bytes([0x84, 0x90])  # _lbu a0,-0x4D17(a0)
+    func += bytes([0x06, 0x00, 0x80, 0x10])   # beq a0,zero,0x6
+    func += MIPS.nop()
+
+    func += text_id_to_display + bytes([0x04, 0x24])   # li a0,<TEXT_ID>
+    func += MIPS.jal(ram.display_skill_point_message_func[wad_index])
+    func += bytes([0xff, 0xff, 0x05, 0x24])   # li a1,-0x1
+    func += upper_half + bytes([0x04, 0x3C])  # lui a0,0x001a
+    func += lower_half + bytes([0x80, 0xA0])  # _sb zero,-0x4D17(a0)
+
+    # Load back return address from stack, then return
+    func += bytes([0x00, 0x00, 0xBF, 0xDF])   # ld ra,(sp)
+    func += MIPS.jr_ra()
+    func += bytes([0x08, 0x00, 0xBD, 0x27])   # _addiu sp,sp,0x08
+
+    return func
 
 
 def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
