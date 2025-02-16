@@ -73,6 +73,17 @@ class Rac2Planet(IntEnum):
     Insomniac_Museum = 30
 
 
+class PauseState(Enum):
+    INGAME = 0
+    CUTSCENE = 2
+    MENU = 3
+    QUICKSELECT = 4
+    VENDOR = 5
+    SHIP = 6
+    MINIGAME = 7
+    UPGRADE = 8
+
+
 @dataclass
 class MobyInstance:
     address: int

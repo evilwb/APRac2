@@ -1,9 +1,13 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from . import Locations
-from .Rac2Interface import Rac2Planet
+from .ClientCheckLocations import INVENTORY_OFFSET_TO_LOCATION_ID
+from .Rac2Interface import Rac2Planet, PauseState
 from .TextManager import TextManager
-from .data import Items
+from .data import Items, Planets
+from .data.Items import EquipmentData
+from .data.RamAddresses import Addresses
+from .pcsx2_interface.pine import Pine
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -14,11 +18,24 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
 
     game_interface = ctx.game_interface
     planet = ctx.current_planet
+    text_manager = TextManager(ctx)
 
     if planet is Rac2Planet.Title_Screen or planet is None:
         return
 
-    replace_text(ctx, ap_connected)
+    replace_text(ctx, ap_connected, text_manager)
+
+    if ap_connected and game_interface.get_pause_state() == PauseState.VENDOR.value:
+        handle_vendor(ctx, text_manager)
+    else:
+        # reset weapon data back to default when not in vendor
+        equipment_data = game_interface.addresses.planet[ctx.current_planet].equipment_data
+        if equipment_data:
+            for weapon in Items.WEAPONS:
+                weapon_data = equipment_data + weapon.offset * 0xE0
+                text_id = game_interface.pcsx2_interface.read_int32(weapon_data + 0x8)
+                text_manager.inject(text_id, weapon.name)
+                game_interface.pcsx2_interface.write_int16(weapon_data + 0x3C, weapon.icon_id)
 
     # Ship Wupash if option is enabled.
     if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
@@ -57,10 +74,8 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
     """Called once when a new planet is loaded."""
 
 
-def replace_text(ctx: 'Rac2Context', ap_connected: bool):
+def replace_text(ctx: 'Rac2Context', ap_connected: bool, manager: TextManager):
     try:
-        manager = TextManager(ctx)
-
         # Replace "Short Cuts" button text with "Go to Ship Shack", since that's what the button does now
         manager.inject(0x3202, "Go to Ship Shack")
 
@@ -141,3 +156,51 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
             manager.inject(0x27DF, f"\x12 Trade 16 \x0CMoonstones\x08 for {item_name}")
     except TypeError:
         return
+
+
+def handle_vendor(ctx: "Rac2Context", text_manager: TextManager):
+    interface: Pine = ctx.game_interface.pcsx2_interface
+    addresses: Addresses = ctx.game_interface.addresses
+    vendor_slot_table: int = addresses.planet[ctx.current_planet].vendor_slot_table
+
+    # TODO: Figure out weapon model display so I can remove the next line that disables it completely.
+    interface.write_int32(vendor_slot_table - 0xB8, 0)
+
+    for vendor_slot in range(32):
+        # Prevent ammo toggle when confirmation menu is up.
+        if interface.read_int8(vendor_slot_table - 0xBC) != 0:
+            break
+
+        item_id: int = interface.read_int32(vendor_slot_table + vendor_slot * 24)
+        # End of slots
+        if item_id == 0:
+            break
+
+        location_id = INVENTORY_OFFSET_TO_LOCATION_ID.get(item_id, 0)
+        if location_id == 0:
+            continue
+
+        if location_id in ctx.checked_locations:
+            continue
+
+        planet_number: Optional[int] = None
+        for planet in Planets.LOGIC_PLANETS:
+            for location in planet.locations:
+                if location.location_id == location_id:
+                    planet_number = planet.number
+                    break
+        assert planet_number is not None, "Vendor slot location not on any planet."
+        has_slot: bool = ctx.game_interface.get_current_inventory()[Items.coord_for_planet(planet_number).name] > 0
+
+        item: EquipmentData = Items.from_offset(item_id)
+        holding_l2: bool = interface.read_int16(addresses.controller_input) & 0x01 != 0
+        has_item: bool = ctx.game_interface.get_current_inventory()[item.name] > 0
+        text_id = interface.read_int32(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x8)
+        if holding_l2 and has_item:
+            interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 1)
+            text_manager.inject(text_id, item.name)
+            interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, item.icon_id)
+        elif has_slot:
+            interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 0)
+            text_manager.inject(text_id, text_manager.get_formatted_item_name(location_id))
+            interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, 0xEA75)

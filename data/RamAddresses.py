@@ -95,6 +95,8 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2540,
                     skill_point_text=0x1C66600,
+                    equipment_data=0x266da0,
+                    vendor_slot_table=0x230580,
                 ),
                 BARLOW.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
@@ -114,6 +116,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
                     skill_point_text=0x1C726D0,
+                    equipment_data=0x26c7f0,
                 ),
                 SIBERIUS.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
@@ -145,6 +148,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
                     skill_point_text=0x1C4EAD0,
+                    equipment_data=0x279BA0,
                 ),
                 TODANO.number: PlanetAddresses(
                     segment_pointers=0x1C0180,
@@ -246,3 +250,5 @@ class PlanetAddresses(NamedTuple):
     next_planet: Optional[int] = None
     skill_point_text: Optional[int] = None
     camara_state: Optional[int] = None
+    equipment_data: Optional[int] = None
+    vendor_slot_table: Optional[int] = None

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from abc import ABC
 
-from typing import Callable, TYPE_CHECKING, Sequence
+from typing import Callable, TYPE_CHECKING, Sequence, Optional
 
 if TYPE_CHECKING:
     from ..Rac2Interface import Rac2Interface
@@ -17,59 +17,60 @@ class ItemData(ABC):
 @dataclass
 class EquipmentData(ItemData):
     offset: int
+    icon_id: Optional[int] = None
 
 
 # Gadgets/Items
-HELI_PACK = EquipmentData(1, "Heli-Pack", 2)
-THRUSTER_PACK = EquipmentData(2, "Thruster-Pack", 3)
-MAPPER = EquipmentData(3, "Mapper", 5)
-ARMOR_MAGNETIZER = EquipmentData(4, "Armor Magnetizer", 7)
-LEVITATOR = EquipmentData(5, "Levitator", 8)
-SWINGSHOT = EquipmentData(6, "Swingshot", 13)
-GRAVITY_BOOTS = EquipmentData(7, "Gravity Boots", 19)
-GRIND_BOOTS = EquipmentData(8, "Grindboots", 20)
-GLIDER = EquipmentData(9, "Glider", 21)
-DYNAMO = EquipmentData(10, "Dynamo", 36)
-ELECTROLYZER = EquipmentData(11, "Electrolyzer", 38)
-THERMANATOR = EquipmentData(12, "Thermanator", 39)
-TRACTOR_BEAM = EquipmentData(13, "Tractor Beam", 46)
-QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 49)
-BOX_BREAKER = EquipmentData(15, "Box Breaker", 50)
-INFILTRATOR = EquipmentData(16, "Infiltrator", 51)
-CHARGE_BOOTS = EquipmentData(17, "Charge Boots", 54)
-HYPNOMATIC = EquipmentData(18, "Hypnomatic", 55)
+HELI_PACK = EquipmentData(1, "Heli-Pack", 2, icon_id=0xEA8D)
+THRUSTER_PACK = EquipmentData(2, "Thruster-Pack", 3, icon_id=0xEA7E)
+MAPPER = EquipmentData(3, "Mapper", 5, icon_id=0xEA9F)
+ARMOR_MAGNETIZER = EquipmentData(4, "Armor Magnetizer", 7, icon_id=0xEA9A)
+LEVITATOR = EquipmentData(5, "Levitator", 8, icon_id=0xEA90)
+SWINGSHOT = EquipmentData(6, "Swingshot", 13, icon_id=0xEA8B)
+GRAVITY_BOOTS = EquipmentData(7, "Gravity Boots", 19, icon_id=0xEA88)
+GRIND_BOOTS = EquipmentData(8, "Grindboots", 20, icon_id=0xEA8C)
+GLIDER = EquipmentData(9, "Glider", 21, icon_id=0xEA91)
+DYNAMO = EquipmentData(10, "Dynamo", 36, icon_id=0xEA7F)
+ELECTROLYZER = EquipmentData(11, "Electrolyzer", 38, icon_id=0xEA81)
+THERMANATOR = EquipmentData(12, "Thermanator", 39, icon_id=0xEA82)
+TRACTOR_BEAM = EquipmentData(13, "Tractor Beam", 46, icon_id=0xEA80)
+QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 49, icon_id=0xEA9C)
+BOX_BREAKER = EquipmentData(15, "Box Breaker", 50, icon_id=0xEAA1)
+INFILTRATOR = EquipmentData(16, "Infiltrator", 51, icon_id=0xEA83)
+CHARGE_BOOTS = EquipmentData(17, "Charge Boots", 54, icon_id=0xEA89)
+HYPNOMATIC = EquipmentData(18, "Hypnomatic", 55, icon_id=0xEA84)
 
 
 @dataclass
 class WeaponData(EquipmentData):
-    pass
+    power: int = 0
 
 
 # Weapons
-CLANK_ZAPPER = WeaponData(101, "Clank Zapper", 9)
-BOMB_GLOVE = WeaponData(102, "Bomb Glove", 12)
-VISIBOMB_GUN = WeaponData(103, "Visibomb Gun", 14)
-SHEEPINATOR = WeaponData(104, "Sheepinator", 16)
-DECOY_GLOVE = WeaponData(105, "Decoy Glove", 17)
-TESLA_CLAW = WeaponData(106, "Tesla Claw", 18)
-CHOPPER = WeaponData(107, "Chopper", 22)
-PULSE_RIFLE = WeaponData(108, "Pulse Rifle", 23)
-SEEKER_GUN = WeaponData(109, "Seeker Gun", 24)
-HOVERBOMB_GUN = WeaponData(110, "Hoverbomb Gun", 25)
-BLITZ_GUN = WeaponData(111, "Blitz Gun", 26)
-MINIROCKET_TUBE = WeaponData(112, "Minirocket Tube", 27)
-PLASMA_COIL = WeaponData(113, "Plasma Coil", 28)
-LAVA_GUN = WeaponData(114, "Lava Gun", 29)
-LANCER = WeaponData(115, "Lancer", 30)
-SYNTHENOID = WeaponData(116, "Synthenoid", 31)
-SPIDERBOT_GLOVE = WeaponData(117, "Spiderbot Glove", 32)
-BOUNCER = WeaponData(118, "Bouncer", 37)
-MINITURRET_GLOVE = WeaponData(119, "Miniturret Glove", 41)
-GRAVITY_BOMB = WeaponData(120, "Gravity Bomb", 42)
-ZODIAC = WeaponData(121, "Zodiac", 43)
-RYNO_II = WeaponData(122, "RYNO II", 44)
-SHIELD_CHARGER = WeaponData(123, "Shield Charger", 45)
-WALLOPER = WeaponData(124, "Walloper", 53)
+CLANK_ZAPPER = WeaponData(101, "Clank Zapper", 9, icon_id=0xEA99, power=0,)
+BOMB_GLOVE = WeaponData(102, "Bomb Glove", 12, icon_id=0xEA79, power=4)
+VISIBOMB_GUN = WeaponData(103, "Visibomb Gun", 14, icon_id=0xEA7D, power=4)
+SHEEPINATOR = WeaponData(104, "Sheepinator", 16, icon_id=0xEA77, power=4)
+DECOY_GLOVE = WeaponData(105, "Decoy Glove", 17, icon_id=0xEA7B, power=0)
+TESLA_CLAW = WeaponData(106, "Tesla Claw", 18, icon_id=0xEA7A, power=4)
+CHOPPER = WeaponData(107, "Chopper", 22, icon_id=0xEA66, power=4)
+PULSE_RIFLE = WeaponData(108, "Pulse Rifle", 23, icon_id=0xEA68, power=5)
+SEEKER_GUN = WeaponData(109, "Seeker Gun", 24, icon_id=0xEA6B, power=5)
+HOVERBOMB_GUN = WeaponData(110, "Hoverbomb Gun", 25, icon_id=0xEA72, power=9)
+BLITZ_GUN = WeaponData(111, "Blitz Gun", 26, icon_id=0xEA67, power=4)
+MINIROCKET_TUBE = WeaponData(112, "Minirocket Tube", 27, icon_id=0xEA70, power=7)
+PLASMA_COIL = WeaponData(113, "Plasma Coil", 28, icon_id=0xEA71, power=8)
+LAVA_GUN = WeaponData(114, "Lava Gun", 29, icon_id=0xEA69, power=6)
+LANCER = WeaponData(115, "Lancer", 30, icon_id=0xEA64, power=3)
+SYNTHENOID = WeaponData(116, "Synthenoid", 31, icon_id=0xEA6D, power=7)
+SPIDERBOT_GLOVE = WeaponData(117, "Spiderbot Glove", 32, icon_id=0xEA6E, power=4)
+BOUNCER = WeaponData(118, "Bouncer", 37, icon_id=0xEA73, power=8)
+MINITURRET_GLOVE = WeaponData(119, "Miniturret Glove", 41, icon_id=0xEA6A, power=5)
+GRAVITY_BOMB = WeaponData(120, "Gravity Bomb", 42, icon_id=0xEA65, power=3)
+ZODIAC = WeaponData(121, "Zodiac", 43, icon_id=0xEA76, power=10)
+RYNO_II = WeaponData(122, "RYNO II", 44, icon_id=0xEA6C, power=10)
+SHIELD_CHARGER = WeaponData(123, "Shield Charger", 45, icon_id=0xEA74, power=9)
+WALLOPER = WeaponData(124, "Walloper", 53, icon_id=0xEA7C, power=4)
 
 
 @dataclass
@@ -147,13 +148,8 @@ EQUIPMENT: Sequence[EquipmentData] = [
     CHARGE_BOOTS,
     HYPNOMATIC,
 ]
-WEAPONS: Sequence[EquipmentData] = [
+MEGACORP_VENDOR_WEAPONS: Sequence[EquipmentData] = [
     CLANK_ZAPPER,
-    BOMB_GLOVE,
-    VISIBOMB_GUN,
-    SHEEPINATOR,
-    DECOY_GLOVE,
-    TESLA_CLAW,
     CHOPPER,
     PULSE_RIFLE,
     SEEKER_GUN,
@@ -164,14 +160,25 @@ WEAPONS: Sequence[EquipmentData] = [
     LAVA_GUN,
     LANCER,
     SYNTHENOID,
-    SPIDERBOT_GLOVE,
     BOUNCER,
     MINITURRET_GLOVE,
     GRAVITY_BOMB,
     ZODIAC,
-    RYNO_II,
     SHIELD_CHARGER,
-    WALLOPER
+]
+GADGETRON_VENDOR_WEAPONS: Sequence[EquipmentData] = [
+    BOMB_GLOVE,
+    VISIBOMB_GUN,
+    DECOY_GLOVE,
+    TESLA_CLAW,
+    RYNO_II,
+    WALLOPER,
+]
+WEAPONS: Sequence[WeaponData] = [
+    *MEGACORP_VENDOR_WEAPONS,
+    *GADGETRON_VENDOR_WEAPONS,
+    SPIDERBOT_GLOVE,
+    SHEEPINATOR,
 ]
 COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
@@ -234,6 +241,13 @@ def from_name(item_name: str) -> ItemData:
     matching = [item for item in ALL if item.name == item_name]
     assert len(matching) > 0, f"No item data with name '{item_name}'."
     assert len(matching) < 2, f"Multiple item data with name '{item_name}'. Please report."
+    return matching[0]
+
+
+def from_offset(item_offset: int) -> EquipmentData:
+    matching = [item for item in [*EQUIPMENT, *WEAPONS] if item.offset == item_offset]
+    assert len(matching) > 0, f"No item data with offset '{item_offset}'."
+    assert len(matching) < 2, f"Multiple item data with offset '{item_offset}'. Please report."
     return matching[0]
 
 

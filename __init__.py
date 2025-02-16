@@ -9,11 +9,12 @@ from BaseClasses import Item, Tutorial, ItemClassification
 
 from . import ItemPool
 from .data import Items, Locations, Planets
+from .data.Items import EquipmentData
 from .data.Planets import PlanetData
 from .data.Locations import LocationData
 from .Regions import create_regions
 from .Container import Rac2ProcedurePatch, generate_patch
-from .Rac2Options import Rac2Options, ShuffleWeaponVendors
+from .Rac2Options import Rac2Options, RandomizeMegacorpVendor
 
 
 def run_client(_url: Optional[str] = None):
@@ -74,6 +75,7 @@ class Rac2World(World):
     location_name_to_id = {location.name: location.location_id for location in Planets.ALL_LOCATIONS if location.location_id}
     settings: Rac2Settings
     starting_planet: Optional[PlanetData] = None
+    starting_weapons: list[EquipmentData] = []
     prefilled_item_map: Dict[str, str] = {}  # Dict of location name to item name
 
     def get_filler_item_name(self) -> str:

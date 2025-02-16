@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
-from .data import Items
+from .data import Items, Locations
 from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData
+from . import Rac2Options
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -68,7 +69,50 @@ def create_planets(world: "Rac2World") -> list["Item"]:
 
 
 def create_equipment(world: "Rac2World") -> list["Item"]:
-    equipment_to_add: list[EquipmentData] = list(Items.EQUIPMENT) + [Items.SHEEPINATOR, Items.SPIDERBOT_GLOVE]
+    equipment_to_add: list[EquipmentData] = list(Items.EQUIPMENT) + list(Items.WEAPONS)
+    weapons: list[EquipmentData] = []
+    # Starting Weapons
+    if world.options.starting_weapons == world.options.starting_weapons.option_vanilla:
+        equipment_to_add.remove(Items.LANCER)
+        equipment_to_add.remove(Items.GRAVITY_BOMB)
+    else:
+        if world.options.starting_weapons == world.options.starting_weapons.option_balanced:
+            weapons = [weapon for weapon in Items.WEAPONS if weapon.power <= 5]
+        if world.options.starting_weapons == world.options.starting_weapons.option_non_broken:
+            weapons = [weapon for weapon in Items.WEAPONS if weapon.power < 10]
+        if world.options.starting_weapons == world.options.starting_weapons.option_all:
+            weapons = list(Items.WEAPONS)
+    
+        world.multiworld.random.shuffle(weapons)
+        world.push_precollected(world.create_item(weapons[0].name))
+        world.push_precollected(world.create_item(weapons[1].name))
+        world.starting_weapons = [weapons[0], weapons[1]]
+        equipment_to_add -= world.starting_weapons
+
+    # Gadgetron Vendor
+    if not world.options.randomize_gadgetron_vendor:
+        locations: list[Locations.LocationData] = [
+            Locations.BARLOW_GADGETRON_1, Locations.BARLOW_GADGETRON_2, Locations.BARLOW_GADGETRON_3,
+            Locations.BARLOW_GADGETRON_4, Locations.BARLOW_GADGETRON_5, Locations.BARLOW_GADGETRON_6,
+        ]
+        for location, weapon in zip(locations, Items.GADGETRON_VENDOR_WEAPONS):
+            world.get_location(location.name).place_locked_item(world.create_item(weapon.name))
+            equipment_to_add.remove(weapon)
+
+    # Megacorp Vendor
+    if not world.options.randomize_megacorp_vendor:
+        locations: list[Locations.LocationData] = [
+            Locations.OOZLA_NEW_WEAPON_1, Locations.OOZLA_NEW_WEAPON_2, Locations.BARLOW_NEW_WEAPON,
+            Locations.ENDAKO_NEW_WEAPON_1, Locations.ENDAKO_NEW_WEAPON_2, Locations.NOTAK_NEW_WEAPON,
+            Locations.TABORA_NEW_WEAPON_1, Locations.TABORA_NEW_WEAPON_2, Locations.DOBBO_NEW_WEAPON,
+            Locations.JOBA_NEW_WEAPON_1, Locations.JOBA_NEW_WEAPON_2, Locations.TODANO_NEW_WEAPON,
+            Locations.ARANOS_NEW_WEAPON_1, Locations.ARANOS_NEW_WEAPON_2
+        ]
+        for location, weapon in zip(locations, list(Items.MEGACORP_VENDOR_WEAPONS)):
+            world.get_location(location.name).place_locked_item(world.create_item(weapon.name))
+            if weapon in equipment_to_add:
+                equipment_to_add.remove(weapon)
+
     precollected_ids: list[int] = [item.code for item in world.multiworld.precollected_items[world.player]]
     equipment_to_add = [equipment for equipment in equipment_to_add if equipment.item_id not in precollected_ids]
 
@@ -78,11 +122,7 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
 def create_collectables(world: "Rac2World") -> list["Item"]:
     collectable_items: list["Item"] = []
 
-    precollected_platinum_bolts: int = len([
-        item for item in world.multiworld.precollected_items[world.player]
-        if item.code == Items.PLATINUM_BOLT.item_id
-    ])
-    for _ in range(Items.PLATINUM_BOLT.max_capacity - precollected_platinum_bolts):
+    for _ in range(20):
         collectable_items.append(world.create_item(Items.PLATINUM_BOLT.name))
 
     precollected_nanotech_boosts: int = len([
