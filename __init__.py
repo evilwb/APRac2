@@ -40,8 +40,14 @@ class Rac2Settings(settings.Group):
         Alternatively, set it to a path to a program to open the .iso file with (like PCSX2)
         """
 
+    class GameINI(str):
+        """ Set to file path to an existing PCSX2 game setting INI file to have the patcher
+        create an appropriately named INI with the rest of the patch output. This can be used to
+        allow you to use you own custom PCSX2 setting with patched ISO. """
+
     iso_file: IsoFile = IsoFile(IsoFile.copy_to)
     iso_start: typing.Union[IsoStart, bool] = False
+    game_ini: GameINI = ""
 
 
 class Rac2Web(WebWorld):
