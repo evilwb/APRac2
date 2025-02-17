@@ -41,8 +41,14 @@ class Rac2Settings(settings.Group):
         Alternatively, set it to a path to a program to open the .iso file with (like PCSX2)
         """
 
+    class GameINI(str):
+        """ Set to file path to an existing PCSX2 game setting INI file to have the patcher
+        create an appropriately named INI with the rest of the patch output. This can be used to
+        allow you to use you own custom PCSX2 setting with patched ISO. """
+
     iso_file: IsoFile = IsoFile(IsoFile.copy_to)
     iso_start: typing.Union[IsoStart, bool] = False
+    game_ini: GameINI = ""
 
 
 class Rac2Web(WebWorld):
@@ -87,7 +93,7 @@ class Rac2World(World):
     def create_item(self, name: str, override: Optional[ItemClassification] = None) -> "Item":
         if override:
             return Rac2Item(name, override, self.item_name_to_id[name], self.player)
-        return Rac2Item(name, ItemPool.get_classification(self, name), self.item_name_to_id[name], self.player)
+        return Rac2Item(name, ItemPool.get_classification(name), self.item_name_to_id[name], self.player)
 
     def create_event(self, name: str) -> "Item":
         return Rac2Item(name, ItemClassification.progression, None, self.player)
