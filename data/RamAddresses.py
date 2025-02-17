@@ -1,4 +1,4 @@
-from typing import Optional, Dict, NamedTuple
+from typing import Dict
 
 from .Planets import *
 
@@ -75,32 +75,32 @@ class Addresses:
 
             self.spaceish_wars_func: Sequence[int] = [
                 None,      # Aranos Tutorial
-                0x3B0598,  # Oozla      V
-                0x3C1128,  # Maktar     V
-                0x3BD338,  # Endako     V
-                0x3DDE78,  # Barlow     V
-                0x3CB760,  # Feltzin    V
-                0x3FEED0,  # Notak      V
-                0x3AD8E8,  # Siberius   V
-                0x3CAEF0,  # Tabora     V
-                0x3B9790,  # Dobbo      V
-                0x3CDE80,  # Hrugis     V
-                0x3CDC88,  # Joba       V
-                0x3BF8A0,  # Todano     V
-                0x3C3688,  # Boldan     ? (Crashing? TODO)
-                0x3C2F78,  # Aranos     V
-                0x3D22C0,  # Gorn       V
-                0x3B4828,  # Snivelak   ? (Crashing? TODO)
-                0x3BE100,  # Smolg      V
-                0x3D7B40,  # Damosel    ? (Crashing? TODO)
-                0x3BA820,  # Grelbin    V
-                0x3D6F20,  # Yeedil     V
-                None,  # Dobbo Orbit? TODO
-                0x3CB7A0,  # Damosel Orbit?
-                0x3AB298,  # Ship Shack?        X  TODO
-                None,  # Wupash? TODO
-                None,  # Jamming Array? TODO
-                None   # Insomniac Museum? TODO
+                0x3B0598,  # Oozla          V
+                0x3C1128,  # Maktar         V
+                0x3BD338,  # Endako         V
+                0x3DDE78,  # Barlow         V
+                0x3CB760,  # Feltzin        V
+                0x3FEED0,  # Notak          V
+                0x3AD8E8,  # Siberius       V
+                0x3CAEF0,  # Tabora         V
+                0x3B9790,  # Dobbo          V
+                0x3CDE80,  # Hrugis         V
+                0x3CDC88,  # Joba           V
+                0x3BF8A0,  # Todano         V
+                0x3C3688,  # Boldan           Crashed
+                0x3C2F78,  # Aranos         V
+                0x3D22C0,  # Gorn           V
+                0x3B4828,  # Snivelak         Crashed
+                0x3BE100,  # Smolg          V
+                0x3D7B40,  # Damosel          Crashed
+                0x3BA820,  # Grelbin        V
+                0x3D6F20,  # Yeedil         V
+                None,      # Insomniac Museum
+                0x3C3AA0,  # Dobbo Orbit
+                0x3CB7A0,  # Damosel Orbit
+                0x3AB298,  # Ship Shack
+                0x3C4400,  # Wupash
+                0x3B5748,  # Jamming Array
             ]
 
             self.display_skill_point_message_func: Sequence[int] = [
@@ -125,12 +125,12 @@ class Addresses:
                 0x340D18,  # Damosel
                 0x323968,  # Grelbin
                 0x33B2A8,  # Yeedil
-                None,  # Dobbo Orbit? TODO
-                0x32F598,  # Damosel Orbit?
-                0x321FE0,  # Ship Shack?
-                None,  # Wupash? TODO
-                None,  # Jamming Array? TODO
-                None   # Insomniac Museum? TODO
+                None,      # Insomniac Museum
+                0x32AE80,  # Dobbo Orbit
+                0x32F598,  # Damosel Orbit
+                0x321FD8,  # Ship Shack
+                0x336F08,  # Wupash
+                0x325908,  # Jamming Array
             ]
 
             # Addresses for data that exists on all/most planets but has a different address per planet
