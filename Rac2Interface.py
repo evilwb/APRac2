@@ -509,8 +509,6 @@ class Rac2Interface:
     def set_text_address(self, text_id: int, addr: int) -> bool:
         offset_addr = self.get_text_offset_addr(text_id)
         if offset_addr:
-            self.logger.info(
-                f"Setting offset for text ID {hex(text_id)} at addr {hex(offset_addr)} to value {hex(addr)}")
             self.pcsx2_interface.write_int32(offset_addr, addr)
             return True
         return False

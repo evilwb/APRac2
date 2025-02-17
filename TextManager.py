@@ -97,9 +97,6 @@ class TextManager:
         clanks_day_at_insomniac_chunk = ctx.game_interface.get_text_address(0x3246)
         museum_chunk_end_addr = insomniac_museum_chunk + 0x18DC - RESERVED_HUD_NOTIFICATION_SIZE - 1
 
-        self.ctx.game_interface.logger.info(f"insomniac_museum_chunk = {hex(insomniac_museum_chunk)}")
-        self.ctx.game_interface.logger.info(f"museum_chunk_end_addr = {hex(museum_chunk_end_addr)}")
-
         self.injectable_chunks.append([clanks_day_at_insomniac_chunk, clanks_day_at_insomniac_chunk + 0x893])
         self.injectable_chunks.append([insomniac_museum_chunk, museum_chunk_end_addr])
 
