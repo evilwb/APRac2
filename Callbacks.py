@@ -112,7 +112,7 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
         elif ctx.current_planet is Rac2Planet.Todano:
             item_name = get_rich_item_name_from_location(ctx, Locations.TODANO_STUART_ZURGO_TRADE.location_id)
             manager.inject(0x27D3, f"You need the Qwark action figure for {item_name}")
-            manager.inject(0x27D4, f"Trade Qwark action figure for {item_name}")
+            manager.inject(0x27D4, f"\x12 Trade Qwark action figure for {item_name}")
 
         elif ctx.current_planet is Rac2Planet.Aranos_Prison:
             item_name = get_rich_item_name_from_location(ctx, Locations.ARANOS_PLUMBER.location_id)
