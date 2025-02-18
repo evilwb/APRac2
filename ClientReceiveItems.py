@@ -22,7 +22,7 @@ def show_item_reception_message(ctx: 'Rac2Context', item: NetworkItem, item_name
     item_classification = item.flags
     if item_name is None:
         item_name = ctx.item_names.lookup_in_slot(item.item, ctx.slot)
-    if item.location == -2:
+    if item.location < 0:
         # For some reason, starting items don't have their classification flags set properly
         item_classification = ItemPool.get_classification(item_name).as_flag()
     if qty > 1:

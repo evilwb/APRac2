@@ -531,7 +531,12 @@ class Rac2Interface:
         # Since the order of text IDs is always the same in the table for a given version of the game, we store the
         # position of each text ID we encounter to avoid looping over that table ever again.
         if text_id in self.text_ids_cache:
-            return text_address_table + self.text_ids_cache[text_id] * 0x10
+            offset_addr = text_address_table + self.text_ids_cache[text_id] * 0x10
+            found_text_id = self.pcsx2_interface.read_int32(offset_addr + 0x4)
+            if found_text_id == text_id:
+                return offset_addr
+            # When changing planets, offsets can slightly shift for some reason: invalidate the cache
+            self.text_ids_cache.clear()
 
         # Perform a lookup on the text offsets table to know the address of the string referenced by the given text ID
         # Cache all offsets in this table inside the dictionary to not have to perform that lookup next time.
