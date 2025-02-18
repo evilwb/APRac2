@@ -1,3 +1,13 @@
+from worlds.rac2.data.Planets import *
+
+
+def get_planet_id_from_iso_address(address):
+    for planet_id, addr_range in AddressesSCUS97268.PLANET_WADS.items():
+        if addr_range[0] <= address <= addr_range[1]:
+            return planet_id
+    return None
+
+
 class AddressesSCUS97268:
     """ Addresses for important memory locations on the Ratchet and Clank 2 'SCUS-97268' ISO """
     # Addresses in the ELF (0x00258800 - 0x004D7D3B)
@@ -134,6 +144,36 @@ class AddressesSCUS97268:
         0xB6CBAA54, 0xB98C38FC, 0xBB08F7C8, 0xBFA8F340, 0xC33DB134, 0xC639AA5C, 0xC9008548, 0xCA675AF0, 0xCDA4742C,
         0xD018B5E0, 0xD24D72D8, 0xD685F9A8, 0xDAFA22FC, 0xDCD75CC8, 0xDE93921C, 0xDFADA510, 0xE0740648, 0xE15E0A3C
     ]
+
+    PLANET_WADS = {
+        ARANOS_TUTORIAL.number: [0x9D04C000, 0x9DF0C27F],   # LEVEL0.WAD
+        OOZLA.number: [0x9E909800, 0x9FDE9D53],             # LEVEL1.WAD
+        MAKTAR_NEBULA.number: [0xA1753800, 0xA2B143F7],     # LEVEL2.WAD
+        ENDAKO.number: [0xA5B5E000, 0xA6C3185F],            # LEVEL3.WAD
+        BARLOW.number: [0xA8CD7000, 0xAA4689DB],            # LEVEL4.WAD
+        FELTZIN_SYSTEM.number: [0xAC85B800, 0xAD8452CF],    # LEVEL5.WAD
+        NOTAK.number: [0xAE11F800, 0xAF3A2BDF],             # LEVEL6.WAD
+        SIBERIUS.number: [0xB04BB800, 0xB19FB52F],          # LEVEL7.WAD
+        TABORA.number: [0xB2D04000, 0xB40AA02F],            # LEVEL8.WAD
+        DOBBO.number: [0xB690A000, 0xB7AFD2DF],             # LEVEL9.WAD
+        HRUGIS_CLOUD.number: [0xB955E000, 0xBA3188BF],      # LEVEL10.WAD
+        JOBA.number: [0xBAD77000, 0xBC2CEA9F],              # LEVEL11.WAD
+        TODANO.number: [0xBF6F8000, 0xC07B628F],            # LEVEL12.WAD
+        BOLDAN.number: [0xC3067800, 0xC418DAAF],            # LEVEL13.WAD
+        ARANOS_PRISON.number: [0xC5FE2800, 0xC706FF9F],     # LEVEL14.WAD
+        GORN.number: [0xC8C75000, 0xC99E65BF],              # LEVEL15.WAD
+        SNIVELAK.number: [0xCA2D4800, 0xCB4563DF],          # LEVEL16.WAD
+        SMOLG.number: [0xCD6E7800, 0xCE6E081F],             # LEVEL17.WAD
+        DAMOSEL.number: [0xCFDEE800, 0xD0ECDABF],           # LEVEL18.WAD
+        GRELBIN.number: [0xD2144800, 0xD39392D7],           # LEVEL19.WAD
+        YEEDIL.number: [0xD64EA000, 0xD794D25B],            # LEVEL20.WAD
+        INSOMNIAC_MUSEUM.number: [0xDAC72800, 0xDB9300DF],  # LEVEL21.WAD
+        DOBBO_ORBIT.number: [0xDCA0C800, 0xDD708D2F],       # LEVEL22.WAD
+        DAMOSEL_ORBIT.number: [0xDE57C000, 0xDF1811CF],     # LEVEL23.WAD
+        SHIP_SHACK.number: [0xDF7F1800, 0xDFFE82D6],        # LEVEL24.WAD
+        WUPASH_NEBULA.number: [0xE03D5000, 0xE0C12E8C],     # LEVEL25.WAD
+        JAMMING_ARRAY.number: [0xE12CC800, 0xE1D47A8F],     # LEVEL26.WAD
+    }
 
     # Oozla
     MEGACORP_SCIENTIST_FUNC: int = 0x9EC7295C

@@ -8,6 +8,7 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
 from .Rac2Options import ShuffleWeaponVendors
 from .data import Items, IsoAddresses, RamAddresses
 from . import MIPS, TextManager
+from .data.RamAddresses import PlanetAddresses
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -202,16 +203,17 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
 
     # Same for nanotech boosts
-    for wad_index, address in enumerate(addresses.NANOTECH_COUNT_FUNCS):
+    for address, spaceish_wars_address in zip(addresses.NANOTECH_COUNT_FUNCS, addresses.SPACEISH_WARS_FUNCS):
         # Inject a custom procedure run on each tick of the main loop of each planet.
         # It will be called through the NANOTECH_COUNT_FUNC since we are removing a few instructions there,
         # leaving space for a call.
-        patch.write_token(APTokenTypes.WRITE, addresses.SPACEISH_WARS_FUNCS[wad_index], custom_main_loop(ram, wad_index))
+        planet = ram.planet[IsoAddresses.get_planet_id_from_iso_address(address)]
+        patch.write_token(APTokenTypes.WRITE, spaceish_wars_address, custom_main_loop(ram, planet))
 
         patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))  # lbu a1,-0x4D1B(a1)
         patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))  # lw a0,0x0(sp)
         patch.write_token(APTokenTypes.WRITE, address + 0x78, bytes([0x21, 0x10, 0x85, 0x00]))  # addu v0,a0,a1
-        patch.write_token(APTokenTypes.WRITE, address + 0x7C, MIPS.jal(ram.spaceish_wars_func[wad_index]))
+        patch.write_token(APTokenTypes.WRITE, address + 0x7C, MIPS.jal(planet.spaceish_wars_func))
         patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))  # sw v0,0x0(sp)
         patch.write_token(APTokenTypes.WRITE, address + 0x84, bytes([0x07, 0x00, 0x00, 0x10]))  # beq zero,zero,0x7
         patch.write_token(APTokenTypes.WRITE, address + 0x88, MIPS.nop())
@@ -629,7 +631,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_file("token_data.bin", patch.get_token_binary())
 
 
-def custom_main_loop(ram: RamAddresses.Addresses, wad_index: int) -> bytes:
+def custom_main_loop(ram: RamAddresses.Addresses, planet: PlanetAddresses) -> bytes:
     func = bytes()
 
     upper_half, lower_half = MIPS.get_address_halves(ram.custom_text_notification_trigger)
@@ -646,7 +648,7 @@ def custom_main_loop(ram: RamAddresses.Addresses, wad_index: int) -> bytes:
     func += MIPS.nop()
 
     func += text_id_to_display + bytes([0x04, 0x24])   # li a0,<TEXT_ID>
-    func += MIPS.jal(ram.display_skill_point_message_func[wad_index])
+    func += MIPS.jal(planet.display_skill_point_message_func)
     func += bytes([0xff, 0xff, 0x05, 0x24])   # li a1,-0x1
     func += upper_half + bytes([0x04, 0x3C])  # lui a0,0x001a
     func += lower_half + bytes([0x80, 0xA0])  # _sb zero,-0x4D17(a0)

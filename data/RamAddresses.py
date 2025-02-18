@@ -73,66 +73,6 @@ class Addresses:
             self.endako_free_ratchet_func: int = 0x3D20F8
             self.hrugis_race_controller_func: int = 0x42D1F0
 
-            self.spaceish_wars_func: Sequence[int] = [
-                None,      # Aranos Tutorial
-                0x3B0598,  # Oozla
-                0x3C1128,  # Maktar
-                0x3BD338,  # Endako
-                0x3DDE78,  # Barlow
-                0x3CB760,  # Feltzin
-                0x3FEED0,  # Notak
-                0x3AD8E8,  # Siberius
-                0x3CAEF0,  # Tabora
-                0x3B9790,  # Dobbo
-                0x3CDE80,  # Hrugis
-                0x3CDC88,  # Joba
-                0x3BF8A0,  # Todano
-                0x3C3688,  # Boldan
-                0x3C2F78,  # Aranos
-                0x3D22C0,  # Gorn
-                0x3B4828,  # Snivelak
-                0x3BE100,  # Smolg
-                0x3D7B40,  # Damosel
-                0x3BA820,  # Grelbin
-                0x3D6F20,  # Yeedil
-                None,      # Insomniac Museum
-                0x3C3AA0,  # Dobbo Orbit
-                0x3CB7A0,  # Damosel Orbit
-                0x3AB298,  # Ship Shack
-                0x3C4400,  # Wupash
-                0x3B5748,  # Jamming Array
-            ]
-
-            self.display_skill_point_message_func: Sequence[int] = [
-                None,      # Aranos Tutorial
-                0x31BEC0,  # Oozla
-                0x32B018,  # Maktar
-                0x326870,  # Endako
-                0x348848,  # Barlow
-                0x33CD60,  # Feltzin
-                0x3662A0,  # Notak
-                0x31CBC8,  # Siberius
-                0x334920,  # Tabora
-                0x3226B8,  # Dobbo
-                0x33EAC0,  # Hrugis
-                0x3384D8,  # Joba
-                0x3297E8,  # Todano
-                0x32F340,  # Boldan
-                0x32E0B8,  # Aranos
-                0x33E460,  # Gorn
-                0x31E9E8,  # Snivelak
-                0x327FA8,  # Smolg
-                0x340D18,  # Damosel
-                0x323968,  # Grelbin
-                0x33B2A8,  # Yeedil
-                None,      # Insomniac Museum
-                0x32AE80,  # Dobbo Orbit
-                0x32F598,  # Damosel Orbit
-                0x321FD8,  # Ship Shack
-                0x336F08,  # Wupash
-                0x325908,  # Jamming Array
-            ]
-
             # Addresses for data that exists on all/most planets but has a different address per planet
             self.planet: Dict[int, PlanetAddresses] = {
                 -1: PlanetAddresses(
@@ -146,24 +86,32 @@ class Addresses:
                     planet_switch_trigger=0x1A8F14,
                     next_planet=0x1B2080,
                     skill_point_text=0x1A900A0,
+                    spaceish_wars_func=0x3B0598,
+                    display_skill_point_message_func=0x31BEC0,
                 ),
                 MAKTAR_NEBULA.number: PlanetAddresses(
                     segment_pointers=0x1C0880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
                     skill_point_text=0x1B9A310,
+                    spaceish_wars_func=0x3C1128,
+                    display_skill_point_message_func=0x32B018,
                 ),
                 ENDAKO.number: PlanetAddresses(
                     segment_pointers=0x1BFD00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2540,
                     skill_point_text=0x1C66600,
+                    spaceish_wars_func=0x3BD338,
+                    display_skill_point_message_func=0x326870,
                 ),
                 BARLOW.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2000,
                     skill_point_text=0x1C8DF50,
+                    spaceish_wars_func=0x3DDE78,
+                    display_skill_point_message_func=0x348848,
                 ),
                 FELTZIN_SYSTEM.number: PlanetAddresses(
                     segment_pointers=0x1BFA40,
@@ -171,30 +119,40 @@ class Addresses:
                     next_planet=0x1B2040,
                     skill_point_text=0x1874090,
                     camara_state=0x1B1B20,
+                    spaceish_wars_func=0x3CB760,
+                    display_skill_point_message_func=0x33CD60,
                 ),
                 NOTAK.number: PlanetAddresses(
                     segment_pointers=0x1BFBC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
                     skill_point_text=0x1C726D0,
+                    spaceish_wars_func=0x3FEED0,
+                    display_skill_point_message_func=0x3662A0,
                 ),
                 SIBERIUS.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1E00,
                     skill_point_text=0x1981130,
+                    spaceish_wars_func=0x3AD8E8,
+                    display_skill_point_message_func=0x31CBC8,
                 ),
                 TABORA.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
                     skill_point_text=0x1C601C0,
+                    spaceish_wars_func=0x3CAEF0,
+                    display_skill_point_message_func=0x334920,
                 ),
                 DOBBO.number: PlanetAddresses(
                     segment_pointers=0x1BFD80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2380,
                     skill_point_text=0x1CCE990,
+                    spaceish_wars_func=0x3B9790,
+                    display_skill_point_message_func=0x3226B8,
                 ),
                 HRUGIS_CLOUD.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
@@ -202,30 +160,40 @@ class Addresses:
                     next_planet=0x1B2040,
                     skill_point_text=0x1649420,
                     camara_state=0x1B1B20,
+                    spaceish_wars_func=0x3CDE80,
+                    display_skill_point_message_func=0x33EAC0,
                 ),
                 JOBA.number: PlanetAddresses(
                     segment_pointers=0x1C0C40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B30C0,
                     skill_point_text=0x1C4EAD0,
+                    spaceish_wars_func=0x3CDC88,
+                    display_skill_point_message_func=0x3384D8,
                 ),
                 TODANO.number: PlanetAddresses(
                     segment_pointers=0x1C0180,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B29C0,
                     skill_point_text=0x1C44EF0,
+                    spaceish_wars_func=0x3BF8A0,
+                    display_skill_point_message_func=0x3297E8,
                 ),
                 BOLDAN.number: PlanetAddresses(
                     segment_pointers=0x1BFC40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2440,
                     skill_point_text=0x1CCBA00,
+                    spaceish_wars_func=0x3C3688,
+                    display_skill_point_message_func=0x32F340,
                 ),
                 ARANOS_PRISON.number: PlanetAddresses(
                     segment_pointers=0x1BF880,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B20C0,
                     skill_point_text=0x1B5A240,
+                    spaceish_wars_func=0x3C2F78,
+                    display_skill_point_message_func=0x32E0B8,
                 ),
                 GORN.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
@@ -233,54 +201,72 @@ class Addresses:
                     next_planet=0x1B2140,
                     skill_point_text=0x16734E0,
                     camara_state=0x1B1BF0,
+                    spaceish_wars_func=0x3D22C0,
+                    display_skill_point_message_func=0x33E460,
                 ),
                 SNIVELAK.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2640,
                     skill_point_text=0x1CD5660,
+                    spaceish_wars_func=0x3B4828,
+                    display_skill_point_message_func=0x31E9E8,
                 ),
                 SMOLG.number: PlanetAddresses(
                     segment_pointers=0x1BFF40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2740,
                     skill_point_text=0x1CEA930,
+                    spaceish_wars_func=0x3BE100,
+                    display_skill_point_message_func=0x327FA8,
                 ),
                 DAMOSEL.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2340,
                     skill_point_text=0x1C6B7F0,
+                    spaceish_wars_func=0x3D7B40,
+                    display_skill_point_message_func=0x340D18,
                 ),
                 GRELBIN.number: PlanetAddresses(
                     segment_pointers=0x1BFDC0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2500,
                     skill_point_text=0x1C49920,
+                    spaceish_wars_func=0x3BA820,
+                    display_skill_point_message_func=0x323968,
                 ),
                 YEEDIL.number: PlanetAddresses(
                     segment_pointers=0x1C0340,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B2AC0,
                     skill_point_text=0x1C1B010,
+                    spaceish_wars_func=0x3D6F20,
+                    display_skill_point_message_func=0x33B2A8,
                 ),
                 DOBBO_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C0000,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1C40,
                     skill_point_text=0x168B7D0,
+                    spaceish_wars_func=0x3C3AA0,
+                    display_skill_point_message_func=0x32AE80,
                 ),
                 DAMOSEL_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C09C0,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B22C0,
                     skill_point_text=0x150F110,
+                    spaceish_wars_func=0x3CB7A0,
+                    display_skill_point_message_func=0x32F598,
                 ),
                 SHIP_SHACK.number: PlanetAddresses(
                     segment_pointers=0x1BEA40,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B12C0,
                     skill_point_text=0xEDE4B0,
+                    spaceish_wars_func=0x3AB298,
+                    display_skill_point_message_func=0x321FD8,
                 ),
                 WUPASH_NEBULA.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
@@ -288,12 +274,16 @@ class Addresses:
                     next_planet=0x1B1BC0,
                     skill_point_text=0xE13140,
                     camara_state=0x1B1670,
+                    spaceish_wars_func=0x3C4400,
+                    display_skill_point_message_func=0x336F08,
                 ),
                 JAMMING_ARRAY.number: PlanetAddresses(
                     segment_pointers=0x1BEF00,
                     planet_switch_trigger=0x1A8ED4,
                     next_planet=0x1B1740,
                     skill_point_text=0x1171FF0,
+                    spaceish_wars_func=0x3B5748,
+                    display_skill_point_message_func=0x325908,
                 ),
                 INSOMNIAC_MUSEUM.number: PlanetAddresses(
                     segment_pointers=0x1C0140,
@@ -309,3 +299,5 @@ class PlanetAddresses(NamedTuple):
     next_planet: Optional[int] = None
     skill_point_text: Optional[int] = None
     camara_state: Optional[int] = None
+    spaceish_wars_func: Optional[int] = None
+    display_skill_point_message_func: Optional[int] = None
