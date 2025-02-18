@@ -513,10 +513,8 @@ class Rac2Interface:
             return True
         return False
 
-    def can_trigger_hud_notification(self):
-        return (self.get_current_planet() != Rac2Planet.Title_Screen
-                and self.get_pause_state() == 0
-                and self.get_ratchet_state() != 97)
+    def can_display_hud_notification(self):
+        return self.get_pause_state() == 0 and self.get_ratchet_state() != 97
 
     def trigger_hud_notification_display(self):
         try:
@@ -525,6 +523,9 @@ class Rac2Interface:
             return True
         except RuntimeError:
             return False
+
+    def is_hud_notification_pending(self):
+        return self.pcsx2_interface.read_int8(self.addresses.custom_text_notification_trigger) == 0x01
 
     def get_segment_pointer_table(self) -> Optional[MemorySegmentTable]:
         if self.addresses is None:
