@@ -75,26 +75,26 @@ class Addresses:
 
             self.spaceish_wars_func: Sequence[int] = [
                 None,      # Aranos Tutorial
-                0x3B0598,  # Oozla          V
-                0x3C1128,  # Maktar         V
-                0x3BD338,  # Endako         V
-                0x3DDE78,  # Barlow         V
-                0x3CB760,  # Feltzin        V
-                0x3FEED0,  # Notak          V
-                0x3AD8E8,  # Siberius       V
-                0x3CAEF0,  # Tabora         V
-                0x3B9790,  # Dobbo          V
-                0x3CDE80,  # Hrugis         V
-                0x3CDC88,  # Joba           V
-                0x3BF8A0,  # Todano         V
-                0x3C3688,  # Boldan           Crashed
-                0x3C2F78,  # Aranos         V
-                0x3D22C0,  # Gorn           V
-                0x3B4828,  # Snivelak         Crashed
-                0x3BE100,  # Smolg          V
-                0x3D7B40,  # Damosel          Crashed
-                0x3BA820,  # Grelbin        V
-                0x3D6F20,  # Yeedil         V
+                0x3B0598,  # Oozla
+                0x3C1128,  # Maktar
+                0x3BD338,  # Endako
+                0x3DDE78,  # Barlow
+                0x3CB760,  # Feltzin
+                0x3FEED0,  # Notak
+                0x3AD8E8,  # Siberius
+                0x3CAEF0,  # Tabora
+                0x3B9790,  # Dobbo
+                0x3CDE80,  # Hrugis
+                0x3CDC88,  # Joba
+                0x3BF8A0,  # Todano
+                0x3C3688,  # Boldan
+                0x3C2F78,  # Aranos
+                0x3D22C0,  # Gorn
+                0x3B4828,  # Snivelak
+                0x3BE100,  # Smolg
+                0x3D7B40,  # Damosel
+                0x3BA820,  # Grelbin
+                0x3D6F20,  # Yeedil
                 None,      # Insomniac Museum
                 0x3C3AA0,  # Dobbo Orbit
                 0x3CB7A0,  # Damosel Orbit
