@@ -240,6 +240,8 @@ class Rac2Interface:
             except IndexError:
                 id_to_write = 0
             self.pcsx2_interface.write_int32(self.addresses.selectable_planets + 4 * list_idx, id_to_write)
+            if id_to_write > 0:
+                self.pcsx2_interface.write_int8(self.addresses.highlighted_planets + id_to_write, 1)
 
     def give_collectable_to_player(self, item: CollectableData, new_amount: int):
         if item is Items.PLATINUM_BOLT:

@@ -171,6 +171,10 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
+    # Change variable checked by starmap to display a planet
+    for address in addresses.STARMAP_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x20, 0x00, 0x43, 0x90]))
+
     # Handle options altering rewards
     if world.options.no_revisit_reward_change:
         # When loading both base XP and revisit XP to write them in the moby instance, put base XP in both instead
