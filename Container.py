@@ -624,7 +624,7 @@ def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddr
     address = addresses.MAKTAR_ARENA_MENU_FUNC
     patch.write_token(APTokenTypes.WRITE, address + 0xDC, NOP)  # Enable pressing right
     patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP)  # Enable pressing left
-    patch.write_token(APTokenTypes.WRITE, address + 0x348, NOP)  # Enable starting a challenge without requirements
+    patch.write_token(APTokenTypes.WRITE, address + 0x348, NOP * 2)  # Enable starting a challenge without requirements
     patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_PREV_FUNC + 0x290, NOP)  # Display "previous"
     patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_NEXT_FUNC + 0x324, NOP)  # Display "next"
 
