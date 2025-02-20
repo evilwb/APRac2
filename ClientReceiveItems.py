@@ -19,19 +19,19 @@ def show_item_reception_message(ctx: 'Rac2Context', item: NetworkItem, item_name
     :param item_name: The name to use for the item (if unspecified, it is obtained from the NetworkItem)
     :param qty: The amount obtained
     """
+    item_data = Items.from_id(item.item)
     item_classification = item.flags
     if item_name is None:
         item_name = ctx.item_names.lookup_in_slot(item.item, ctx.slot)
     if item.location < 0:
         # For some reason, starting items don't have their classification flags set properly
-        item_classification = ItemPool.get_classification(item_name).as_flag()
+        item_classification = ItemPool.get_classification(item_data).as_flag()
     if qty > 1:
         item_name += f" x{qty}"
     item_name = colorize_item_name(item_name, item_classification)
 
     if item.location == -2:
         # This is a starting item, mention it in the message
-        item_data = Items.from_id(item.item)
         if isinstance(item_data, CoordData):
             message = f"Received {item_name} (Starting Planet)"
         else:
