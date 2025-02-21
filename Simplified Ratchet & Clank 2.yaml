@@ -50,6 +50,39 @@ Ratchet & Clank 2:
   # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
   skip_wupash_nebula: true
 
+  # Gives access to first person mode in 'Special' menu without being in New Game+.
+  allow_first_person_mode: true
+
+  # Enables the bolt multiplier feature without being in New Game+.
+  enable_bolt_multiplier: false
+
+  # In the vanilla game, rewards given when killing enemies change when you come back to a previously visited planet
+  # (bolts & experience). Enabling this option removes this behavior, making the experience and bolts obtained more
+  # stable throughout the seed.
+  no_revisit_reward_change: false
+
+  # In the vanilla game, rewards given by a specific enemy decrease each time you kill it (bolts & experience).
+  # Enabling this option removes this behavior, making the experience and bolts obtained more stable throughout
+  # the seed.
+  no_kill_reward_degradation: false
+
+  # Makes all hoverbike and spaceship challenges selectable right away, which means you don't have to win a
+  # challenge to access the next one.
+  free_challenge_selection: false
+
+  # A multiplier applied to experience gained for Nanotech levels, in percent.
+  #
+  # You can define additional values between the minimum and maximum values.
+  # Minimum value is 10
+  # Maximum value is 400
+  nanotech_xp_multiplier: 100
+
+  # A multiplier applied to experience gained for weapon levels, in percent.
+  #
+  # You can define additional values between the minimum and maximum values.
+  # Minimum value is 10
+  # Maximum value is 400
+  weapon_xp_multiplier: 100
 
   # Item & Location Options
   local_items:

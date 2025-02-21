@@ -33,28 +33,25 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
         if ctx.notification_manager.queue_size() == 0:
             ctx.notification_manager.queue_notification("\14Warning!\10 Not connected to Archipelago server", 1.0)
 
-    unstuck_message: str = (
-        "It appears that you don't have the required equipment to escape this area.\1\1"
-        "Hold: \24+\25+\26+\27+SELECT to fly back to the \12Ship Shack\10."
-    )
-    if planet == Rac2Planet.Tabora:
-        has_heli_pack = game_interface.count_inventory_item(Items.HELI_PACK) > 0
-        has_swingshot = game_interface.count_inventory_item(Items.SWINGSHOT) > 0
-        if not (has_heli_pack and has_swingshot):
-            if ctx.notification_manager.queue_size() == 0:
-                ctx.notification_manager.queue_notification(unstuck_message, 1.0)
-
-    if planet == Rac2Planet.Aranos_Prison:
-        has_gravity_boots = game_interface.count_inventory_item(Items.GRAVITY_BOOTS) > 0
-        has_levitator = game_interface.count_inventory_item(Items.LEVITATOR) > 0
-        has_infiltrator = game_interface.count_inventory_item(Items.INFILTRATOR) > 0
-        if not (has_gravity_boots and has_levitator and has_infiltrator):
-            if ctx.notification_manager.queue_size() == 0:
-                ctx.notification_manager.queue_notification(unstuck_message, 1.0)
-
 
 def init(ctx: 'Rac2Context', ap_connected: bool):
-    """Called once when a new planet is loaded."""
+    # TODO: Make these warnings better
+    unstuck_message: str = (
+        "It appears that you don't have the required equipment to escape this area.\1\1"
+        "Select Go to Ship Shack from the Special menu to fly back to the \12Ship Shack\10."
+    )
+    if ctx.current_planet == Rac2Planet.Tabora:
+        has_heli_pack = ctx.game_interface.count_inventory_item(Items.HELI_PACK) > 0
+        has_swingshot = ctx.game_interface.count_inventory_item(Items.SWINGSHOT) > 0
+        if not (has_heli_pack and has_swingshot):
+            ctx.notification_manager.queue_notification(unstuck_message, 5.0)
+
+    if ctx.current_planet == Rac2Planet.Aranos_Prison:
+        has_gravity_boots = ctx.game_interface.count_inventory_item(Items.GRAVITY_BOOTS) > 0
+        has_levitator = ctx.game_interface.count_inventory_item(Items.LEVITATOR) > 0
+        has_infiltrator = ctx.game_interface.count_inventory_item(Items.INFILTRATOR) > 0
+        if not (has_gravity_boots and has_levitator and has_infiltrator):
+            ctx.notification_manager.queue_notification(unstuck_message, 5.0)
 
 
 def replace_text(ctx: 'Rac2Context', ap_connected: bool):
@@ -114,7 +111,7 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
         elif ctx.current_planet is Rac2Planet.Todano:
             item_name = get_rich_item_name_from_location(ctx, Locations.TODANO_STUART_ZURGO_TRADE.location_id)
             manager.inject(0x27D3, f"You need the Qwark action figure for {item_name}")
-            manager.inject(0x27D4, f"Trade Qwark action figure for {item_name}")
+            manager.inject(0x27D4, f"\x12 Trade Qwark action figure for {item_name}")
 
         elif ctx.current_planet is Rac2Planet.Aranos_Prison:
             item_name = get_rich_item_name_from_location(ctx, Locations.ARANOS_PLUMBER.location_id)
