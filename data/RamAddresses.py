@@ -60,9 +60,17 @@ class Addresses:
             self.platinum_bolt_count: int = self.platinum_bolt_table + 0x6C
             self.nanotech_boost_count: int = self.platinum_bolt_table + 0x6D
             self.hypnomatic_part_count: int = self.platinum_bolt_table + 0x6E
-            self.tabora_wrench_cutscene_flag: int = self.platinum_bolt_table + 0x6F
-            self.aranos_wrench_cutscene_flag: int = self.platinum_bolt_table + 0x70
-            self.custom_text_notification_trigger: int = self.platinum_bolt_table + 0x71
+
+            # The "enemy kill count table" is actually one table per planet of 0x400 bytes each, holding the number
+            # of times two enemies were killed (one in the upper half, the other in the lower half of the byte).
+            # As one might expect, this is way too much and most of this data is empty, but still saved on the memcard.
+            # We use the table for Feltzin since spaceship systems don't use that mechanic at all, but still have that
+            # table.
+            self.enemy_kill_count_table: int = 0x19B4A8
+            self.feltzin_kill_count_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
+            self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
+            self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
+            self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
 
             # Pause state is at 0x1A8F00 on all planets except for Oozla where it's at 0x1A8F40.
             self.pause_state: int = 0x1A8F00

@@ -451,15 +451,16 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.TABORA_CONTROLLER_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x194, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x198, bytes([0xE7, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D19(v1)
+    upper_half, lower_half = MIPS.get_address_halves(ram.tabora_wrench_cutscene_flag)
+    patch.write_token(APTokenTypes.WRITE, address + 0x194, upper_half + bytes([0x03, 0x3C]))  # lui v1,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x198, lower_half + bytes([0x62, 0x90]))  # lbu v0,...(v1)
     patch.write_token(APTokenTypes.WRITE, address + 0x19C, NOP * 16)
 
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
     patch.write_token(APTokenTypes.WRITE, address + 0x6C4, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x6C8, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x6CC, bytes([0xE7, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D19(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x6C8, upper_half + bytes([0x02, 0x3C]))  # lui v0,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x6CC, lower_half + bytes([0x44, 0xA0]))  # sb a0,...(v0)
     patch.write_token(APTokenTypes.WRITE, address + 0x6D0, NOP * 10)
 
     # Glider Pickup
@@ -567,8 +568,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.PRISON_WRENCH_INIT_FUNC
-    wrench_pickup_condition = bytes([0x1A, 0x00, 0x03, 0x3C])  # lui v1,0x1A
-    wrench_pickup_condition += bytes([0xE8, 0xB2, 0x62, 0x90])  # lbu v0,0x-4D18(v1)
+    upper_half, lower_half = MIPS.get_address_halves(ram.aranos_wrench_cutscene_flag)
+    wrench_pickup_condition = upper_half + bytes([0x03, 0x3C])  # lui v1,0x1A
+    wrench_pickup_condition += lower_half + bytes([0x62, 0x90])  # lbu v0,0x-4D18(v1)
     wrench_pickup_condition += NOP * 8
     # The same patch is applied at two different spots, for two different wrench mobies that apply on different
     # circumstances (depending on the current level of your wrench)
@@ -578,8 +580,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
     patch.write_token(APTokenTypes.WRITE, address + 0x1F8, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x1FC, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x200, bytes([0xE8, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D18(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x1FC, upper_half + bytes([0x02, 0x3C]))  # lui v0,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x200, lower_half + bytes([0x44, 0xA0]))  # sb a0,...(v0)
     patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP * 9)
 
     """--------- 
