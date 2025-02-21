@@ -663,6 +663,10 @@ def custom_main_loop(ram: RamAddresses.Addresses, planet: PlanetAddresses) -> by
     func += MIPS.jr_ra()
     func += bytes([0x08, 0x00, 0xBD, 0x27])   # _addiu sp,sp,0x08
 
+    # The chunk looks like it's way more than 0x800 bytes of contiguous code, but the precise count and the consistency
+    # of that contiguity between planets would need to be proven, so let's use that "small" space until we need more.
+    assert len(func) < 0x800, "Injected code might exceed Space-ish Wars code cave size"
+
     return func
 
 
