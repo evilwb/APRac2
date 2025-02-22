@@ -111,7 +111,7 @@ class TextManager:
                     chunk[0] += len(text_bytes)
                 return
 
-        self.ctx.game_interface.logger.error(f"Not enough space to inject game text, please report this issue!")
+        self.ctx.game_interface.logger.error("Not enough space to inject game text, please report this issue!")
 
     def replace(self, vanilla_text_id: int, text: str):
         """
