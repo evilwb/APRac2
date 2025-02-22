@@ -83,6 +83,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8F14,
                     next_planet=0x1B2080,
                     skill_point_text=0x1A900A0,
+                    vendor_slot_table=0x230000,
                 ),
                 MAKTAR_NEBULA.number: PlanetAddresses(
                     segment_pointers=0x1C0880,

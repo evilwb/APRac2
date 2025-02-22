@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from . import Locations
-from .Rac2Interface import Rac2Planet
+from .Rac2Interface import Rac2Planet, Rac2Interface
 from .TextManager import TextManager, get_rich_item_name_from_location
 from .data import Items
 from .ClientCheckLocations import INVENTORY_OFFSET_TO_LOCATION_ID
@@ -159,48 +159,70 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool, manager: TextManager):
 
 
 def handle_vendor(ctx: "Rac2Context", text_manager: TextManager):
-    interface: Pine = ctx.game_interface.pcsx2_interface
+    interface: Rac2Interface = ctx.game_interface
     addresses: Addresses = ctx.game_interface.addresses
     vendor_slot_table: int = addresses.planet[ctx.current_planet].vendor_slot_table
 
-    # TODO: Figure out weapon model display so I can remove the next line that disables it completely.
-    interface.write_int32(vendor_slot_table - 0xB8, 0)
+    holding_down: bool = interface.pcsx2_interface.read_int16(addresses.controller_input) == 0x4000
+    holding_up: bool = interface.pcsx2_interface.read_int16(addresses.controller_input) == 0x1000
+    mode_changed: bool = False
+    # Use Down/Up to toggle between ammo/weapon mode
+    if interface.pcsx2_interface.read_int8(vendor_slot_table - 0xBC) == 0:  # only allow toggle when sub-menu is not up.
+        if holding_down and not ctx.vendor_ammo_mode:
+            ctx.vendor_ammo_mode = True
+            mode_changed = True
+        if holding_up and ctx.vendor_ammo_mode:
+            ctx.vendor_ammo_mode = False
+            mode_changed = True
 
-    for vendor_slot in range(32):
-        # Prevent ammo toggle when confirmation menu is up.
-        if interface.read_int8(vendor_slot_table - 0xBC) != 0:
-            break
+    if ctx.vendor_ammo_mode:
+        owned_weapons: list[Items.WeaponData] = [
+            weapon
+            for weapon in Items.WEAPONS
+            if ctx.game_interface.get_current_inventory()[weapon.name] > 0
+        ]
+        for i, weapon in enumerate(owned_weapons):
+            interface.set_vendor_slot(i, weapon.offset, True, 0xCDB)
+        interface.set_vendor_used_slots(len(owned_weapons))
+    else:
+        interface.set_vendor_slot(0, 43, False, 0xEC8)
+        interface.set_vendor_used_slots(1)
 
-        item_id: int = interface.read_int32(vendor_slot_table + vendor_slot * 24)
-        # End of slots
-        if item_id == 0:
-            break
-
-        location_id = INVENTORY_OFFSET_TO_LOCATION_ID.get(item_id, 0)
-        if location_id == 0:
-            continue
-
-        if location_id in ctx.checked_locations:
-            continue
-
-        planet_number: Optional[int] = None
-        for planet in Planets.LOGIC_PLANETS:
-            for location in planet.locations:
-                if location.location_id == location_id:
-                    planet_number = planet.number
-                    break
-        assert planet_number is not None, "Vendor slot location not on any planet."
-        has_slot: bool = ctx.game_interface.get_current_inventory()[Items.coord_for_planet(planet_number).name] > 0
-
-        item: EquipmentData = Items.from_offset(item_id)
-        holding_l2: bool = interface.read_int16(addresses.controller_input) & 0x01 != 0
-        has_item: bool = ctx.game_interface.get_current_inventory()[item.name] > 0
-        text_id = interface.read_int32(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x8)
-        if holding_l2 and has_item:
-            interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 1)
-            text_manager.inject(text_id, item.name)
-            interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, item.icon_id)
-        elif has_slot:
-            interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 0)
-            text_manager.inject(text_id, text_manager.get_formatted_item_name(location_id))
-            interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, 0xEA75)
+    if mode_changed:
+        interface.set_vendor_cursor(0)
+    # for vendor_slot in range(32):
+    #
+    #
+    #     item_id: int = interface.read_int32(vendor_slot_table + vendor_slot * 24)
+    #     # End of slots
+    #     if item_id == 0:
+    #         break
+    #
+    #     location_id = INVENTORY_OFFSET_TO_LOCATION_ID.get(item_id, 0)
+    #     if location_id == 0:
+    #         continue
+    #
+    #     if location_id in ctx.checked_locations:
+    #         continue
+    #
+    #     planet_number: Optional[int] = None
+    #     for planet in Planets.LOGIC_PLANETS:
+    #         for location in planet.locations:
+    #             if location.location_id == location_id:
+    #                 planet_number = planet.number
+    #                 break
+    #     assert planet_number is not None, "Vendor slot location not on any planet."
+    #     has_slot: bool = ctx.game_interface.get_current_inventory()[Items.coord_for_planet(planet_number).name] > 0
+    #
+    #     item: EquipmentData = Items.from_offset(item_id)
+    #     holding_l2: bool = interface.read_int16(addresses.controller_input) & 0x01 != 0
+    #     has_item: bool = ctx.game_interface.get_current_inventory()[item.name] > 0
+    #     text_id = interface.read_int32(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x8)
+    #     if holding_l2 and has_item:
+    #         interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 1)
+    #         text_manager.inject(text_id, item.name)
+    #         interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, item.icon_id)
+    #     elif has_slot:
+    #         interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 0)
+    #         text_manager.inject(text_id, text_manager.get_formatted_item_name(location_id))
+    #         interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, 0xEA75)

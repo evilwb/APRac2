@@ -353,6 +353,69 @@ class Rac2Interface:
             return
         self.pcsx2_interface.write_int8(self.addresses.current_nanotech, new_value)
 
+    def set_vendor_slot(self, slot_num: int, item_id: int, ammo: bool, model_oclass: int, upgrade: bool = False):
+        current_planet = self.get_current_planet()
+        if not current_planet:
+            return
+
+        vendor_slot_table = self.addresses.planet[current_planet].vendor_slot_table
+        if not vendor_slot_table:
+            self.logger.warning(f"No vendor_slot_table address set for planet {current_planet}")
+            return
+
+        slot_size = 0x18
+        address = vendor_slot_table + slot_num * slot_size
+        self.pcsx2_interface.write_int32(address, item_id)
+        self.pcsx2_interface.write_int32(address + 0x4, ammo)
+        self.pcsx2_interface.write_int32(address + 0x8, model_oclass)
+        self.pcsx2_interface.write_int32(address + 0xC, 0xCDB)
+        self.pcsx2_interface.write_int32(address + 0x10, 0)
+        self.pcsx2_interface.write_int32(address + 0x14, upgrade)
+
+    def set_vendor_used_slots(self, value: int):
+        current_planet = self.get_current_planet()
+        if not current_planet:
+            return
+
+        vendor_slot_table = self.addresses.planet[current_planet].vendor_slot_table
+        if not vendor_slot_table:
+            self.logger.warning(f"No vendor_slot_table address set for planet {current_planet}")
+            return
+
+        self.pcsx2_interface.write_int8(vendor_slot_table + 0x600, value)
+
+    def get_vendor_used_slots(self) -> Optional[int]:
+        current_planet = self.get_current_planet()
+        if not current_planet:
+            return None
+
+        vendor_slot_table = self.addresses.planet[current_planet].vendor_slot_table
+        if not vendor_slot_table:
+            self.logger.warning(f"No vendor_slot_table address set for planet {current_planet}")
+            return None
+
+        return self.pcsx2_interface.read_int8(vendor_slot_table + 0x600)
+
+    def set_vendor_cursor(self, slot: int):
+        current_planet = self.get_current_planet()
+        if not current_planet:
+            return
+
+        vendor_slot_table = self.addresses.planet[current_planet].vendor_slot_table
+        if not vendor_slot_table:
+            self.logger.warning(f"No vendor_slot_table address set for planet {current_planet}")
+            return
+
+        # Make sure cursor stays in bounds
+        slot = max(0, slot)
+        slot = min(self.get_vendor_used_slots() - 1, slot)
+
+        cursor_offset = -0xC0
+        self.pcsx2_interface.write_int8(vendor_slot_table + cursor_offset, slot)
+        # Changing the cursor directly doesn't update the model view. Changing this value will force an update.
+        model_update_offset = -0xB0
+        self.pcsx2_interface.write_int8(vendor_slot_table + model_update_offset, 3)
+
     def switch_planet(self, new_planet: Rac2Planet) -> bool:
         current_planet = self.get_current_planet()
         trigger_address = self.addresses.planet[current_planet].planet_switch_trigger
