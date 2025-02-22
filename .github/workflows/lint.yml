@@ -1,3 +1,5 @@
+name: Run Linter
+
 on:
   pull_request:
     branches: [ main ]
@@ -22,4 +24,3 @@ jobs:
         with:
           # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
           args: "check"
-          src: ${{ github.workspace }}
