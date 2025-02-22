@@ -128,7 +128,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, addresses.MAIN_LOOP_FUNC + 0x24, bytes([0xF5, 0x8B, 0x91, 0xA3]))
 
     # Define a custom "game name" for memcard folders & files, so save files are not compatible between different seeds
-    generated_game_name = f"AP{hex((world.multiworld.seed >> 1) & 0xFFFFF)[2:].upper()}"
+    generated_game_name = f"AP{hex((world.multiworld.seed + world.player) & 0xFFFFF)[2:].upper()}"
     for address in addresses.MEMCARD_GAME_NAMES:
         patch.write_token(APTokenTypes.WRITE, address, generated_game_name.encode())
 
