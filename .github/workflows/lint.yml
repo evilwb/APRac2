@@ -21,4 +21,4 @@ jobs:
         uses: astral-sh/ruff-action@v3.2.1
         with:
           # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
-          args: "check, --config ../ruff.toml"
+          args: " --config ../ruff.toml check"
