@@ -171,6 +171,10 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.NANOTECH_BOOST_UPDATE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP)
 
+    # Change variable checked by starmap to display a planet
+    for address in addresses.STARMAP_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x20, 0x00, 0x43, 0x90]))
+
     # Handle options altering rewards
     if world.options.no_revisit_reward_change:
         # When loading both base XP and revisit XP to write them in the moby instance, put base XP in both instead
@@ -555,13 +559,16 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.PRISON_WRENCH_INIT_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x84, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x88, bytes([0xE8, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D18(v1)
-    patch.write_token(APTokenTypes.WRITE, address + 0x8C, NOP * 8)
+    wrench_pickup_condition = bytes([0x1A, 0x00, 0x03, 0x3C])  # lui v1,0x1A
+    wrench_pickup_condition += bytes([0xE8, 0xB2, 0x62, 0x90])  # lbu v0,0x-4D18(v1)
+    wrench_pickup_condition += NOP * 8
+    # The same patch is applied at two different spots, for two different wrench mobies that apply on different
+    # circumstances (depending on the current level of your wrench)
+    patch.write_token(APTokenTypes.WRITE, address + 0x84, wrench_pickup_condition)
+    patch.write_token(APTokenTypes.WRITE, address + 0x12C, wrench_pickup_condition)
 
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
-    # Unlike Tabora, everything is in one big function here, so no need to change the base address
     patch.write_token(APTokenTypes.WRITE, address + 0x1F8, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
     patch.write_token(APTokenTypes.WRITE, address + 0x1FC, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
     patch.write_token(APTokenTypes.WRITE, address + 0x200, bytes([0xE8, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D18(v0)
@@ -624,7 +631,7 @@ def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddr
     address = addresses.MAKTAR_ARENA_MENU_FUNC
     patch.write_token(APTokenTypes.WRITE, address + 0xDC, NOP)  # Enable pressing right
     patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP)  # Enable pressing left
-    patch.write_token(APTokenTypes.WRITE, address + 0x348, NOP)  # Enable starting a challenge without requirements
+    patch.write_token(APTokenTypes.WRITE, address + 0x348, NOP * 2)  # Enable starting a challenge without requirements
     patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_PREV_FUNC + 0x290, NOP)  # Display "previous"
     patch.write_token(APTokenTypes.WRITE, addresses.MAKTAR_ARENA_DISPLAY_NEXT_FUNC + 0x324, NOP)  # Display "next"
 
@@ -632,7 +639,7 @@ def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddr
     address = addresses.JOBA_ARENA_MENU_FUNC
     patch.write_token(APTokenTypes.WRITE, address + 0xDC, NOP)  # Enable pressing right
     patch.write_token(APTokenTypes.WRITE, address + 0x1CC, NOP)  # Enable pressing left
-    patch.write_token(APTokenTypes.WRITE, address + 0x2F0, NOP)  # Enable starting a challenge without requirements
+    patch.write_token(APTokenTypes.WRITE, address + 0x2F0, NOP * 2)  # Enable starting a challenge without requirements
     patch.write_token(APTokenTypes.WRITE, addresses.JOBA_ARENA_DISPLAY_PREV_FUNC + 0x288, NOP)  # Display "previous"
     patch.write_token(APTokenTypes.WRITE, addresses.JOBA_ARENA_DISPLAY_NEXT_FUNC + 0x364, NOP)  # Display "next"
 
