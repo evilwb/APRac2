@@ -512,7 +512,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Check Secondary Inventory to determine if the trade has been done.
     patch.write_token(APTokenTypes.WRITE, address + 0x60, bytes([0x37, 0x7B, 0x42, 0x90]))
     patch.write_token(APTokenTypes.WRITE, address + 0x39C, bytes([0x37, 0x7B, 0x42, 0x90]))
-    # Don't remove Qwark Statuette from Secondary Inventory when doing the trade.
+    # Don't remove Qwark Statuette from both main & secondary inventory when doing the trade.
+    patch.write_token(APTokenTypes.WRITE, address + 0x3A8, NOP * 2)
     patch.write_token(APTokenTypes.WRITE, address + 0x3B4, NOP)
     # Replace code that gives Armor Magnetizer and displays message with code that just sets Secondary Inventory flag.
     patch.write_token(APTokenTypes.WRITE, address + 0x3B8, bytes([0x1A, 0x00, 0x02, 0x3C]))
