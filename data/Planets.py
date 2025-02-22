@@ -45,6 +45,9 @@ FELTZIN_SYSTEM = PlanetData("Feltzin System", 5, [
     FELTZIN_DEFEAT_THUG_SHIPS,
     FELTZIN_RACE_PB,
     FELTZIN_CARGO_BAY_NT,
+    FELTZIN_DESTROY_SPACE_WASPS,
+    FELTZIN_FIGHT_ACE_THUGS,
+    FELTZIN_RACE,
 ])
 NOTAK = PlanetData("Notak", 6, [
     NOTAK_TOP_PIER_TELESCREEN,
@@ -78,6 +81,9 @@ DOBBO = PlanetData("Dobbo", 9, [
 HRUGIS_CLOUD = PlanetData("Hrugis Cloud", 10, [
     HRUGIS_DESTROY_DEFENSES,
     HRUGIS_RACE_PB,
+    HRUGIS_SABOTEURS,
+    HRUGIS_BERSERK_DRONES,
+    HRUGIS_RACE,
 ])
 JOBA = PlanetData("Joba", 11, [
     JOBA_FIRST_HOVERBIKE_RACE,
@@ -114,6 +120,9 @@ ARANOS_PRISON = PlanetData("Aranos Prison", 14, [
 GORN = PlanetData("Gorn", 15, [
     GORN_DEFEAT_THUG_FLEET,
     GORN_RACE_PB,
+    GORN_FIGHT_BANDITS,
+    GORN_GHOST_SHIP,
+    GORN_RACE,
 ])
 SNIVELAK = PlanetData("Snivelak", 16, [
     SNIVELAK_RESCUE_ANGELA,

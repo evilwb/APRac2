@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, NamedTuple, Sequence
 
 from . import Locations
 from .Rac2Interface import Rac2Planet
-from .TextManager import TextManager, get_rich_item_name_from_location
-from .data import Items
+from .TextManager import *
+from .data import Items, Planets
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -64,10 +64,12 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
         if not ap_connected:
             return
 
+        process_spaceship_text(manager, ctx)
+
         if ctx.current_planet is Rac2Planet.Oozla:
             item_name = get_rich_item_name_from_location(ctx, Locations.OOZLA_MEGACORP_SCIENTIST.location_id)
-            manager.inject(0x27AE, f"You need %d bolts for {item_name}")
-            manager.inject(0x27AC, f"\x12 Buy {item_name} for %d bolts")
+            manager.inject(0x27AE, wrap_for_hud("You need %d bolts for {item_name}"))
+            manager.inject(0x27AC, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Maktar_Nebula:
             item_name = get_rich_item_name_from_location(ctx, Locations.MAKTAR_ARENA_CHALLENGE.location_id)
@@ -75,30 +77,18 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
 
         elif ctx.current_planet is Rac2Planet.Barlow:
             item_name = get_rich_item_name_from_location(ctx, Locations.BARLOW_INVENTOR.location_id)
-            manager.inject(0x27A0, f"You need %d bolts for {item_name}")
-            manager.inject(0x279F, f"\x12 Buy {item_name} for %d bolts")
-
-        elif ctx.current_planet is Rac2Planet.Feltzin_System:
-            item_name = get_rich_item_name_from_location(ctx, Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id)
-            manager.inject(0x11F5, f"Received {item_name}")
-            item_name = get_rich_item_name_from_location(ctx, Locations.FELTZIN_RACE_PB.location_id)
-            manager.inject(0x2FDF, f"Perfect Ring Bonus: {item_name}")
+            manager.inject(0x27A0, wrap_for_hud(f"You need %d bolts for {item_name}"))
+            manager.inject(0x279F, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Notak:
             item_name = get_rich_item_name_from_location(ctx, Locations.NOTAK_WORKER_BOTS.location_id)
-            manager.inject(0x27CE, f"You need %d bolts for {item_name}")
-            manager.inject(0x27CF, f"\x12 Buy {item_name} for %d bolts")
-
-        elif ctx.current_planet is Rac2Planet.Hrugis_Cloud:
-            item_name = get_rich_item_name_from_location(ctx, Locations.HRUGIS_DESTROY_DEFENSES.location_id)
-            manager.inject(0x11FB, f"Received {item_name}")
-            item_name = get_rich_item_name_from_location(ctx, Locations.HRUGIS_RACE_PB.location_id)
-            manager.inject(0x2FEB, f"Perfect Ring Bonus: {item_name}")
+            manager.inject(0x27CE, wrap_for_hud(f"You need %d bolts for {item_name}"))
+            manager.inject(0x27CF, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Joba:
             item_name = get_rich_item_name_from_location(ctx, Locations.JOBA_SHADY_SALESMAN.location_id)
-            manager.inject(0x27BB, f"\x12 Buy {item_name} for %d bolts")
-            manager.inject(0x27BC, f"You need %d bolts for {item_name}")
+            manager.inject(0x27BB, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
+            manager.inject(0x27BC, wrap_for_hud(f"You need %d bolts for {item_name}"))
             item_name = get_rich_item_name_from_location(ctx, Locations.JOBA_ARENA_BATTLE.location_id)
             manager.inject(0x2F66, f"Battle for {item_name}")
             manager.inject(0x2F96, f"You have earned {item_name}")
@@ -108,33 +98,110 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
 
         elif ctx.current_planet is Rac2Planet.Todano:
             item_name = get_rich_item_name_from_location(ctx, Locations.TODANO_STUART_ZURGO_TRADE.location_id)
-            manager.inject(0x27D3, f"You need the Qwark action figure for {item_name}")
-            manager.inject(0x27D4, f"\x12 Trade Qwark action figure for {item_name}")
+            manager.inject(0x27D3, wrap_for_hud(f"You need the Qwark action figure for {item_name}"))
+            manager.inject(0x27D4, wrap_for_hud(f"\x12 Trade Qwark action figure for {item_name}"))
 
         elif ctx.current_planet is Rac2Planet.Aranos_Prison:
             item_name = get_rich_item_name_from_location(ctx, Locations.ARANOS_PLUMBER.location_id)
-            manager.inject(0x27D5, f"You need %d bolts for {item_name}")
-            manager.inject(0x27D6, f"\x12 Buy {item_name} for %d bolts")
-
-        elif ctx.current_planet is Rac2Planet.Gorn:
-            item_name = get_rich_item_name_from_location(ctx, Locations.GORN_DEFEAT_THUG_FLEET.location_id)
-            manager.inject(0x11FF, f"Received {item_name}")
-            item_name = get_rich_item_name_from_location(ctx, Locations.GORN_RACE_PB.location_id)
-            manager.inject(0x2FF2, f"Perfect Ring Bonus: {item_name}")
+            manager.inject(0x27D5, wrap_for_hud(f"You need %d bolts for {item_name}"))
+            manager.inject(0x27D6, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Smolg:
             item_name = get_rich_item_name_from_location(ctx, Locations.SMOLG_MUTANT_CRAB.location_id)
-            manager.inject(0x27D7, f"You need %d bolts for {item_name}")
-            manager.inject(0x27D8, f"\x12 Buy {item_name} for %d bolts")
+            manager.inject(0x27D7, wrap_for_hud(f"You need %d bolts for {item_name}"))
+            manager.inject(0x27D8, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Damosel:
             item_name = get_rich_item_name_from_location(ctx, Locations.DAMOSEL_HYPNOTIST.location_id)
-            manager.inject(0x27DA, f"You need %d bolts for {item_name}")
-            manager.inject(0x27DB, f"\x12 Trade parts and %d bolts for {item_name}")
+            manager.inject(0x27DA, wrap_for_hud(f"You need %d bolts for {item_name}"))
+            manager.inject(0x27DB, wrap_for_hud(f"\x12 Trade parts and %d bolts for {item_name}"))
 
         elif ctx.current_planet is Rac2Planet.Grelbin:
             item_name = get_rich_item_name_from_location(ctx, Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id)
-            manager.inject(0x27DE, f"You need 16 \x0CMoonstones\x08 for {item_name}")
-            manager.inject(0x27DF, f"\x12 Trade 16 \x0CMoonstones\x08 for {item_name}")
+            manager.inject(0x27DE, wrap_for_hud(f"You need 16 \x0CMoonstones\x08 for {item_name}"))
+            manager.inject(0x27DF, wrap_for_hud(f"\x12 Trade 16 \x0CMoonstones\x08 for {item_name}"))
     except TypeError:
         return
+
+
+class SpaceshipSystemTextInfo(NamedTuple):
+    challenge_descriptions: Sequence[int]
+    challenge_locations: Sequence[int]
+    perfect_race_location: int
+    challenge_1_completed_text: int
+
+
+SPACESHIP_SYSTEMS: Dict[int, SpaceshipSystemTextInfo] = {
+    Planets.FELTZIN_SYSTEM.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FDB, 0x2FDD, 0x2FDC, 0x2FDF],
+        challenge_locations=[
+            Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id,
+            Locations.FELTZIN_DESTROY_SPACE_WASPS.location_id,
+            Locations.FELTZIN_FIGHT_ACE_THUGS.location_id,
+            Locations.FELTZIN_RACE.location_id
+        ],
+        perfect_race_location=Locations.FELTZIN_RACE_PB.location_id,
+        challenge_1_completed_text=0x11F5,
+    ),
+    Planets.HRUGIS_CLOUD.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FE7, 0x2FE8, 0x2FE9, 0x2FEB],
+        challenge_locations=[
+            Locations.HRUGIS_DESTROY_DEFENSES.location_id,
+            Locations.HRUGIS_SABOTEURS.location_id,
+            Locations.HRUGIS_BERSERK_DRONES.location_id,
+            Locations.HRUGIS_RACE.location_id
+        ],
+        perfect_race_location=Locations.HRUGIS_RACE_PB.location_id,
+        challenge_1_completed_text=0x11FB,
+    ),
+    Planets.GORN.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FEF, 0x2FF0, 0x2FF1, 0x2FF2],
+        challenge_locations=[
+            Locations.GORN_DEFEAT_THUG_FLEET.location_id,
+            Locations.GORN_FIGHT_BANDITS.location_id,
+            Locations.GORN_GHOST_SHIP.location_id,
+            Locations.GORN_RACE.location_id
+        ],
+        perfect_race_location=Locations.GORN_RACE_PB.location_id,
+        challenge_1_completed_text=0x11FF,
+    )
+}
+
+
+def process_spaceship_text(manager: TextManager, ctx: 'Rac2Context'):
+    data = SPACESHIP_SYSTEMS.get(ctx.current_planet, None)
+    if data is None:
+        return
+    extra_locations = ctx.slot_data.get("extra_spaceship_challenge_locations", False)
+
+    # Challenge 1-3
+    for i in range(3):
+        item_name = get_rich_item_name_from_location(ctx, data.challenge_locations[i])
+        if i > 0 and not extra_locations:
+            manager.inject(data.challenge_descriptions[i], f"No reward for first completion")
+            continue
+        if data.challenge_locations[i] in ctx.checked_locations:
+            manager.inject(data.challenge_descriptions[i], f"{COLOR_GREEN}First completion reward already obtained")
+        else:
+            manager.inject(data.challenge_descriptions[i], f"Obtain {item_name} on first challenge completion")
+        # "Received {item}" message when completing first challenge. It feels a bit inconsistent to
+        # have it for challenge 1 and not the others, but it would require some work to extend or remove.
+        if i == 0:
+            manager.inject(data.challenge_1_completed_text, f"Received {item_name}")
+
+    # Challenge 4 (ring race)
+    remaining_challenges_text = []
+    if extra_locations and data.challenge_locations[3] not in ctx.checked_locations:
+        item_name = get_rich_item_name_from_location(ctx, data.challenge_locations[3])
+        remaining_challenges_text.append(f"{item_name} on first challenge completion")
+    if data.perfect_race_location not in ctx.checked_locations:
+        item_name = get_rich_item_name_from_location(ctx, data.perfect_race_location)
+        remaining_challenges_text.append(f"{item_name} on a perfect race (not missing any ring)")
+
+    if len(remaining_challenges_text) > 0:
+        text = "Obtain " + ", and ".join(remaining_challenges_text)
+    elif extra_locations:
+        text = f"{COLOR_GREEN}All rewards already obtained"
+    else:
+        text = f"{COLOR_GREEN}Perfect race reward already obtained"
+    manager.inject(data.challenge_descriptions[3], text)

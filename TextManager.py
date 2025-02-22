@@ -84,6 +84,14 @@ def wrap_text(text: str, max_word_size: int, max_line_size: int) -> str:
     return joining_str.join(lines)
 
 
+def wrap_for_hud(text: str) -> str:
+    return wrap_text(text, 32, 40)
+
+
+def wrap_for_spaceship_menu(text: str) -> str:
+    return wrap_text(text, 25, 10000)
+
+
 class TextManager:
     def __init__(self, ctx: 'Rac2Context'):
         self.ctx = ctx
@@ -100,7 +108,7 @@ class TextManager:
         new address. This is needed when replacement string have a chance of exceeding original string size, otherwise
         prefer using `replace`.
         """
-        text_bytes = wrap_text(text, 32, 40).encode() + b'\x00'
+        text_bytes = text.encode() + b'\x00'
 
         for chunk in self.injectable_chunks:
             remaining_bytes = chunk[1] - chunk[0]

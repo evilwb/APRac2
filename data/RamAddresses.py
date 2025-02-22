@@ -1,5 +1,3 @@
-from typing import Optional, Dict, NamedTuple
-
 from .Planets import *
 
 
@@ -16,10 +14,9 @@ class Addresses:
             self.dobbo_defeat_thug_leader: int = 0x1395E6
             self.electrolyzer_battle_victories: int = 0x1395E9
             self.barlow_hoverbike_race_victories: int = 0x139605
-            self.feltzin_ship_challenge_1: int = 0x139619
-            self.feltzin_ship_challenge_4: int = 0x13961C
-            self.hrugis_ship_challenge_1: int = 0x13961E
-            self.hrugis_ship_challenge_4: int = 0x139621
+            self.feltzin_challenge_wins: int = 0x139619
+            self.hrugis_challenge_wins: int = 0x13961E
+            self.gorn_challenge_wins: int = 0x139623
             self.hypnomatic_part1: int = 0x13963C
             self.hypnomatic_part2: int = 0x13963E
             self.hypnomatic_part3: int = 0x139641

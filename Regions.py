@@ -47,7 +47,12 @@ def create_regions(world: 'Rac2World'):
             world.multiworld.regions.append(region)
             menu.connect(region, None, generate_planet_access_rule(planet_data))
 
+            options_dict = world.get_options_as_dict()
             for location_data in planet_data.locations:
+                # Don't create the location if there is an "enable_if" clause and it returned False
+                if location_data.enable_if is not None and not location_data.enable_if(options_dict):
+                    continue
+
                 def generate_access_rule(loc: LocationData) -> typing.Callable[[CollectionState], bool]:
                     def access_rule(state: CollectionState):
                         if loc.access_rule:
