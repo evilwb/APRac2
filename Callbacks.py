@@ -40,7 +40,6 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
         "It appears that you don't have the required equipment to escape this area.\1\1"
         "Select Go to Ship Shack from the Special menu to fly back to the \12Ship Shack\10."
     )
-    unstuck_message = 8
     if ctx.current_planet == Rac2Planet.Tabora:
         has_heli_pack = ctx.game_interface.count_inventory_item(Items.HELI_PACK) > 0
         has_swingshot = ctx.game_interface.count_inventory_item(Items.SWINGSHOT) > 0
