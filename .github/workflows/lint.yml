@@ -2,12 +2,10 @@ name: Run Linter
 
 on:
   pull_request:
-    branches: [ ci_dc ]
     paths:
       - "**.py"
       - ".github/workflows/lint.yml"
   push:
-    branches: [ ci_dc ]
     paths:
       - "**.py"
       - ".github/workflows/lint.yml"
