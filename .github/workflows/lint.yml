@@ -1,0 +1,19 @@
+on:
+  pull_request:
+    paths:
+      - "**.py"
+      - ".github/workflows/lint.yml"
+  push:
+    paths:
+      - "**.py"
+      - ".github/workflows/lint.yml"
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ruff-action
+        uses: astral-sh/ruff-action@v3.2.1
+        with:
+          # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
+          args: "check"
