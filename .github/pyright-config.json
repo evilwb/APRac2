@@ -1,6 +1,7 @@
 {
   "include": [
-    "type_check.py"
+    "type_check.py",
+    "../*.py"
   ],
 
   "exclude": [
