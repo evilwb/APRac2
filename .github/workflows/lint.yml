@@ -16,4 +16,4 @@ jobs:
         with:
           # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
           args: "check"
-          src: "./"
+          src: "../"
