@@ -5,8 +5,9 @@ from typing import Any, Callable, TYPE_CHECKING, Optional
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from .Rac2Options import ShuffleWeaponVendors
-from .data import Items, IsoAddresses
+from .Rac2Options import ShuffleWeaponVendors, Rac2Options
+from .data import Items, IsoAddresses, ExperienceTables
+from .data.ExperienceTables import get_weapon_upgrades_table
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -209,6 +210,17 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))
         patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x09, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))
+        if world.options.extended_weapon_progression:
+            # Remove the condition where non-basic weapons can only get upgraded in NG+
+            patch.write_token(APTokenTypes.WRITE, address + 0x14C, bytes([0x0B, 0x00, 0x00, 0x50]))  # beql zero,zero
+
+    if world.options.extended_weapon_progression:
+        for address in addresses.DRAW_WEAPON_WITH_XP_BAR_FUNCS:
+            # Remove challenge mode being required for any XP bar past level 1 to be non-blue
+            patch.write_token(APTokenTypes.WRITE, address + 0x16C, NOP)
+            # Make level 2 (orange weapons) bar red to indicate it can be upgraded into something else
+            patch.write_token(APTokenTypes.WRITE, address + 0x23C, bytes([0x09, 0x00, 0x00, 0x10]))  # b @RedXPBar
+            patch.write_token(APTokenTypes.WRITE, address + 0x240, NOP)
 
     # Prevent Platinum Bolt received message popup at the end of ship races.
     for address in addresses.RACE_CONTROLLER_FUNCS:
@@ -242,7 +254,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
 
     if world.options.weapon_xp_multiplier != 100:
-        alter_weapon_xp_tables(patch, addresses, world.options.weapon_xp_multiplier.value)
+        alter_weapon_data_tables(patch, addresses, world.options)
 
     """----------------------
     Shuffle Weapons Vendors
@@ -669,56 +681,29 @@ def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddr
 
 
 def alter_nanotech_xp_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, mult_percent: int):
-    DEFAULT_NANO_XP_TABLE: list[int] = [
-        0x00B4, 0x00D2, 0x00F0, 0x010E, 0x012C, 0x014A, 0x0168, 0x0186,
-        0x01A4, 0x01C2, 0x01E0, 0x01F4, 0x0208, 0x0208, 0x0208, 0x0208,
-        0x0208, 0x0208, 0x0208, 0x0208, 0x0208, 0x0212, 0x0212, 0x0230,
-        0x0244, 0x0258, 0x026C, 0x0280, 0x0294, 0x02A8, 0x02BC, 0x02D0,
-        0x02E4, 0x02F8, 0x030C, 0x0320, 0x0348, 0x032A, 0x03B1, 0x0438,
-        0x04BF, 0x0546, 0x05CD, 0x0654, 0x06DB, 0x0762, 0x07E9, 0x0870,
-        0x08CA, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924, 0x0924,
-        0x0924, 0x0924, 0x0951, 0x09AB, 0x09D8, 0x0A32, 0x0A8C, 0x0AE6,
-        0x0B40, 0x0BB8
-    ]
     # Multiplier given as input is meant to represent gained XP, while this table represents required XP to level up.
     # Therefore, we need to use the multiplicative inverse of that mult to get the factor we need to apply to this
     # table to mimic the effect of gained XP increase / decrease.
     factor = 1.0 / (mult_percent * 0.01)
-    nanotech_xp_table = [int(x * factor) for x in DEFAULT_NANO_XP_TABLE]
+    nanotech_xp_table = ExperienceTables.get_nanotech_xp_table(factor)
     for address in addresses.NANOTECH_XP_TABLES:
         for xp_amount in nanotech_xp_table:
             patch.write_token(APTokenTypes.WRITE, address + 0x4, xp_amount.to_bytes(2, 'little'))
             address += 0x4
 
 
-def alter_weapon_xp_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, mult_percent: int):
-    # None values are either 0x0000 or 0xFFFF and must be left as-is
-    DEFAULT_WEAPON_XP_TABLE: list[int] = [
-        None,   None,   None,   None,   None,   None,   None,   None,
-        None,   0x09C4, None,   None,   None,   None,   None,   None,
-        0x0384, None,   None,   None,   None,   None,   0x0190, 0x0096,
-        0x041A, 0x0DAC, 0x02EE, 0x0FA0, 0x0834, 0x0578, 0x0118, 0x04B0,
-        0x03E8, None,   0x2710, None,   None,   0x06A4, None,   None,
-        0x2710, 0x02EE, 0x00C8, None,   None,   0x01C2, None,   None,
-        None,   None,   None,   None,   None,   None,   None,   None,
-        None,   None,   None,   None,   None,   None,   None,   None,
-        None,   None,   None,   None,   None,   None,   None,   None,
-        None,   None,   None,   None,   None,   None,   None,   0x1F40,
-        None,   0x2EE0, None,   0x1388, None,   0x2968, None,   0x1130,
-        None,   0x1770, None,   0x1B58, None,   0x0FA0, None,   0x0FA0,
-        None,   0x1388, None,   0x1F40, None,   0x1F40, None,   0x2710,
-        None,   0x1F40, None,   0x1770, None,   0x1388
-    ]
+def alter_weapon_data_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses, options: Rac2Options):
     # Multiplier given as input is meant to represent gained XP, while this table represents required XP to level up.
     # Therefore, we need to use the multiplicative inverse of that mult to get the factor we need to apply to this
     # table to mimic the effect of gained XP increase / decrease.
-    factor = 1.0 / (mult_percent * 0.01)
-    weapon_xp_table = [int(x * factor) if x is not None else None for x in DEFAULT_WEAPON_XP_TABLE]
+    factor = 1.0 / (options.weapon_xp_multiplier.value * 0.01)
+    weapon_upgrades_table = get_weapon_upgrades_table(factor, options.extended_weapon_progression != 0)
     for address in addresses.WEAPON_DATA_TABLES:
-        for xp_amount in weapon_xp_table:
-            if xp_amount is not None:
-                patch.write_token(APTokenTypes.WRITE, address + 0x6C, xp_amount.to_bytes(2, 'little'))
-            address += 0xE0
+        for weapon_id, (required_xp, upgraded_weapon_id) in weapon_upgrades_table.items():
+            weapon_addr = address + (weapon_id * 0xE0)
+            required_xp = int(required_xp * factor)
+            patch.write_token(APTokenTypes.WRITE, weapon_addr + 0x4A, upgraded_weapon_id.to_bytes(1))
+            patch.write_token(APTokenTypes.WRITE, weapon_addr + 0x6C, required_xp.to_bytes(2, 'little'))
 
 
 def get_version_from_iso(iso_path: str) -> str:

@@ -76,6 +76,13 @@ class WeaponExperienceMultiplier(Range):
     default = 100
 
 
+class ExtendedWeaponProgression(Toggle):
+    """If enabled, make all weapon tiers obtainable through weapon experience. This means LV2 (orange) weapons can
+    upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
+    This effectively makes all weapons that are usually restricted to NG+ available with enough grinding."""
+    display_name = "Extended Weapon Progression"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -89,3 +96,4 @@ class Rac2Options(PerGameCommonOptions):
     free_challenge_selection: FreeChallengeSelection
     nanotech_xp_multiplier: NanotechExperienceMultiplier
     weapon_xp_multiplier: WeaponExperienceMultiplier
+    extended_weapon_progression: ExtendedWeaponProgression
