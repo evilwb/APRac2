@@ -178,7 +178,7 @@ def process_spaceship_text(manager: TextManager, ctx: 'Rac2Context'):
     for i in range(3):
         item_name = get_rich_item_name_from_location(ctx, data.challenge_locations[i])
         if i > 0 and not extra_locations:
-            text = wrap_for_spaceship_menu(f"No reward for first completion")
+            text = wrap_for_spaceship_menu("No reward for first completion")
             manager.inject(data.challenge_descriptions[i], text)
             continue
         if data.challenge_locations[i] in ctx.checked_locations:
