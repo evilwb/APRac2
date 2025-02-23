@@ -178,16 +178,20 @@ def process_spaceship_text(manager: TextManager, ctx: 'Rac2Context'):
     for i in range(3):
         item_name = get_rich_item_name_from_location(ctx, data.challenge_locations[i])
         if i > 0 and not extra_locations:
-            manager.inject(data.challenge_descriptions[i], f"No reward for first completion")
+            text = wrap_for_spaceship_menu(f"No reward for first completion")
+            manager.inject(data.challenge_descriptions[i], text)
             continue
         if data.challenge_locations[i] in ctx.checked_locations:
-            manager.inject(data.challenge_descriptions[i], f"{COLOR_GREEN}First completion reward already obtained")
+            text = wrap_for_spaceship_menu(f"{COLOR_GREEN}First completion reward already obtained")
+            manager.inject(data.challenge_descriptions[i], text)
         else:
-            manager.inject(data.challenge_descriptions[i], f"Obtain {item_name} on first challenge completion")
+            text = wrap_for_spaceship_menu(f"Obtain {item_name} on first challenge completion")
+            manager.inject(data.challenge_descriptions[i], text)
         # "Received {item}" message when completing first challenge. It feels a bit inconsistent to
         # have it for challenge 1 and not the others, but it would require some work to extend or remove.
         if i == 0:
-            manager.inject(data.challenge_1_completed_text, f"Received {item_name}")
+            text = wrap_for_spaceship_menu(f"Received {item_name}")
+            manager.inject(data.challenge_1_completed_text, text)
 
     # Challenge 4 (ring race)
     remaining_challenges_text = []
@@ -204,4 +208,4 @@ def process_spaceship_text(manager: TextManager, ctx: 'Rac2Context'):
         text = f"{COLOR_GREEN}All rewards already obtained"
     else:
         text = f"{COLOR_GREEN}Perfect race reward already obtained"
-    manager.inject(data.challenge_descriptions[3], text)
+    manager.inject(data.challenge_descriptions[3], wrap_for_spaceship_menu(text))
