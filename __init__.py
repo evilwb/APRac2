@@ -10,10 +10,9 @@ from BaseClasses import Item, Tutorial, ItemClassification
 from . import ItemPool
 from .data import Items, Locations, Planets
 from .data.Planets import PlanetData
-from .data.Locations import LocationData
 from .Regions import create_regions
 from .Container import Rac2ProcedurePatch, generate_patch
-from .Rac2Options import Rac2Options, ShuffleWeaponVendors
+from .Rac2Options import Rac2Options
 
 
 def run_client(_url: Optional[str] = None):
@@ -91,7 +90,8 @@ class Rac2World(World):
     def create_item(self, name: str, override: Optional[ItemClassification] = None) -> "Item":
         if override:
             return Rac2Item(name, override, self.item_name_to_id[name], self.player)
-        return Rac2Item(name, ItemPool.get_classification(name), self.item_name_to_id[name], self.player)
+        item_data = Items.from_name(name)
+        return Rac2Item(name, ItemPool.get_classification(item_data), self.item_name_to_id[name], self.player)
 
     def create_event(self, name: str) -> "Item":
         return Rac2Item(name, ItemClassification.progression, None, self.player)

@@ -1,7 +1,7 @@
 import threading
 from logging import Logger
 
-import kvui
+import kvui  # noqa: F401
 from kivy.app import App
 from kivy.clock import Clock, mainthread
 from kivy.uix.gridlayout import GridLayout
