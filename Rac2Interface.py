@@ -216,12 +216,12 @@ class Rac2Interface:
         self.logger = logger
 
     def give_equipment_to_player(self, equipment: EquipmentData):
-        if isinstance(equipment, WeaponData) and equipment.base_weapon_id is not None:
-            addr = self.addresses.weapon_subid_table + equipment.base_weapon_id
+        if isinstance(equipment, WeaponData) and equipment.base_weapon_offset is not None:
+            addr = self.addresses.weapon_subid_table + equipment.base_weapon_offset
             current_weapon_subid = self.pcsx2_interface.read_int8(addr)
             if current_weapon_subid < equipment.offset:
                 self.pcsx2_interface.write_int8(addr, equipment.offset)
-            self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.base_weapon_id, 1)
+            self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.base_weapon_offset, 1)
         else:
             self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.offset, 1)
         # TODO: Auto equip Thruster-Pack if you don't have Heli-Pack.
@@ -261,8 +261,8 @@ class Rac2Interface:
     # TODO: Deal with armor
 
     def count_inventory_item(self, item: ItemData) -> int:
-        if isinstance(item, WeaponData) and item.base_weapon_id is not None:
-            current_subid = self.pcsx2_interface.read_int8(self.addresses.weapon_subid_table + item.base_weapon_id)
+        if isinstance(item, WeaponData) and item.base_weapon_offset is not None:
+            current_subid = self.pcsx2_interface.read_int8(self.addresses.weapon_subid_table + item.base_weapon_offset)
             return 1 if current_subid >= item.offset else 0
         if isinstance(item, EquipmentData):
             return self.pcsx2_interface.read_int8(self.addresses.inventory + item.offset)
@@ -554,18 +554,18 @@ class Rac2Interface:
 
         return MemorySegmentTable.from_list(array.array('I', table_bytes).tolist())
 
-    def set_weapon_xp(self, weapon_id: int, xp: int):
-        address = self.addresses.current_weapon_xp_table + ((weapon_id & 0x3F) * 0x4)
+    def set_weapon_xp(self, base_weapon_offset: int, xp: int):
+        address = self.addresses.current_weapon_xp_table + ((base_weapon_offset & 0x3F) * 0x4)
         self.pcsx2_interface.write_int32(address, xp)
 
-    def get_weapon_xp(self, weapon_id: int) -> int:
-        address = self.addresses.current_weapon_xp_table + ((weapon_id & 0x3F) * 0x4)
+    def get_weapon_xp(self, base_weapon_offset: int) -> int:
+        address = self.addresses.current_weapon_xp_table + ((base_weapon_offset & 0x3F) * 0x4)
         return self.pcsx2_interface.read_int32(address)
 
-    def set_weapon_ammo(self, weapon_id: int, ammo: int):
-        address = self.addresses.current_ammo_table + ((weapon_id & 0x3F) * 0x4)
+    def set_weapon_ammo(self, base_weapon_offset: int, ammo: int):
+        address = self.addresses.current_ammo_table + ((base_weapon_offset & 0x3F) * 0x4)
         self.pcsx2_interface.write_int32(address, ammo)
 
-    def get_weapon_ammo(self, weapon_id: int) -> int:
-        address = self.addresses.current_ammo_table + ((weapon_id & 0x3F) * 0x4)
+    def get_weapon_ammo(self, base_weapon_offset: int) -> int:
+        address = self.addresses.current_ammo_table + ((base_weapon_offset & 0x3F) * 0x4)
         return self.pcsx2_interface.read_int32(address)

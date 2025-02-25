@@ -41,7 +41,7 @@ HYPNOMATIC = EquipmentData(18, "Hypnomatic", 55)
 
 @dataclass
 class WeaponData(EquipmentData):
-    base_weapon_id: int = None
+    base_weapon_offset: int = None
 
 
 # Weapons
