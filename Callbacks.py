@@ -25,8 +25,8 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
         if ctx.slot_data.get("skip_wupash_nebula", False):
             game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
         # Handle some edge-case weapons XP if extended weapon progression is enabled
-        # if ctx.slot_data is not None and ctx.slot_data.get("extended_weapon_progression", False):
-        handle_specific_weapon_xp(ctx)
+        if ctx.slot_data.get("extended_weapon_progression", False):
+            handle_specific_weapon_xp(ctx)
 
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
