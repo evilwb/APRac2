@@ -61,9 +61,13 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
 def handle_specific_weapon_xp(ctx: 'Rac2Context'):
     game_interface = ctx.game_interface
 
-    # If extended weapon progression is enabled, we need to regularly copy XP from Qwark Statuette to Walloper,
+    # If extended weapon progression is enabled, we need to regularly transfer XP from Qwark Statuette to Walloper,
     # since the Walloper adds XP to the wrong equipment and it would be hard to fix
-    game_interface.set_weapon_xp(Items.WALLOPER.offset, game_interface.get_weapon_xp(Items.QWARK_STATUETTE.offset))
+    pending_walloper_xp = game_interface.get_weapon_xp(Items.QWARK_STATUETTE.offset)
+    if pending_walloper_xp > 0:
+        current_walloper_xp = game_interface.get_weapon_xp(Items.WALLOPER.offset)
+        game_interface.set_weapon_xp(Items.WALLOPER.offset, current_walloper_xp + pending_walloper_xp)
+        game_interface.set_weapon_xp(Items.QWARK_STATUETTE, 0)
 
     # Track decoy glove ammo to add experience on use, since it cannot do damage
     decoy_glove_ammo = game_interface.get_weapon_ammo(Items.DECOY_GLOVE.offset)
