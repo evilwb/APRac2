@@ -75,7 +75,7 @@ def handle_specific_weapon_xp(ctx: 'Rac2Context'):
     ctx.previous_decoy_glove_ammo = decoy_glove_ammo
     if used_decoy_gloves > 0:
         decoy_glove_xp = game_interface.get_weapon_xp(Items.DECOY_GLOVE.offset)
-        game_interface.set_weapon_xp(Items.DECOY_GLOVE.offset, decoy_glove_xp + 0x100)
+        game_interface.set_weapon_xp(Items.DECOY_GLOVE.offset, decoy_glove_xp + 0x180)
 
 
 def replace_text(ctx: 'Rac2Context', ap_connected: bool):
