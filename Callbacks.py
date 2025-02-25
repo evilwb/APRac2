@@ -68,7 +68,7 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
 
         if ctx.current_planet is Rac2Planet.Oozla:
             item_name = get_rich_item_name_from_location(ctx, Locations.OOZLA_MEGACORP_SCIENTIST.location_id)
-            manager.inject(0x27AE, wrap_for_hud("You need %d bolts for {item_name}"))
+            manager.inject(0x27AE, wrap_for_hud(f"You need %d bolts for {item_name}"))
             manager.inject(0x27AC, wrap_for_hud(f"\x12 Buy {item_name} for %d bolts"))
 
         elif ctx.current_planet is Rac2Planet.Maktar_Nebula:
