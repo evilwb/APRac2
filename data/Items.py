@@ -41,7 +41,7 @@ HYPNOMATIC = EquipmentData(18, "Hypnomatic", 55)
 
 @dataclass
 class WeaponData(EquipmentData):
-    pass
+    base_weapon_id: int = None
 
 
 # Weapons
@@ -70,44 +70,44 @@ RYNO_II = WeaponData(122, "RYNO II", 0x2C)
 SHIELD_CHARGER = WeaponData(123, "Shield Charger", 0x2D)
 WALLOPER = WeaponData(124, "Walloper", 0x35)
 
-HEAVY_LANCER = WeaponData(125, "Heavy Lancer", 0x3C)
-KILONOID = WeaponData(126, "Kilonoid", 0x3D)
-PLASMA_STORM = WeaponData(127, "Plasma Storm", 0x3E)
-METEOR_GUN = WeaponData(128, "Meteor Gun", 0x3F)
-MEGATURRET_GLOVE = WeaponData(129, "Megaturret Glove", 0x40)
-MULTISTAR = WeaponData(130, "Multi-Star", 0x41)
-VAPORIZER = WeaponData(131, "Vaporizer", 0x42)
-HK_22 = WeaponData(132, "HK-22", 0x43)
-BLITZ_CANNON = WeaponData(133, "Blitz Cannon", 0x44)
-MEGAROCKET_CANNON = WeaponData(134, "Megarocket Cannon", 0x45)
-TETRABOMB_GUN = WeaponData(135, "Tetrabomb Gun", 0x46)
-MINI_NUKE = WeaponData(136, "Mini-Nuke", 0x47)
-BLACK_SHEEPINATOR = WeaponData(137, "Black Sheepinator", 0x48)
-CLANK_SHOCKER = WeaponData(138, "Clank Shocker", 0x49)
-HEAVY_BOUNCER = WeaponData(139, "Heavy Bouncer", 0x4C)
-TESLA_BARRIER = WeaponData(140, "Tesla Barrier", 0x4D)
-TANKBOT_GLOVE = WeaponData(141, "Tankbot Glove", 0x4E)
+HEAVY_LANCER = WeaponData(125, "Heavy Lancer", 0x3C, LANCER.offset)
+KILONOID = WeaponData(126, "Kilonoid", 0x3D, SYNTHENOID.offset)
+PLASMA_STORM = WeaponData(127, "Plasma Storm", 0x3E, PLASMA_COIL.offset)
+METEOR_GUN = WeaponData(128, "Meteor Gun", 0x3F, LAVA_GUN.offset)
+MEGATURRET_GLOVE = WeaponData(129, "Megaturret Glove", 0x40, MINITURRET_GLOVE.offset)
+MULTISTAR = WeaponData(130, "Multi-Star", 0x41, CHOPPER.offset)
+VAPORIZER = WeaponData(131, "Vaporizer", 0x42, PULSE_RIFLE.offset)
+HK_22 = WeaponData(132, "HK-22", 0x43, SEEKER_GUN.offset)
+BLITZ_CANNON = WeaponData(133, "Blitz Cannon", 0x44, BLITZ_GUN.offset)
+MEGAROCKET_CANNON = WeaponData(134, "Megarocket Cannon", 0x45, MINIROCKET_TUBE.offset)
+TETRABOMB_GUN = WeaponData(135, "Tetrabomb Gun", 0x46, HOVERBOMB_GUN.offset)
+MINI_NUKE = WeaponData(136, "Mini-Nuke", 0x47, GRAVITY_BOMB.offset)
+BLACK_SHEEPINATOR = WeaponData(137, "Black Sheepinator", 0x48, SHEEPINATOR.offset)
+CLANK_SHOCKER = WeaponData(138, "Clank Shocker", 0x49, CLANK_ZAPPER.offset)
+HEAVY_BOUNCER = WeaponData(139, "Heavy Bouncer", 0x4C, BOUNCER.offset)
+TESLA_BARRIER = WeaponData(140, "Tesla Barrier", 0x4D, SHIELD_CHARGER.offset)
+TANKBOT_GLOVE = WeaponData(141, "Tankbot Glove", 0x4E, SPIDERBOT_GLOVE.offset)
 
-MEGA_HEAVY_LANCER = WeaponData(142, "Mega Heavy Lancer", 0x4F)
-MEGA_MINI_NUKE = WeaponData(143, "Mega Mini-Nuke", 0x51)
-MEGA_MULTISTAR = WeaponData(144, "Mega Multi-Star", 0x53)
-MEGA_HK_22 = WeaponData(145, "Mega HK-22", 0x55)
-MEGA_VAPORIZER = WeaponData(146, "Mega Vaporizer", 0x57)
-MEGA_MEGATURRET_GLOVE = WeaponData(147, "Mega Megaturret Glove", 0x59)
-MEGA_BLITZ_CANNON = WeaponData(148, "Mega Blitz Cannon", 0x5B)
-MEGA_KILONOID = WeaponData(149, "Mega Kilonoid", 0x5D)
-MEGA_METEOR_GUN = WeaponData(150, "Mega Meteor Gun", 0x5F)
-MEGA_HEAVY_BOUNCER = WeaponData(151, "Mega Heavy Bouncer", 0x61)
-MEGA_MEGAROCKET_CANNON = WeaponData(152, "Mega Megarocket Cannon", 0x63)
-MEGA_PLASMA_STORM = WeaponData(153, "Mega Plasma Storm", 0x65)
-MEGA_TETRABOMB_GUN = WeaponData(154, "Mega Tetrabomb Gun", 0x67)
-MEGA_TANKBOT_GLOVE = WeaponData(155, "Mega Tankbot Glove", 0x69)
-MEGA_TESLA_BARRIER = WeaponData(156, "Mega Tesla Barrier", 0x6B)
-MEGA_TESLA_CLAW = WeaponData(157, "Mega Tesla Claw", 0x72)
-MEGA_BOMB_GLOVE = WeaponData(158, "Mega Bomb Glove", 0x73)
-MEGA_WALLOPER = WeaponData(159, "Mega Walloper", 0x74)
-MEGA_VISIBOMB_GUN = WeaponData(160, "Mega Visibomb Gun", 0x75)
-MEGA_DECOY_GLOVE = WeaponData(161, "Mega Decoy Glove", 0x76)
+MEGA_HEAVY_LANCER = WeaponData(142, "Mega Heavy Lancer", 0x4F, LANCER.offset)
+MEGA_MINI_NUKE = WeaponData(143, "Mega Mini-Nuke", 0x51, GRAVITY_BOMB.offset)
+MEGA_MULTISTAR = WeaponData(144, "Mega Multi-Star", 0x53, CHOPPER.offset)
+MEGA_HK_22 = WeaponData(145, "Mega HK-22", 0x55, SEEKER_GUN.offset)
+MEGA_VAPORIZER = WeaponData(146, "Mega Vaporizer", 0x57, PULSE_RIFLE.offset)
+MEGA_MEGATURRET_GLOVE = WeaponData(147, "Mega Megaturret Glove", 0x59, MINITURRET_GLOVE.offset)
+MEGA_BLITZ_CANNON = WeaponData(148, "Mega Blitz Cannon", 0x5B, BLITZ_GUN.offset)
+MEGA_KILONOID = WeaponData(149, "Mega Kilonoid", 0x5D, SYNTHENOID.offset)
+MEGA_METEOR_GUN = WeaponData(150, "Mega Meteor Gun", 0x5F, LAVA_GUN.offset)
+MEGA_HEAVY_BOUNCER = WeaponData(151, "Mega Heavy Bouncer", 0x61, BOUNCER.offset)
+MEGA_MEGAROCKET_CANNON = WeaponData(152, "Mega Megarocket Cannon", 0x63, MINIROCKET_TUBE.offset)
+MEGA_PLASMA_STORM = WeaponData(153, "Mega Plasma Storm", 0x65, PLASMA_COIL.offset)
+MEGA_TETRABOMB_GUN = WeaponData(154, "Mega Tetrabomb Gun", 0x67, HOVERBOMB_GUN.offset)
+MEGA_TANKBOT_GLOVE = WeaponData(155, "Mega Tankbot Glove", 0x69, SPIDERBOT_GLOVE.offset)
+MEGA_TESLA_BARRIER = WeaponData(156, "Mega Tesla Barrier", 0x6B, SHIELD_CHARGER.offset)
+MEGA_TESLA_CLAW = WeaponData(157, "Mega Tesla Claw", 0x72, TESLA_CLAW.offset)
+MEGA_BOMB_GLOVE = WeaponData(158, "Mega Bomb Glove", 0x73, BOMB_GLOVE.offset)
+MEGA_WALLOPER = WeaponData(159, "Mega Walloper", 0x74, WALLOPER.offset)
+MEGA_VISIBOMB_GUN = WeaponData(160, "Mega Visibomb Gun", 0x75, VISIBOMB_GUN.offset)
+MEGA_DECOY_GLOVE = WeaponData(161, "Mega Decoy Glove", 0x76, DECOY_GLOVE.offset)
 
 ULTRA_HEAVY_LANCER = WeaponData(162, "Ultra Heavy Lancer", 0x50)
 ULTRA_MINI_NUKE = WeaponData(163, "Ultra Mini-Nuke", 0x52)
@@ -201,32 +201,37 @@ EQUIPMENT: Sequence[EquipmentData] = [
     CHARGE_BOOTS,
     HYPNOMATIC,
 ]
-WEAPONS: Sequence[EquipmentData] = [
-    CLANK_ZAPPER,
-    BOMB_GLOVE,
-    VISIBOMB_GUN,
-    SHEEPINATOR,
-    DECOY_GLOVE,
-    TESLA_CLAW,
-    CHOPPER,
-    PULSE_RIFLE,
-    SEEKER_GUN,
-    HOVERBOMB_GUN,
-    BLITZ_GUN,
-    MINIROCKET_TUBE,
-    PLASMA_COIL,
-    LAVA_GUN,
-    LANCER,
-    SYNTHENOID,
-    SPIDERBOT_GLOVE,
-    BOUNCER,
-    MINITURRET_GLOVE,
-    GRAVITY_BOMB,
-    ZODIAC,
-    RYNO_II,
-    SHIELD_CHARGER,
-    WALLOPER
+
+LV1_WEAPONS: Sequence[EquipmentData] = [
+    CLANK_ZAPPER,           BOMB_GLOVE,                 VISIBOMB_GUN,               SHEEPINATOR,
+    DECOY_GLOVE,            TESLA_CLAW,                 CHOPPER,                    PULSE_RIFLE,
+    SEEKER_GUN,             HOVERBOMB_GUN,              BLITZ_GUN,                  MINIROCKET_TUBE,
+    PLASMA_COIL,            LAVA_GUN,                   LANCER,                     SYNTHENOID,
+    SPIDERBOT_GLOVE,        BOUNCER,                    MINITURRET_GLOVE,           GRAVITY_BOMB,
+    ZODIAC,                 RYNO_II,                    SHIELD_CHARGER,             WALLOPER,
 ]
+LV2_WEAPONS: Sequence[EquipmentData] = [
+    HEAVY_LANCER,           KILONOID,                   PLASMA_STORM,               METEOR_GUN,
+    MEGATURRET_GLOVE,       MULTISTAR,                  VAPORIZER,                  HK_22,
+    BLITZ_CANNON,           MEGAROCKET_CANNON,          TETRABOMB_GUN,              MINI_NUKE,
+    BLACK_SHEEPINATOR,      CLANK_SHOCKER,              HEAVY_BOUNCER,              TESLA_BARRIER,
+    TANKBOT_GLOVE,
+]
+LV3_WEAPONS: Sequence[EquipmentData] = [
+    MEGA_HEAVY_LANCER,      MEGA_MINI_NUKE,             MEGA_MULTISTAR,             MEGA_HK_22,
+    MEGA_VAPORIZER,         MEGA_MEGATURRET_GLOVE,      MEGA_BLITZ_CANNON,          MEGA_KILONOID,
+    MEGA_METEOR_GUN,        MEGA_HEAVY_BOUNCER,         MEGA_MEGAROCKET_CANNON,     MEGA_PLASMA_STORM,
+    MEGA_TETRABOMB_GUN,     MEGA_TANKBOT_GLOVE,         MEGA_TESLA_BARRIER,         MEGA_TESLA_CLAW,
+    MEGA_BOMB_GLOVE,        MEGA_WALLOPER,              MEGA_VISIBOMB_GUN,          MEGA_DECOY_GLOVE,
+]
+LV4_WEAPONS: Sequence[EquipmentData] = [
+    ULTRA_HEAVY_LANCER,     ULTRA_MINI_NUKE,            ULTRA_MULTISTAR,            ULTRA_HK_22,
+    ULTRA_VAPORIZER,        ULTRA_MEGATURRET_GLOVE,     ULTRA_BLITZ_CANNON,         ULTRA_KILONOID,
+    ULTRA_METEOR_GUN,       ULTRA_HEAVY_BOUNCER,        ULTRA_MEGAROCKET_CANNON,    ULTRA_PLASMA_STORM,
+    ULTRA_TETRABOMB_GUN,    ULTRA_TANKBOT_GLOVE,        ULTRA_TESLA_BARRIER,
+]
+WEAPONS: Sequence[EquipmentData] = [*LV1_WEAPONS, *LV2_WEAPONS, *LV3_WEAPONS, *LV4_WEAPONS]
+
 COORDS: Sequence[CoordData] = [
     OOZLA_COORDS,
     MAKTAR_NEBULA_COORDS,

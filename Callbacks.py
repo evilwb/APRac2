@@ -20,9 +20,13 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
 
     replace_text(ctx, ap_connected)
 
-    # Ship Wupash if option is enabled.
-    if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
-        game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
+    if ap_connected and ctx.slot_data is not None:
+        # Ship Wupash if option is enabled.
+        if ctx.slot_data.get("skip_wupash_nebula", False):
+            game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
+        # Handle some edge-case weapons XP if extended weapon progression is enabled
+        # if ctx.slot_data is not None and ctx.slot_data.get("extended_weapon_progression", False):
+        handle_specific_weapon_xp(ctx)
 
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
@@ -52,6 +56,22 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
         has_infiltrator = ctx.game_interface.count_inventory_item(Items.INFILTRATOR) > 0
         if not (has_gravity_boots and has_levitator and has_infiltrator):
             ctx.notification_manager.queue_notification(unstuck_message, 5.0)
+
+
+def handle_specific_weapon_xp(ctx: 'Rac2Context'):
+    game_interface = ctx.game_interface
+
+    # If extended weapon progression is enabled, we need to regularly copy XP from Qwark Statuette to Walloper,
+    # since the Walloper adds XP to the wrong equipment and it would be hard to fix
+    game_interface.set_weapon_xp(Items.WALLOPER.offset, game_interface.get_weapon_xp(Items.QWARK_STATUETTE.offset))
+
+    # Track decoy glove ammo to add experience on use, since it cannot do damage
+    decoy_glove_ammo = game_interface.get_weapon_ammo(Items.DECOY_GLOVE.offset)
+    used_decoy_gloves = ctx.previous_decoy_glove_ammo - decoy_glove_ammo
+    ctx.previous_decoy_glove_ammo = decoy_glove_ammo
+    if used_decoy_gloves > 0:
+        decoy_glove_xp = game_interface.get_weapon_xp(Items.DECOY_GLOVE.offset)
+        game_interface.set_weapon_xp(Items.DECOY_GLOVE.offset, decoy_glove_xp + 0x100)
 
 
 def replace_text(ctx: 'Rac2Context', ap_connected: bool):

@@ -74,6 +74,7 @@ class Rac2Context(CommonContext):
     last_error_message: Optional[str] = None
     death_link_enabled = False
     queued_deaths: int = 0
+    previous_decoy_glove_ammo: int = 0
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)

@@ -134,5 +134,6 @@ class Rac2World(World):
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.options.as_dict(
             "death_link",
-            "skip_wupash_nebula"
+            "skip_wupash_nebula",
+            "extended_weapon_progression",
         )

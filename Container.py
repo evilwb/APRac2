@@ -210,17 +210,6 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))
         patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x09, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))
-        if world.options.extended_weapon_progression:
-            # Remove the condition where non-basic weapons can only get upgraded in NG+
-            patch.write_token(APTokenTypes.WRITE, address + 0x14C, bytes([0x0B, 0x00, 0x00, 0x50]))  # beql zero,zero
-
-    if world.options.extended_weapon_progression:
-        for address in addresses.DRAW_WEAPON_WITH_XP_BAR_FUNCS:
-            # Remove challenge mode being required for any XP bar past level 1 to be non-blue
-            patch.write_token(APTokenTypes.WRITE, address + 0x16C, NOP)
-            # Make level 2 (orange weapons) bar red to indicate it can be upgraded into something else
-            patch.write_token(APTokenTypes.WRITE, address + 0x23C, bytes([0x09, 0x00, 0x00, 0x10]))  # b @RedXPBar
-            patch.write_token(APTokenTypes.WRITE, address + 0x240, NOP)
 
     # Prevent Platinum Bolt received message popup at the end of ship races.
     for address in addresses.RACE_CONTROLLER_FUNCS:
@@ -250,6 +239,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     if world.options.free_challenge_selection:
         patch_free_challenge_selection(patch, addresses)
 
+    if world.options.extended_weapon_progression:
+        patch_extended_weapon_progression(patch, addresses)
+
     if world.options.nanotech_xp_multiplier != 100:
         alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
 
@@ -261,7 +253,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     ----------------------"""
     # Handle "weapons" mode.
     if world.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
-        weapons = list(Items.WEAPONS)
+        weapons = list(Items.LV1_WEAPONS)
         weapons.remove(Items.CLANK_ZAPPER)
         weapons.remove(Items.SHEEPINATOR)
         weapons.remove(Items.SPIDERBOT_GLOVE)
@@ -639,6 +631,45 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_file("token_data.bin", patch.get_token_binary())
 
 
+def patch_extended_weapon_progression(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
+    for address in addresses.NANOTECH_COUNT_FUNCS:
+        # Remove the useless condition where non-basic weapons can only get upgraded in NG+
+        patch.write_token(APTokenTypes.WRITE, address + 0x14C, bytes([0x0B, 0x00, 0x00, 0x50]))  # beql zero,zero
+
+    for address in addresses.DRAW_WEAPON_WITH_XP_BAR_FUNCS:
+        # Remove challenge mode being required for any weapon of Lv2+ to have a red XP bar
+        patch.write_token(APTokenTypes.WRITE, address + 0x16C, NOP)
+        # Remove two conditions that really don't make sense (and even cause a vanilla bug, making all XP bars
+        # blue for Lv1 weapons in challenge mode)
+        patch.write_token(APTokenTypes.WRITE, address + 0x218, NOP * 4)
+        # Once all special cases are taken care of, go back to the simpler "@NoChallengeMode" branch
+        patch.write_token(APTokenTypes.WRITE, address + 0x23C, bytes([
+            0x10, 0x00, 0x00, 0x10,  # b @NoChallengeMode
+            0x68, 0x95, 0xC3, 0xC6,  # addiu v1,s6,-0x6A98
+        ]))
+        # Finally, remove one of the two conditions from the @NoChallengeMode branch to follow only one rule:
+        # if weapon has level up XP defined, draw a red XP bar. Otherwise, draw a blue XP bar. Simple enough!
+        patch.write_token(APTokenTypes.WRITE, address + 0x29C, NOP)
+
+    for address in addresses.DISPLAY_EQUIPMENT_RECEIVED_MSG_FUNCS:
+        # Replace the special case for wrench upgrade message by RaC1 weapons Lv3 upgrade message handling
+        patch.write_token(APTokenTypes.WRITE, address + 0x140, bytes([
+            # Fetch mega weapon ID into v0
+            0x68, 0x95, 0x23, 0x25,  # addiu    v1,t1,-0x6a98
+            0x21, 0x18, 0x03, 0x02,  # addu     v1,s0,v1
+            0x00, 0x00, 0x62, 0x90,  # lbu      v0,0x0(v1)
+            # Mega weapon ID must be in range [0x72,0x76]
+            0x8E, 0xFF, 0x47, 0x24,  # addiu    a3,v0,-0x72
+            0x0D, 0x00, 0xE0, 0x04,  # bltz     a3,@display
+            0x8A, 0xFF, 0x47, 0x24,  # _addiu   a3,v0,-0x76
+            0x0B, 0x00, 0xE0, 0x1C,  # bgtz     a3,@display
+            0x00, 0x00, 0x00, 0x00,  # _nop
+            # Text ID is (0x268C + mega_weapon_id)
+            0x09, 0x00, 0x00, 0x10,  # b        @display
+            0x8C, 0x26, 0x48, 0x24,  # _addiu   t0,v0,0x268C
+        ]))
+
+
 def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
     # Make Maktar arena challenges selectable
     address = addresses.MAKTAR_ARENA_MENU_FUNC
@@ -701,7 +732,6 @@ def alter_weapon_data_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses,
     for address in addresses.WEAPON_DATA_TABLES:
         for weapon_id, (required_xp, upgraded_weapon_id) in weapon_upgrades_table.items():
             weapon_addr = address + (weapon_id * 0xE0)
-            required_xp = int(required_xp * factor)
             patch.write_token(APTokenTypes.WRITE, weapon_addr + 0x4A, upgraded_weapon_id.to_bytes(1))
             patch.write_token(APTokenTypes.WRITE, weapon_addr + 0x6C, required_xp.to_bytes(2, 'little'))
 

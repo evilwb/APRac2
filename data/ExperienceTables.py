@@ -1,4 +1,4 @@
-from Items import *
+from .Items import *
 
 _DEFAULT_NANO_XP_TABLE: list[int] = [
     0x00B4, 0x00D2, 0x00F0, 0x010E, 0x012C, 0x014A, 0x0168, 0x0186,
@@ -85,12 +85,17 @@ def get_weapon_upgrades_table(xp_factor: float, extend_weapon_progression: bool)
     }
     if extend_weapon_progression:
         for lv2_weapon_id, (lv1_weapon, lv3_weapon) in _EXTENDED_UPGRADES.items():
-            lv2_required_xp = weapon_upgrades.get(lv1_weapon.offset, 0)
-            lv4_required_xp = weapon_upgrades.get(lv3_weapon.offset, 0)
-            if lv2_required_xp > 0 and lv4_required_xp > 0:
-                required_xp = int((lv2_required_xp + lv4_required_xp) * 0.65)
+            lv2_required_xp, _ = weapon_upgrades.get(lv1_weapon.offset, (None, None))
+            lv4_required_xp, lv4_weapon = weapon_upgrades.get(lv3_weapon.offset, (None, None))
+            if lv2_required_xp is not None and lv4_required_xp is not None:
+                # In vanilla game, weapon XP gets reset when buying the Lv3 variant from shop.
+                # To compensate for this, we add Lv2 required XP to the value required to get Lv4
+                lv4_required_xp += lv2_required_xp
+                weapon_upgrades[lv3_weapon.offset] = (lv4_required_xp, lv4_weapon)
+                # Lv3 required XP is the median between Lv2 and Lv4
+                lv3_required_xp = int((lv2_required_xp + lv4_required_xp) * 0.5)
             else:
                 # RaC1 weapons case: no XP-based upgrade exist in vanilla for those, invent an XP value that feels right
-                required_xp = int(0x1000 * xp_factor)
-            weapon_upgrades[lv2_weapon_id] = (required_xp, lv3_weapon.offset)
+                lv3_required_xp = int(0x900 * xp_factor)
+            weapon_upgrades[lv2_weapon_id] = (lv3_required_xp, lv3_weapon.offset)
     return weapon_upgrades
