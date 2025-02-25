@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING, Dict, NamedTuple, Sequence
-
 from . import Locations
 from .Rac2Interface import Rac2Planet
 from .TextManager import *
