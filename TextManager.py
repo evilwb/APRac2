@@ -84,15 +84,24 @@ def wrap_text(text: str, max_word_size: int, max_line_size: int) -> str:
     return joining_str.join(lines)
 
 
+RESERVED_HUD_NOTIFICATION_TEXT_ID = 0x322D
+RESERVED_HUD_NOTIFICATION_SIZE = 0x3DC
+
+
 class TextManager:
     def __init__(self, ctx: 'Rac2Context'):
         self.ctx = ctx
         self.injectable_chunks = []
 
-        clanks_day_at_insomniac_chunk = ctx.game_interface.get_text_address(0x3246)
-        self.injectable_chunks.append([clanks_day_at_insomniac_chunk, clanks_day_at_insomniac_chunk + 0x893])
         insomniac_museum_chunk = ctx.game_interface.get_text_address(0x1BAD)
-        self.injectable_chunks.append([insomniac_museum_chunk, insomniac_museum_chunk + 0x18DC])
+        clanks_day_at_insomniac_chunk = ctx.game_interface.get_text_address(0x3246)
+        museum_chunk_end_addr = insomniac_museum_chunk + 0x18DC - RESERVED_HUD_NOTIFICATION_SIZE - 1
+
+        self.injectable_chunks.append([clanks_day_at_insomniac_chunk, clanks_day_at_insomniac_chunk + 0x893])
+        self.injectable_chunks.append([insomniac_museum_chunk, museum_chunk_end_addr])
+
+        # Reserve a 0x3DC long chunk for HUD notifications, and assign unused text ID "0x322D" to point at it
+        ctx.game_interface.set_text_address(RESERVED_HUD_NOTIFICATION_TEXT_ID, museum_chunk_end_addr + 1)
 
     def inject(self, vanilla_text_id: int, text: str):
         """
@@ -122,3 +131,10 @@ class TextManager:
         if addr:
             text_bytes = text.encode() + b'\x00'
             self.ctx.game_interface.pcsx2_interface.write_bytes(addr, text_bytes)
+
+    def set_hud_notification_text(self, message):
+        message = wrap_text(message, 25, 35)
+        if len(message) > RESERVED_HUD_NOTIFICATION_SIZE:
+            # Truncate text if too long
+            message = message[:RESERVED_HUD_NOTIFICATION_SIZE-2] + '\xAD'
+        self.replace(RESERVED_HUD_NOTIFICATION_TEXT_ID, message)

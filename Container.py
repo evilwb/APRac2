@@ -6,7 +6,9 @@ from typing import Any, Callable, TYPE_CHECKING, Optional
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
 from .Rac2Options import ShuffleWeaponVendors
-from .data import Items, IsoAddresses
+from .data import Items, IsoAddresses, RamAddresses
+from . import MIPS, TextManager
+from .data.RamAddresses import PlanetAddresses
 
 if TYPE_CHECKING:
     from . import Rac2World
@@ -119,6 +121,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     #     patch.hash = ...
     if True:
         addresses = IsoAddresses.AddressesSCUS97268
+        ram = RamAddresses.Addresses("SCUS-97268")
 
     """---------------
     Core
@@ -209,11 +212,20 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
 
     # Same for nanotech boosts
-    for address in addresses.NANOTECH_COUNT_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x7C, bytes([0x09, 0x00, 0x00, 0x10]))
-        patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))
+    for address, spaceish_wars_address in zip(addresses.NANOTECH_COUNT_FUNCS, addresses.SPACEISH_WARS_FUNCS):
+        # Inject a custom procedure run on each tick of the main loop of each planet.
+        # It will be called through the NANOTECH_COUNT_FUNC since we are removing a few instructions there,
+        # leaving space for a call.
+        planet = ram.planet[IsoAddresses.get_planet_id_from_iso_address(address)]
+        patch.write_token(APTokenTypes.WRITE, spaceish_wars_address, custom_main_loop(ram, planet))
+
+        patch.write_token(APTokenTypes.WRITE, address + 0x70, bytes([0xE5, 0xB2, 0xA5, 0x90]))  # lbu a1,-0x4D1B(a1)
+        patch.write_token(APTokenTypes.WRITE, address + 0x74, bytes([0x00, 0x00, 0xA4, 0x8F]))  # lw a0,0x0(sp)
+        patch.write_token(APTokenTypes.WRITE, address + 0x78, bytes([0x21, 0x10, 0x85, 0x00]))  # addu v0,a0,a1
+        patch.write_token(APTokenTypes.WRITE, address + 0x7C, MIPS.jal(planet.spaceish_wars_func))
+        patch.write_token(APTokenTypes.WRITE, address + 0x80, bytes([0x00, 0x00, 0xA2, 0xAF]))  # sw v0,0x0(sp)
+        patch.write_token(APTokenTypes.WRITE, address + 0x84, bytes([0x07, 0x00, 0x00, 0x10]))  # beq zero,zero,0x7
+        patch.write_token(APTokenTypes.WRITE, address + 0x88, MIPS.nop())
 
     # Prevent Platinum Bolt received message popup at the end of ship races.
     for address in addresses.RACE_CONTROLLER_FUNCS:
@@ -448,15 +460,16 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.TABORA_CONTROLLER_FUNC
-    patch.write_token(APTokenTypes.WRITE, address + 0x194, bytes([0x1A, 0x00, 0x03, 0x3C]))  # lui v1,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x198, bytes([0xE7, 0xB2, 0x62, 0x90]))  # lbu v0,0x-4D19(v1)
+    upper_half, lower_half = MIPS.get_address_halves(ram.tabora_wrench_cutscene_flag)
+    patch.write_token(APTokenTypes.WRITE, address + 0x194, upper_half + bytes([0x03, 0x3C]))  # lui v1,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x198, lower_half + bytes([0x62, 0x90]))  # lbu v0,...(v1)
     patch.write_token(APTokenTypes.WRITE, address + 0x19C, NOP * 16)
 
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
     patch.write_token(APTokenTypes.WRITE, address + 0x6C4, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x6C8, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x6CC, bytes([0xE7, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D19(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x6C8, upper_half + bytes([0x02, 0x3C]))  # lui v0,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x6CC, lower_half + bytes([0x44, 0xA0]))  # sb a0,...(v0)
     patch.write_token(APTokenTypes.WRITE, address + 0x6D0, NOP * 10)
 
     # Glider Pickup
@@ -565,8 +578,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Wrench Pickup
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.PRISON_WRENCH_INIT_FUNC
-    wrench_pickup_condition = bytes([0x1A, 0x00, 0x03, 0x3C])  # lui v1,0x1A
-    wrench_pickup_condition += bytes([0xE8, 0xB2, 0x62, 0x90])  # lbu v0,0x-4D18(v1)
+    upper_half, lower_half = MIPS.get_address_halves(ram.aranos_wrench_cutscene_flag)
+    wrench_pickup_condition = upper_half + bytes([0x03, 0x3C])  # lui v1,0x1A
+    wrench_pickup_condition += lower_half + bytes([0x62, 0x90])  # lbu v0,0x-4D18(v1)
     wrench_pickup_condition += NOP * 8
     # The same patch is applied at two different spots, for two different wrench mobies that apply on different
     # circumstances (depending on the current level of your wrench)
@@ -576,8 +590,8 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.
     patch.write_token(APTokenTypes.WRITE, address + 0x1F8, bytes([0x01, 0x00, 0x04, 0x24]))  # addiu a0,zero,0x1
-    patch.write_token(APTokenTypes.WRITE, address + 0x1FC, bytes([0x1A, 0x00, 0x02, 0x3C]))  # lui v0,0x1A
-    patch.write_token(APTokenTypes.WRITE, address + 0x200, bytes([0xE8, 0xB2, 0x44, 0xA0]))  # sb a0,0x-4D18(v0)
+    patch.write_token(APTokenTypes.WRITE, address + 0x1FC, upper_half + bytes([0x02, 0x3C]))  # lui v0,...
+    patch.write_token(APTokenTypes.WRITE, address + 0x200, lower_half + bytes([0x44, 0xA0]))  # sb a0,...(v0)
     patch.write_token(APTokenTypes.WRITE, address + 0x204, NOP * 9)
 
     """--------- 
@@ -630,6 +644,40 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, address + 0x4F0, NOP)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def custom_main_loop(ram: RamAddresses.Addresses, planet: PlanetAddresses) -> bytes:
+    func = bytes()
+
+    upper_half, lower_half = MIPS.get_address_halves(ram.custom_text_notification_trigger)
+    text_id_to_display = TextManager.RESERVED_HUD_NOTIFICATION_TEXT_ID.to_bytes(2, 'little')
+
+    # Store return address on the stack
+    func += bytes([0xF8, 0xFF, 0xBD, 0x27])   # addiu sp,sp,-0x8
+    func += bytes([0x00, 0x00, 0xBF, 0xFF])   # sd ra,(sp)
+
+    # Read some custom variable managed by the client, and display a message if it is non-zero
+    func += upper_half + bytes([0x04, 0x3C])  # lui a0,0x001a
+    func += lower_half + bytes([0x84, 0x90])  # _lbu a0,-0x4D17(a0)
+    func += bytes([0x06, 0x00, 0x80, 0x10])   # beq a0,zero,0x6
+    func += MIPS.nop()
+
+    func += text_id_to_display + bytes([0x04, 0x24])   # li a0,<TEXT_ID>
+    func += MIPS.jal(planet.display_skill_point_message_func)
+    func += bytes([0xff, 0xff, 0x05, 0x24])   # li a1,-0x1
+    func += upper_half + bytes([0x04, 0x3C])  # lui a0,0x001a
+    func += lower_half + bytes([0x80, 0xA0])  # _sb zero,-0x4D17(a0)
+
+    # Load back return address from stack, then return
+    func += bytes([0x00, 0x00, 0xBF, 0xDF])   # ld ra,(sp)
+    func += MIPS.jr_ra()
+    func += bytes([0x08, 0x00, 0xBD, 0x27])   # _addiu sp,sp,0x08
+
+    # The chunk looks like it's way more than 0x800 bytes of contiguous code, but the precise count and the consistency
+    # of that contiguity between planets would need to be proven, so let's use that "small" space until we need more.
+    assert len(func) < 0x800, "Injected code might exceed Space-ish Wars code cave size"
+
+    return func
 
 
 def patch_free_challenge_selection(patch: Rac2ProcedurePatch, addresses: IsoAddresses):
