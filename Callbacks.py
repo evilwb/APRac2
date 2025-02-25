@@ -78,6 +78,8 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
     try:
         manager = TextManager(ctx)
 
+        ctx.notification_manager.handle_notifications(ctx.game_interface, manager)
+
         # Replace "Short Cuts" button text with "Go to Ship Shack", since that's what the button does now
         manager.inject(0x3202, "Go to Ship Shack")
 

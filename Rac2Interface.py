@@ -2,12 +2,10 @@ import array
 import dataclasses
 import struct
 from dataclasses import dataclass, field
-from time import sleep
 from logging import Logger
 from enum import Enum, IntEnum
 from typing import Optional, List, Dict
 
-from .TextManager import wrap_text
 from .data import Items
 from .data.RamAddresses import Addresses
 from .data.Items import ItemData, EquipmentData, CoordData, CollectableData, WeaponData
@@ -443,43 +441,6 @@ class Rac2Interface:
     def is_loading(self) -> bool:
         return not self.pcsx2_interface.read_int8(self.addresses.loaded_flag)
 
-    def send_hud_message(self, message: str) -> bool:
-        if (
-            self.get_current_planet() == Rac2Planet.Title_Screen
-            or self.get_pause_state() != 0
-            or self.get_ratchet_state() == 97
-        ):
-            return False
-
-        try:
-            payload_message = wrap_text(message, 25, 35).encode() + b"\00"
-            message_address = self.addresses.planet[self.get_current_planet()].skill_point_text
-
-            if not message_address:
-                return False
-
-            # Overwrite from start of "You got a skill point!" text with payload message.
-            overwritten_text = self.pcsx2_interface.read_bytes(message_address, len(payload_message))
-            self.pcsx2_interface.write_bytes(message_address, payload_message)
-
-            # Save original values for variables we use to trigger the text box.
-            has_nice_ride = self.pcsx2_interface.read_int8(self.addresses.skill_point_table + 0x1D)
-            ship_upgrades = self.pcsx2_interface.read_int16(self.addresses.ship_upgrades)
-
-            # Set variables to trigger skill point get text box.
-            self.pcsx2_interface.write_int8(self.addresses.skill_point_table + 0x1D, 0)
-            self.pcsx2_interface.write_int16(self.addresses.ship_upgrades, 0xFF50)
-
-            # After short delay, reset variables to original values.
-            sleep(0.05)
-            self.pcsx2_interface.write_int8(self.addresses.skill_point_table + 0x1D, has_nice_ride)
-            self.pcsx2_interface.write_int16(self.addresses.ship_upgrades, ship_upgrades)
-            self.pcsx2_interface.write_bytes(message_address, overwritten_text)
-        except RuntimeError:
-            return False
-
-        return True
-
     def get_moby(self, uid: int) -> Optional[MobyInstance]:
         address = self.get_segment_pointer_table().moby_instances
         uid_offset = 0xB2
@@ -552,6 +513,7 @@ class Rac2Interface:
         offset_addr = self.get_text_offset_addr(text_id)
         if offset_addr:
             return self.pcsx2_interface.read_int32(offset_addr)
+        return None
 
     def set_text_address(self, text_id: int, addr: int) -> bool:
         offset_addr = self.get_text_offset_addr(text_id)
@@ -559,6 +521,20 @@ class Rac2Interface:
             self.pcsx2_interface.write_int32(offset_addr, addr)
             return True
         return False
+
+    def can_display_hud_notification(self):
+        return self.get_pause_state() == 0 and self.get_ratchet_state() != 97
+
+    def trigger_hud_notification_display(self):
+        try:
+            # Overwrite from start of "You got a skill point!" text with payload message.
+            self.pcsx2_interface.write_int8(self.addresses.custom_text_notification_trigger, 0x01)
+            return True
+        except RuntimeError:
+            return False
+
+    def is_hud_notification_pending(self):
+        return self.pcsx2_interface.read_int8(self.addresses.custom_text_notification_trigger) == 0x01
 
     def get_segment_pointer_table(self) -> Optional[MemorySegmentTable]:
         if self.addresses is None:

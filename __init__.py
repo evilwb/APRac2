@@ -10,10 +10,9 @@ from BaseClasses import Item, Tutorial, ItemClassification
 from . import ItemPool
 from .data import Items, Locations, Planets
 from .data.Planets import PlanetData
-from .data.Locations import LocationData
 from .Regions import create_regions
 from .Container import Rac2ProcedurePatch, generate_patch
-from .Rac2Options import Rac2Options, ShuffleWeaponVendors
+from .Rac2Options import Rac2Options
 
 
 def run_client(_url: Optional[str] = None):
