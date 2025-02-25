@@ -124,52 +124,8 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool):
         return
 
 
-class SpaceshipSystemTextInfo(NamedTuple):
-    challenge_descriptions: Sequence[int]
-    challenge_locations: Sequence[int]
-    perfect_race_location: int
-    challenge_1_completed_text: int
-
-
-SPACESHIP_SYSTEMS: Dict[int, SpaceshipSystemTextInfo] = {
-    Planets.FELTZIN_SYSTEM.number: SpaceshipSystemTextInfo(
-        challenge_descriptions=[0x2FDB, 0x2FDD, 0x2FDC, 0x2FDF],
-        challenge_locations=[
-            Locations.FELTZIN_DEFEAT_THUG_SHIPS.location_id,
-            Locations.FELTZIN_DESTROY_SPACE_WASPS.location_id,
-            Locations.FELTZIN_FIGHT_ACE_THUGS.location_id,
-            Locations.FELTZIN_RACE.location_id
-        ],
-        perfect_race_location=Locations.FELTZIN_RACE_PB.location_id,
-        challenge_1_completed_text=0x11F5,
-    ),
-    Planets.HRUGIS_CLOUD.number: SpaceshipSystemTextInfo(
-        challenge_descriptions=[0x2FE7, 0x2FE8, 0x2FE9, 0x2FEB],
-        challenge_locations=[
-            Locations.HRUGIS_DESTROY_DEFENSES.location_id,
-            Locations.HRUGIS_SABOTEURS.location_id,
-            Locations.HRUGIS_BERSERK_DRONES.location_id,
-            Locations.HRUGIS_RACE.location_id
-        ],
-        perfect_race_location=Locations.HRUGIS_RACE_PB.location_id,
-        challenge_1_completed_text=0x11FB,
-    ),
-    Planets.GORN.number: SpaceshipSystemTextInfo(
-        challenge_descriptions=[0x2FEF, 0x2FF0, 0x2FF1, 0x2FF2],
-        challenge_locations=[
-            Locations.GORN_DEFEAT_THUG_FLEET.location_id,
-            Locations.GORN_FIGHT_BANDITS.location_id,
-            Locations.GORN_GHOST_SHIP.location_id,
-            Locations.GORN_RACE.location_id
-        ],
-        perfect_race_location=Locations.GORN_RACE_PB.location_id,
-        challenge_1_completed_text=0x11FF,
-    )
-}
-
-
 def process_spaceship_text(manager: TextManager, ctx: 'Rac2Context'):
-    data = SPACESHIP_SYSTEMS.get(ctx.current_planet, None)
+    data = Planets.SPACESHIP_SYSTEMS.get(ctx.current_planet, None)
     if data is None:
         return
     extra_locations = ctx.slot_data.get("extra_spaceship_challenge_locations", False)

@@ -1,7 +1,6 @@
 from typing import List, Sequence
 
 from .Locations import *
-from .Locations import LocationData
 
 
 class PlanetData(NamedTuple):
@@ -190,3 +189,49 @@ ALL_LOCATIONS: Sequence[LocationData] = [
     for locations in [planet.locations for planet in LOGIC_PLANETS]
     for location in locations
 ]
+
+
+class SpaceshipSystemTextInfo(NamedTuple):
+    challenge_descriptions: Sequence[int]
+    challenge_locations: Sequence[int]
+    perfect_race_location: int
+    challenge_1_completed_text: int
+
+
+# This dictionary is used by the `process_spaceship_text` function in the game client in order to know how to properly
+# set dynamic text in the spaceship challenge menus
+SPACESHIP_SYSTEMS: Dict[int, SpaceshipSystemTextInfo] = {
+    FELTZIN_SYSTEM.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FDB, 0x2FDD, 0x2FDC, 0x2FDF],
+        challenge_locations=[
+            FELTZIN_DEFEAT_THUG_SHIPS.location_id,
+            FELTZIN_DESTROY_SPACE_WASPS.location_id,
+            FELTZIN_FIGHT_ACE_THUGS.location_id,
+            FELTZIN_RACE.location_id
+        ],
+        perfect_race_location=FELTZIN_RACE_PB.location_id,
+        challenge_1_completed_text=0x11F5,
+    ),
+    HRUGIS_CLOUD.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FE7, 0x2FE8, 0x2FE9, 0x2FEB],
+        challenge_locations=[
+            HRUGIS_DESTROY_DEFENSES.location_id,
+            HRUGIS_SABOTEURS.location_id,
+            HRUGIS_BERSERK_DRONES.location_id,
+            HRUGIS_RACE.location_id
+        ],
+        perfect_race_location=HRUGIS_RACE_PB.location_id,
+        challenge_1_completed_text=0x11FB,
+    ),
+    GORN.number: SpaceshipSystemTextInfo(
+        challenge_descriptions=[0x2FEF, 0x2FF0, 0x2FF1, 0x2FF2],
+        challenge_locations=[
+            GORN_DEFEAT_THUG_FLEET.location_id,
+            GORN_FIGHT_BANDITS.location_id,
+            GORN_GHOST_SHIP.location_id,
+            GORN_RACE.location_id
+        ],
+        perfect_race_location=GORN_RACE_PB.location_id,
+        challenge_1_completed_text=0x11FF,
+    )
+}
