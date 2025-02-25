@@ -58,7 +58,7 @@ BARLOW_HOUND_CAVE_PB = LocationData(43, "Barlow: Hound Cave - Platinum Bolt", ca
 
 """ Feltzin System """
 FELTZIN_DEFEAT_THUG_SHIPS = LocationData(50, "Feltzin: Defeat Thug Ships")
-FELTZIN_RACE_PB = LocationData(51, "Feltzin: Race - Platinum Bolt")
+FELTZIN_RACE_PB = LocationData(51, "Feltzin: Race Through the Asteroids - Platinum Bolt")
 FELTZIN_CARGO_BAY_NT = LocationData(52, "Feltzin: Cargo Bay - Nanotech Boost")
 FELTZIN_DESTROY_SPACE_WASPS = LocationData(
     53, "Feltzin: Destroy Space Wasps",
@@ -154,7 +154,7 @@ DOBBO_FACILITY_GLIDE_NT = LocationData(
 
 """ Hrugis """
 HRUGIS_DESTROY_DEFENSES = LocationData(100, "Hrugis Cloud: Destroy Defenses")
-HRUGIS_RACE_PB = LocationData(101, "Hrugis Cloud: Race - Platinum Bolt")
+HRUGIS_RACE_PB = LocationData(101, "Hrugis Cloud: Race Through the Disposal Facility - Platinum Bolt")
 HRUGIS_SABOTEURS = LocationData(
     102, "Hrugis Cloud: Take Out the Saboteurs",
     checked_flag_address=lambda ram: ram.hrugis_challenge_wins + 0x1,
@@ -279,7 +279,7 @@ ARANOS_OMNIWRENCH_12000 = LocationData(
 
 """ Gorn """
 GORN_DEFEAT_THUG_FLEET = LocationData(150, "Gorn: Defeat Thug Fleet")
-GORN_RACE_PB = LocationData(151, "Gorn: Race - Platinum Bolt")
+GORN_RACE_PB = LocationData(151, "Gorn: Race Through the Docking Bays - Platinum Bolt")
 GORN_FIGHT_BANDITS = LocationData(
     152, "Gorn: Fight the Bandits",
     checked_flag_address=lambda ram: ram.gorn_challenge_wins + 0x1,
