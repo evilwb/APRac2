@@ -262,7 +262,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     if world.options.nanotech_xp_multiplier != 100:
         alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
 
-    if world.options.weapon_xp_multiplier != 100:
+    if world.options.weapon_xp_multiplier != 100 or world.options.extended_weapon_progression:
         alter_weapon_data_tables(patch, addresses, world.options)
 
     """----------------------
