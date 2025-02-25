@@ -78,7 +78,7 @@ class Rac2Context(CommonContext):
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
         self.game_interface = Rac2Interface(logger)
-        self.notification_manager = NotificationManager(HUD_MESSAGE_DURATION, self.game_interface.send_hud_message)
+        self.notification_manager = NotificationManager(HUD_MESSAGE_DURATION)
         self.locations_scouted = set(Rac2World.location_name_to_id.values())
 
     def on_deathlink(self, data: Utils.Dict[str, Utils.Any]) -> None:
@@ -185,8 +185,6 @@ async def _handle_game_ready(ctx: Rac2Context):
         ctx.game_interface.logger.info("Waiting for planet to load...")
         ctx.is_loading = True
         return
-
-    ctx.notification_manager.handle_notifications()
 
     if ctx.current_planet != ctx.game_interface.get_current_planet():
         ctx.previous_planet = ctx.current_planet
