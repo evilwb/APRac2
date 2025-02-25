@@ -258,9 +258,12 @@ class Rac2Interface:
         if item is Items.HYPNOMATIC_PART:
             self.pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
 
-    # TODO: Deal with armor and weapons
+    # TODO: Deal with armor
 
     def count_inventory_item(self, item: ItemData) -> int:
+        if isinstance(item, WeaponData) and item.base_weapon_id is not None:
+            current_subid = self.pcsx2_interface.read_int8(self.addresses.weapon_subid_table + item.base_weapon_id)
+            return 1 if current_subid >= item.offset else 0
         if isinstance(item, EquipmentData):
             return self.pcsx2_interface.read_int8(self.addresses.inventory + item.offset)
         if isinstance(item, CoordData):

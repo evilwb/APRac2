@@ -5,7 +5,7 @@ from typing import Any, Callable, TYPE_CHECKING, Optional
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from .Rac2Options import ShuffleWeaponVendors
+from .Rac2Options import ShuffleWeaponVendors, Rac2Options
 from .data import Items, IsoAddresses, RamAddresses, ExperienceTables
 from . import MIPS, TextManager
 from .data.RamAddresses import PlanetAddresses
@@ -698,7 +698,7 @@ def patch_extended_weapon_progression(patch: Rac2ProcedurePatch, addresses: IsoA
         # Once all special cases are taken care of, go back to the simpler "@NoChallengeMode" branch
         patch.write_token(APTokenTypes.WRITE, address + 0x23C, bytes([
             0x10, 0x00, 0x00, 0x10,  # b @NoChallengeMode
-            0x68, 0x95, 0xC3, 0xC6,  # addiu v1,s6,-0x6A98
+            0x68, 0x95, 0xC3, 0x26,  # addiu v1,s6,-0x6A98
         ]))
         # Finally, remove one of the two conditions from the @NoChallengeMode branch to follow only one rule:
         # if weapon has level up XP defined, draw a red XP bar. Otherwise, draw a blue XP bar. Simple enough!

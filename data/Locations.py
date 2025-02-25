@@ -1,4 +1,4 @@
-from typing import Optional, NamedTuple
+from typing import Optional, NamedTuple, Callable
 
 from ..Logic import *
 
