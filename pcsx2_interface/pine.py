@@ -76,8 +76,14 @@ class Pine:
             socket_name = ("127.0.0.1", self._slot)
         elif system() == "Linux":
             socket_family = socket.AF_UNIX
+            # AppImage Sock Path
             socket_name = os.environ.get("XDG_RUNTIME_DIR", "/tmp")
             socket_name += "/pcsx2.sock"
+            # Flatpak Sock Path (XDG_RUNTIME_DIR/.flatpak/net.pcsx2.PCSX2/xdg_run)
+            if not os.path.isfile(socket_name):
+                socket_name = os.environ.get("XDG_RUNTIME_DIR")
+                socket_name += "/.flatpak/net.pcsx2.PCSX2/xdg-run"
+                socket_name += "/pcsx2.sock"
         elif system() == "Darwin":
             socket_family = socket.AF_UNIX
             socket_name = os.environ.get("TMPDIR", "/tmp")
