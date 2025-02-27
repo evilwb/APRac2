@@ -241,15 +241,29 @@ class Rac2Interface:
             if id_to_write > 0:
                 self.pcsx2_interface.write_int8(self.addresses.highlighted_planets + id_to_write, 10)
 
-    def give_collectable_to_player(self, item: CollectableData, new_amount: int):
-        if item is Items.PLATINUM_BOLT:
-            self.pcsx2_interface.write_int8(self.addresses.platinum_bolt_count, new_amount)
+    def get_bolts(self) -> int:
+        return self.pcsx2_interface.read_int32(self.addresses.current_bolts)
 
-        if item is Items.NANOTECH_BOOST:
-            self.pcsx2_interface.write_int8(self.addresses.nanotech_boost_count, new_amount)
+    def set_bolts(self, amount: int):
+        self.pcsx2_interface.write_int32(self.addresses.current_bolts, amount & 0x7FFFFFFF)
 
-        if item is Items.HYPNOMATIC_PART:
-            self.pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
+    def give_collectable_to_player(self, item: CollectableData, new_amount: int, current_amount: int):
+        count_addrs = {
+            Items.PLATINUM_BOLT.item_id: self.addresses.platinum_bolt_count,
+            Items.NANOTECH_BOOST.item_id: self.addresses.nanotech_boost_count,
+            Items.HYPNOMATIC_PART.item_id: self.addresses.hypnomatic_part_count,
+            Items.BOLT_PACK.item_id: self.addresses.bolt_pack_count,
+        }
+        # Handle special cases
+        if item is Items.BOLT_PACK:
+            owned_bolts = self.get_bolts()
+            while current_amount < new_amount:
+                # Each bolt pack gives 20% of owned bolts, never giving less than 10'000
+                current_amount += 1
+                owned_bolts += max(int(owned_bolts * 0.2), 10000)
+            self.set_bolts(owned_bolts)
+        # Update the count variable in RAM so these collectibles aren't processed again
+        self.pcsx2_interface.write_int8(count_addrs[item.item_id], new_amount)
 
     # TODO: Deal with armor and weapons
 
@@ -269,6 +283,8 @@ class Rac2Interface:
             return self.pcsx2_interface.read_int8(self.addresses.nanotech_boost_count)
         if item is Items.HYPNOMATIC_PART:
             return self.pcsx2_interface.read_int8(self.addresses.hypnomatic_part_count)
+        if item is Items.BOLT_PACK:
+            return self.pcsx2_interface.read_int8(self.addresses.bolt_pack_count)
 
     def get_current_inventory(self) -> dict[str, int]:
         inventory: dict[str, int] = {}

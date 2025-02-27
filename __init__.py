@@ -82,7 +82,7 @@ class Rac2World(World):
     prefilled_item_map: Dict[str, str] = {}  # Dict of location name to item name
 
     def get_filler_item_name(self) -> str:
-        return Items.PLATINUM_BOLT.name
+        return Items.BOLT_PACK.name
 
     def create_regions(self) -> None:
         create_regions(self)
@@ -112,9 +112,9 @@ class Rac2World(World):
         # add platinum bolts in whatever slots we have left
         remain = (len(Planets.ALL_LOCATIONS) - 1) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
-        print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
+        print(f"Not enough items to fill all locations. Adding {remain} filler items to the item pool")
         for _ in range(remain):
-            items_to_add.append(self.create_item(Items.PLATINUM_BOLT.name, ItemClassification.filler))
+            items_to_add.append(self.create_item(Items.BOLT_PACK.name, ItemClassification.filler))
 
         self.multiworld.itempool += items_to_add
 
