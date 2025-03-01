@@ -76,6 +76,12 @@ class WeaponExperienceMultiplier(Range):
     default = 100
 
 
+class ExtraSpaceshipChallengeLocations(Toggle):
+    """In the vanilla game, only the first challenge and the race challenge completed perfectly give an item as a
+    reward. If enabled, this option makes all spaceship challenges reward an item on first completion."""
+    display_name = "Extra Spaceship Challenge Locations"
+
+
 class ExtendedWeaponProgression(Toggle):
     """If enabled, make all weapon tiers obtainable through weapon experience. This means LV2 (orange) weapons can
     upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
@@ -96,4 +102,5 @@ class Rac2Options(PerGameCommonOptions):
     free_challenge_selection: FreeChallengeSelection
     nanotech_xp_multiplier: NanotechExperienceMultiplier
     weapon_xp_multiplier: WeaponExperienceMultiplier
+    extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
     extended_weapon_progression: ExtendedWeaponProgression

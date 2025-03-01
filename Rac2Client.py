@@ -12,7 +12,8 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import ClientStatus
 import Utils
 from settings import get_settings
-from . import Rac2World, Rac2Settings
+from .data.Planets import ALL_LOCATIONS
+from . import Rac2Settings
 from .Container import Rac2ProcedurePatch
 from .ClientCheckLocations import handle_checked_location
 from .Callbacks import update, init
@@ -80,7 +81,6 @@ class Rac2Context(CommonContext):
         super().__init__(server_address, password)
         self.game_interface = Rac2Interface(logger)
         self.notification_manager = NotificationManager(HUD_MESSAGE_DURATION)
-        self.locations_scouted = set(Rac2World.location_name_to_id.values())
 
     def on_deathlink(self, data: Utils.Dict[str, Utils.Any]) -> None:
         super().on_deathlink(data)
@@ -101,10 +101,17 @@ class Rac2Context(CommonContext):
     def on_package(self, cmd: str, args: dict):
         if cmd == "Connected":
             self.slot_data = args["slot_data"]
+            # Set death link tag if it was requested in options
             if "death_link" in args["slot_data"]:
                 self.death_link_enabled = bool(args["slot_data"]["death_link"])
                 Utils.async_start(self.update_death_link(
                     bool(args["slot_data"]["death_link"])))
+
+            # Scout all active locations for lookups that may be required later on
+            all_locations = [loc.location_id for loc in ALL_LOCATIONS
+                             if loc.enable_if is None or loc.enable_if(self.slot_data)]
+            self.locations_scouted = set(all_locations)
+            self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.locations_scouted)}])
 
     def run_gui(self):
         from kvui import GameManager
