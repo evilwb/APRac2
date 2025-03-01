@@ -46,6 +46,8 @@ class Addresses:
             self.checkpoint_data: int = 0x19B2E8
             self.planet_state: int = 0x19B4A8
             self.loaded_flag: int = 0x1A7BE5
+            self.equipped_weapon: int = 0x1A7398
+            # self.held_weapon: int = 0x18B068
             self.quickselect: int = 0x1A73B8
             self.current_planet: int = 0x1A79F0
             self.nanotech_boost_table: int = 0x1A7A28

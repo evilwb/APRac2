@@ -316,6 +316,9 @@ class Rac2Interface:
         except RuntimeError:
             return False
 
+    def get_equipped_weapon(self) -> int:
+        return self.pcsx2_interface.read_int8(self.addresses.equipped_weapon)
+
     def get_alive(self) -> bool:
         planet = self.get_current_planet()
         if planet in [Rac2Planet.Wupash_Nebula, Rac2Planet.Feltzin_System, Rac2Planet.Hrugis_Cloud, Rac2Planet.Gorn]:

@@ -64,8 +64,11 @@ def handle_specific_weapon_xp(ctx: 'Rac2Context'):
     pending_walloper_xp = game_interface.get_weapon_xp(Items.QWARK_STATUETTE.offset)
     if pending_walloper_xp > 0:
         current_walloper_xp = game_interface.get_weapon_xp(Items.WALLOPER.offset)
-        game_interface.set_weapon_xp(Items.WALLOPER.offset, current_walloper_xp + pending_walloper_xp)
         game_interface.set_weapon_xp(Items.QWARK_STATUETTE.offset, 0)
+        # There are rare times where that XP increases even without using the walloper (most likely enemies killing
+        # other enemies), so we discard the XP instead of transferring it if walloper is not equipped
+        if game_interface.get_equipped_weapon() == Items.WALLOPER.offset:
+            game_interface.set_weapon_xp(Items.WALLOPER.offset, current_walloper_xp + pending_walloper_xp)
 
     # Track decoy glove ammo to add experience on use, since it cannot do damage
     decoy_glove_ammo = game_interface.get_weapon_ammo(Items.DECOY_GLOVE.offset)
