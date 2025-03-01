@@ -96,6 +96,6 @@ def get_weapon_upgrades_table(xp_factor: float, extend_weapon_progression: bool)
                 lv3_required_xp = int((lv2_required_xp + lv4_required_xp) * 0.5)
             else:
                 # RaC1 weapons case: no XP-based upgrade exist in vanilla for those, invent an XP value that feels right
-                lv3_required_xp = int(0x900 * xp_factor)
+                lv3_required_xp = int(0x600 * xp_factor)
             weapon_upgrades[lv2_weapon_id] = (lv3_required_xp, lv3_weapon.offset)
     return weapon_upgrades
