@@ -1,4 +1,4 @@
-from typing import Optional, NamedTuple, Dict
+from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any
 from ..Logic import *
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ class LocationData(NamedTuple):
     name: str
     access_rule: Optional[Callable[[CollectionState, int], bool]] = None
     checked_flag_address: Optional[Callable[["Addresses"], int]] = None
-    enable_if: Optional[Callable[[Dict[str, typing.Any]], bool]] = None
+    enable_if: Optional[Callable[[Dict[str, Any]], bool]] = None
 
 
 """ Oozla """
