@@ -64,7 +64,7 @@ class NanotechExperienceMultiplier(Range):
     """A multiplier applied to experience gained for Nanotech levels, in percent."""
     display_name = "Nanotech XP Multiplier"
     range_start = 20
-    range_end = 400
+    range_end = 600
     default = 100
 
 
@@ -72,7 +72,7 @@ class WeaponExperienceMultiplier(Range):
     """A multiplier applied to experience gained for weapon levels, in percent."""
     display_name = "Weapon XP Multiplier"
     range_start = 20
-    range_end = 400
+    range_end = 600
     default = 100
 
 
