@@ -461,9 +461,10 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     # Have Wrench pickup check a custom flag to determine if it has been checked.
     address = addresses.TABORA_CONTROLLER_FUNC
     upper_half, lower_half = MIPS.get_address_halves(ram.tabora_wrench_cutscene_flag)
-    patch.write_token(APTokenTypes.WRITE, address + 0x194, upper_half + bytes([0x03, 0x3C]))  # lui v1,...
-    patch.write_token(APTokenTypes.WRITE, address + 0x198, lower_half + bytes([0x62, 0x90]))  # lbu v0,...(v1)
-    patch.write_token(APTokenTypes.WRITE, address + 0x19C, NOP * 16)
+    patch.write_token(APTokenTypes.WRITE, address + 0x1D4, bytes([
+        *upper_half, 0x03, 0x3C,  # lui v1,...
+        *lower_half, 0x62, 0x90,  # lbu v0,...(v1)
+    ]))
 
     # Replace the code that upgrades wrench and displays a message by code that just sets a custom flag.
     # Also removes the wrench skin change + HUD message on pickup.

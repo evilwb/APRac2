@@ -1,12 +1,16 @@
-from typing import Optional, NamedTuple
-
+from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any
 from ..Logic import *
+
+if TYPE_CHECKING:
+    from .RamAddresses import Addresses
 
 
 class LocationData(NamedTuple):
     location_id: Optional[int]
     name: str
     access_rule: Optional[Callable[[CollectionState, int], bool]] = None
+    checked_flag_address: Optional[Callable[["Addresses"], int]] = None
+    enable_if: Optional[Callable[[Dict[str, Any]], bool]] = None
 
 
 """ Oozla """
@@ -54,8 +58,23 @@ BARLOW_HOUND_CAVE_PB = LocationData(43, "Barlow: Hound Cave - Platinum Bolt", ca
 
 """ Feltzin System """
 FELTZIN_DEFEAT_THUG_SHIPS = LocationData(50, "Feltzin: Defeat Thug Ships")
-FELTZIN_RACE_PB = LocationData(51, "Feltzin: Race - Platinum Bolt")
+FELTZIN_RACE_PB = LocationData(51, "Feltzin: Race Through the Asteroids - Platinum Bolt")
 FELTZIN_CARGO_BAY_NT = LocationData(52, "Feltzin: Cargo Bay - Nanotech Boost")
+FELTZIN_DESTROY_SPACE_WASPS = LocationData(
+    53, "Feltzin: Destroy Space Wasps",
+    checked_flag_address=lambda ram: ram.feltzin_challenge_wins + 0x1,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
+FELTZIN_FIGHT_ACE_THUGS = LocationData(
+    54, "Feltzin: Fight Ace Thug Ships",
+    checked_flag_address=lambda ram: ram.feltzin_challenge_wins + 0x2,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
+FELTZIN_RACE = LocationData(
+    55, "Feltzin: Race Through the Asteroids",
+    checked_flag_address=lambda ram: ram.feltzin_challenge_wins + 0x3,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
 
 """ Notak """
 NOTAK_TOP_PIER_TELESCREEN = LocationData(
@@ -96,7 +115,10 @@ TABORA_CANYON_GLIDE_PILLAR_NT = LocationData(
     85, "Tabora: Canyon Glide Pillar - Nanotech Boost",
     lambda state, player: can_thermanate(state, player) and can_glide(state, player)
 )
-TABORA_OMNIWRENCH_10000 = LocationData(86, "Tabora: OmniWrench 10000")
+TABORA_OMNIWRENCH_10000 = LocationData(
+    86, "Tabora: OmniWrench 10000",
+    checked_flag_address=lambda ram: ram.tabora_wrench_cutscene_flag
+)
 
 """ Dobbo """
 DOBBO_DEFEAT_THUG_LEADER = LocationData(
@@ -132,7 +154,22 @@ DOBBO_FACILITY_GLIDE_NT = LocationData(
 
 """ Hrugis """
 HRUGIS_DESTROY_DEFENSES = LocationData(100, "Hrugis Cloud: Destroy Defenses")
-HRUGIS_RACE_PB = LocationData(101, "Hrugis Cloud: Race - Platinum Bolt")
+HRUGIS_RACE_PB = LocationData(101, "Hrugis Cloud: Race Through the Disposal Facility - Platinum Bolt")
+HRUGIS_SABOTEURS = LocationData(
+    102, "Hrugis Cloud: Take Out the Saboteurs",
+    checked_flag_address=lambda ram: ram.hrugis_challenge_wins + 0x1,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"],
+)
+HRUGIS_BERSERK_DRONES = LocationData(
+    103, "Hrugis Cloud: Destroy the Berserk Repair Drones",
+    checked_flag_address=lambda ram: ram.hrugis_challenge_wins + 0x2,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
+HRUGIS_RACE = LocationData(
+    104, "Hrugis Cloud: Race Through the Disposal Facility",
+    checked_flag_address=lambda ram: ram.hrugis_challenge_wins + 0x3,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
 
 """ Joba """
 JOBA_FIRST_HOVERBIKE_RACE = LocationData(110, "Joba: First Hoverbike Race - Charge Boots", can_swingshot)
@@ -235,11 +272,29 @@ BOLDAN_FOUNTAIN_NT = LocationData(134, "Boldan: Fountain - Nanotech Boost", can_
 ARANOS_CONTROL_ROOM = LocationData(140, "Aranos: Control Room")
 ARANOS_PLUMBER = LocationData(141, "Aranos: Plumber - Qwark Statuette")
 ARANOS_UNDER_SHIP_PB = LocationData(142, "Aranos: Under Ship - Platinum Bolt", can_heli)
-ARANOS_OMNIWRENCH_12000 = LocationData(143, "Aranos: OmniWrench 12000")
+ARANOS_OMNIWRENCH_12000 = LocationData(
+    143, "Aranos: OmniWrench 12000",
+    checked_flag_address=lambda ram: ram.aranos_wrench_cutscene_flag
+)
 
 """ Gorn """
 GORN_DEFEAT_THUG_FLEET = LocationData(150, "Gorn: Defeat Thug Fleet")
-GORN_RACE_PB = LocationData(151, "Gorn: Race - Platinum Bolt")
+GORN_RACE_PB = LocationData(151, "Gorn: Race Through the Docking Bays - Platinum Bolt")
+GORN_FIGHT_BANDITS = LocationData(
+    152, "Gorn: Fight the Bandits",
+    checked_flag_address=lambda ram: ram.gorn_challenge_wins + 0x1,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
+GORN_GHOST_SHIP = LocationData(
+    153, "Gorn: Defeat the Ghost Ship",
+    checked_flag_address=lambda ram: ram.gorn_challenge_wins + 0x2,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
+GORN_RACE = LocationData(
+    154, "Gorn: Race Through the Docking Bays",
+    checked_flag_address=lambda ram: ram.gorn_challenge_wins + 0x3,
+    enable_if=lambda options_dict: options_dict["extra_spaceship_challenge_locations"]
+)
 
 """ Snivelak """
 SNIVELAK_RESCUE_ANGELA = LocationData(
@@ -274,12 +329,13 @@ SMOLG_BALLOON_TRANSMISSION = LocationData(
 )
 SMOLG_DISTRIBUTION_FACILITY_END = LocationData(
     171, "Smolg: Distribution Facility End - Hypnomatic Part",
-    lambda state, player:
+    access_rule=lambda state, player:
         can_improved_jump(state, player)
         and can_dynamo(state, player)
         and can_electrolyze(state, player)
         and can_grind(state, player)
-        and can_infiltrate(state, player)
+        and can_infiltrate(state, player),
+    checked_flag_address=lambda ram: ram.hypnomatic_part1
 )
 SMOLG_MUTANT_CRAB = LocationData(
     172, "Smolg: Mutant Crab",
@@ -303,7 +359,11 @@ DAMOSEL_HYPNOTIST = LocationData(
         and can_thermanate(state, player)
         and has_hypnomatic_parts(state, player)
 )
-DAMOSEL_TRAIN_RAILS = LocationData(181, "Damosel: Train Rails - Hypnomatic Part", can_grind)
+DAMOSEL_TRAIN_RAILS = LocationData(
+    181, "Damosel: Train Rails - Hypnomatic Part",
+    access_rule=can_grind,
+    checked_flag_address=lambda ram: ram.hypnomatic_part2
+)
 DAMOSEL_DEFEAT_MOTHERSHIP = LocationData(182, "Damosel: Defeat Mothership - Mapper")
 DAMOSEL_FROZEN_FOUNTAIN_PB = LocationData(
     183, "Damosel: Frozen Fountain - Platinum Bolt",
@@ -326,7 +386,8 @@ DAMOSEL_PYRAMID_PB = LocationData(
 GRELBIN_FIND_ANGELA = LocationData(190, "Grelbin: Find Angela", can_hypnotize)
 GRELBIN_MYSTIC_MORE_MOONSTONES = LocationData(
     191, "Grelbin: Mystic More Moonstones - Hypnomatic Part",
-    lambda state, player: can_glide(state, player) and can_infiltrate(state, player)
+    access_rule=lambda state, player: can_glide(state, player) and can_infiltrate(state, player),
+    checked_flag_address=lambda ram: ram.hypnomatic_part3
 )
 GRELBIN_ICE_PLAINS_PB = LocationData(
     192, "Grelbin: Ice Plains - Platinum Bolt",
