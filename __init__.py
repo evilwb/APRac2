@@ -110,7 +110,7 @@ class Rac2World(World):
         items_to_add += ItemPool.create_upgrades(self)
 
         # add platinum bolts in whatever slots we have left
-        active_locations = get_all_active_locations(self.get_options_as_dict())
+        active_locations = Planets.get_all_active_locations(self.get_options_as_dict())
         remain = len(active_locations) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
         print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
