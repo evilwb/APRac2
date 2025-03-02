@@ -1,16 +1,15 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
-from .data import Items, Locations
-from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData
 from . import Rac2Options
+from .data import Items, Locations
+from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData, ItemData
 
 if TYPE_CHECKING:
     from . import Rac2World
 
 
-def get_classification(item_name: str) -> ItemClassification:
-    item = Items.from_name(item_name)
+def get_classification(item: ItemData) -> ItemClassification:
     if item in Items.COORDS:
         return ItemClassification.progression
     if item in [
@@ -82,7 +81,7 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
             weapons = [weapon for weapon in Items.WEAPONS if weapon.power < 10]
         if world.options.starting_weapons == world.options.starting_weapons.option_all:
             weapons = list(Items.WEAPONS)
-    
+
         world.multiworld.random.shuffle(weapons)
         world.push_precollected(world.create_item(weapons[0].name))
         world.push_precollected(world.create_item(weapons[1].name))

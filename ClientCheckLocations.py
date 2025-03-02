@@ -152,19 +152,13 @@ async def handle_checked_location(ctx: 'Rac2Context'):
         if i in NANOTECH_OFFSET_TO_LOCATION_ID and ctx.game_interface.pcsx2_interface.read_int8(address) == 1:
             cleared_locations.add(NANOTECH_OFFSET_TO_LOCATION_ID[i])
 
-    # check for hypnomatic parts
-    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part1) == 1:
-        cleared_locations.add(Locations.SMOLG_DISTRIBUTION_FACILITY_END.location_id)
-    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part2) == 1:
-        cleared_locations.add(Locations.DAMOSEL_TRAIN_RAILS.location_id)
-    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.hypnomatic_part3) == 1:
-        cleared_locations.add(Locations.GRELBIN_MYSTIC_MORE_MOONSTONES.location_id)
-
-    # check for wrench cutscene custom flags
-    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.tabora_wrench_cutscene_flag) == 1:
-        cleared_locations.add(Locations.TABORA_OMNIWRENCH_10000.location_id)
-    if ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.aranos_wrench_cutscene_flag) == 1:
-        cleared_locations.add(Locations.ARANOS_OMNIWRENCH_12000.location_id)
+    # Check all location flags defined on locations
+    for location in Planets.ALL_LOCATIONS:
+        if location.checked_flag_address is not None:
+            addr = location.checked_flag_address(ctx.game_interface.addresses)
+            if ctx.game_interface.pcsx2_interface.read_int8(addr) != 0:
+                if location.enable_if is None or location.enable_if(ctx.slot_data):
+                    cleared_locations.add(location.location_id)
 
     cleared_locations = cleared_locations.difference(ctx.checked_locations)
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])

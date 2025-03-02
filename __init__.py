@@ -11,7 +11,6 @@ from . import ItemPool
 from .data import Items, Locations, Planets
 from .data.Items import EquipmentData
 from .data.Planets import PlanetData
-from .data.Locations import LocationData
 from .Regions import create_regions
 from .Container import Rac2ProcedurePatch, generate_patch
 from .Rac2Options import Rac2Options, RandomizeMegacorpVendor
@@ -93,7 +92,8 @@ class Rac2World(World):
     def create_item(self, name: str, override: Optional[ItemClassification] = None) -> "Item":
         if override:
             return Rac2Item(name, override, self.item_name_to_id[name], self.player)
-        return Rac2Item(name, ItemPool.get_classification(name), self.item_name_to_id[name], self.player)
+        item_data = Items.from_name(name)
+        return Rac2Item(name, ItemPool.get_classification(item_data), self.item_name_to_id[name], self.player)
 
     def create_event(self, name: str) -> "Item":
         return Rac2Item(name, ItemClassification.progression, None, self.player)
@@ -112,7 +112,9 @@ class Rac2World(World):
         items_to_add += ItemPool.create_upgrades(self)
 
         # add platinum bolts in whatever slots we have left
-        remain = (len(Planets.ALL_LOCATIONS) - 1) - len(items_to_add)
+        options = self.get_options_as_dict()
+        active_locations = [loc for loc in Planets.ALL_LOCATIONS if loc.enable_if is None or loc.enable_if(options)]
+        remain = (len(active_locations) - 1) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
         print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
         for _ in range(remain):
@@ -132,8 +134,12 @@ class Rac2World(World):
                                 f"{self.multiworld.get_out_file_name_base(self.player)}{aprac2.patch_file_ending}")
         aprac2.write(rom_path)
 
-    def fill_slot_data(self) -> Mapping[str, Any]:
+    def get_options_as_dict(self) -> Dict[str, Any]:
         return self.options.as_dict(
             "death_link",
-            "skip_wupash_nebula"
+            "skip_wupash_nebula",
+            "extra_spaceship_challenge_locations",
         )
+
+    def fill_slot_data(self) -> Mapping[str, Any]:
+        return self.get_options_as_dict()

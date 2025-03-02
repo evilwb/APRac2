@@ -1,0 +1,24 @@
+name: Run Linter
+
+on:
+  pull_request:
+    paths:
+      - "**.py"
+      - ".github/workflows/lint.yml"
+  push:
+    paths:
+      - "**.py"
+      - ".github/workflows/lint.yml"
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Ruff check
+        uses: astral-sh/ruff-action@v3.2.1
+        with:
+          # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
+          args: "--config ${{ github.workspace }}/.github/ruff.toml check"

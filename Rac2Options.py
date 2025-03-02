@@ -88,6 +88,12 @@ class WeaponExperienceMultiplier(Range):
     default = 100
 
 
+class ExtraSpaceshipChallengeLocations(Toggle):
+    """In the vanilla game, only the first challenge and the race challenge completed perfectly give an item as a
+    reward. If enabled, this option makes all spaceship challenges reward an item on first completion."""
+    display_name = "Extra Spaceship Challenge Locations"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -103,3 +109,4 @@ class Rac2Options(PerGameCommonOptions):
     free_challenge_selection: FreeChallengeSelection
     nanotech_xp_multiplier: NanotechExperienceMultiplier
     weapon_xp_multiplier: WeaponExperienceMultiplier
+    extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
