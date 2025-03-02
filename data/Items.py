@@ -148,36 +148,38 @@ EQUIPMENT: Sequence[EquipmentData] = [
     CHARGE_BOOTS,
     HYPNOMATIC,
 ]
+# Keep in the correct order
 MEGACORP_VENDOR_WEAPONS: Sequence[EquipmentData] = [
-    CLANK_ZAPPER,
     CHOPPER,
-    PULSE_RIFLE,
-    SEEKER_GUN,
-    HOVERBOMB_GUN,
     BLITZ_GUN,
-    MINIROCKET_TUBE,
-    PLASMA_COIL,
-    LAVA_GUN,
-    LANCER,
-    SYNTHENOID,
-    BOUNCER,
+    PULSE_RIFLE,
     MINITURRET_GLOVE,
-    GRAVITY_BOMB,
-    ZODIAC,
+    SEEKER_GUN,
+    SYNTHENOID,
+    LAVA_GUN,
+    BOUNCER,
+    MINIROCKET_TUBE,
+    SPIDERBOT_GLOVE,
+    PLASMA_COIL,
+    HOVERBOMB_GUN,
     SHIELD_CHARGER,
+    ZODIAC,
+    CLANK_ZAPPER,
 ]
+# Keep in the correct order
 GADGETRON_VENDOR_WEAPONS: Sequence[EquipmentData] = [
     BOMB_GLOVE,
     VISIBOMB_GUN,
-    DECOY_GLOVE,
     TESLA_CLAW,
+    DECOY_GLOVE,
     RYNO_II,
     WALLOPER,
 ]
 WEAPONS: Sequence[WeaponData] = [
     *MEGACORP_VENDOR_WEAPONS,
     *GADGETRON_VENDOR_WEAPONS,
-    SPIDERBOT_GLOVE,
+    LANCER,
+    GRAVITY_BOMB,
     SHEEPINATOR,
 ]
 COORDS: Sequence[CoordData] = [
@@ -232,14 +234,16 @@ QUICK_SELECTABLE: Sequence[ItemData] = [
 
 def from_id(item_id: int) -> ItemData:
     matching = [item for item in ALL if item.item_id == item_id]
-    assert len(matching) > 0, f"No item data with id '{item_id}'."
+    if len(matching) == 0:
+        raise ValueError(f"No item data for item id '{item_id}'")
     assert len(matching) < 2, f"Multiple item data with id '{item_id}'. Please report."
     return matching[0]
 
 
 def from_name(item_name: str) -> ItemData:
     matching = [item for item in ALL if item.name == item_name]
-    assert len(matching) > 0, f"No item data with name '{item_name}'."
+    if len(matching) == 0:
+        raise ValueError(f"No item data for '{item_name}'")
     assert len(matching) < 2, f"Multiple item data with name '{item_name}'. Please report."
     return matching[0]
 

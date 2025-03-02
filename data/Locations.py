@@ -386,3 +386,31 @@ BARLOW_GADGETRON_3 = LocationData(316, "Barlow: Gadgetron Vendor - Weapon 3")
 BARLOW_GADGETRON_4 = LocationData(317, "Barlow: Gadgetron Vendor - Weapon 4")
 BARLOW_GADGETRON_5 = LocationData(318, "Barlow: Gadgetron Vendor - Weapon 5")
 BARLOW_GADGETRON_6 = LocationData(319, "Barlow: Gadgetron Vendor - Weapon 6")
+
+# Keep in correct order
+MEGACORP_VENDOR_LOCATIONS: Sequence[LocationData] = [
+    OOZLA_NEW_WEAPON_1,
+    OOZLA_NEW_WEAPON_2,
+    ENDAKO_NEW_WEAPON_1,
+    ENDAKO_NEW_WEAPON_2,
+    BARLOW_NEW_WEAPON,
+    NOTAK_NEW_WEAPON,
+    TABORA_NEW_WEAPON_1,
+    TABORA_NEW_WEAPON_2,
+    DOBBO_NEW_WEAPON,
+    JOBA_NEW_WEAPON_1,
+    JOBA_NEW_WEAPON_2,
+    TODANO_NEW_WEAPON,
+    ARANOS_NEW_WEAPON_1,
+    ARANOS_NEW_WEAPON_2,
+]
+
+# Keep in correct order
+GADGETRON_VENDOR_LOCATIONS: Sequence[LocationData] = [
+    BARLOW_GADGETRON_1,
+    BARLOW_GADGETRON_2,
+    BARLOW_GADGETRON_3,
+    BARLOW_GADGETRON_4,
+    BARLOW_GADGETRON_5,
+    BARLOW_GADGETRON_6,
+]

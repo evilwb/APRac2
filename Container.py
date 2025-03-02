@@ -203,9 +203,14 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x1C, bytes([0x38, 0x00, 0xE3, 0xA0]))  # sb v1,0x38(a3)
         patch.write_token(APTokenTypes.WRITE, address + 0x20, NOP * 43)
 
-    # Prevent auto-equipping anything purchased at the vendor.
     for address in addresses.VENDOR_CONFIRM_MENU_FUNCS:
+        # Prevent auto-equipping anything purchased at the vendor.
         patch.write_token(APTokenTypes.WRITE, address + 0x740, NOP)
+
+        # Prevent vendor from overwriting slots after purchases.
+        patch.write_token(APTokenTypes.WRITE, address + 0x60C, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
+
 
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 

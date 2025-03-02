@@ -56,10 +56,12 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
         if isinstance(item, EquipmentData) and current_items[item.name] == 0:
             ctx.game_interface.give_equipment_to_player(item)
             show_item_reception_message(ctx, network_item)
+            ctx.game_interface.vendor.refresh(ctx)
 
         if isinstance(item, CoordData) and current_items[item.name] == 0:
             ctx.game_interface.unlock_planet(item.planet_number)
             show_item_reception_message(ctx, network_item)
+            ctx.game_interface.vendor.refresh(ctx)
 
         if isinstance(item, ProgressiveUpgradeData):
             current_level = item.get_level_func(ctx.game_interface)

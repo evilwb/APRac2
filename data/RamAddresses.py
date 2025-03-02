@@ -52,6 +52,7 @@ class Addresses:
             self.ship_upgrades: int = 0x1A7AF0
             self.inventory: int = 0x1A7AF8
             self.secondary_inventory: int = 0x1A7B30
+            self.vendor_list: int = 0x1A7B68
             self.unlocked_planets: int = 0x1A7BC8
             self.wupash_complete_flag: int = 0x1A7C01
             # I use some unused addresses at the end of the platinum bolt table to store some extra data for AP.
@@ -83,6 +84,7 @@ class Addresses:
                     planet_switch_trigger=0x1A8F14,
                     next_planet=0x1B2080,
                     skill_point_text=0x1A900A0,
+                    equipment_data=0x2637A0,
                     vendor_slot_table=0x230000,
                 ),
                 MAKTAR_NEBULA.number: PlanetAddresses(

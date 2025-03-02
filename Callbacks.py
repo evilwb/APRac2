@@ -1,14 +1,15 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from . import Locations
 from .Rac2Interface import Rac2Planet, Rac2Interface
 from .TextManager import TextManager, get_rich_item_name_from_location
 from .data import Items
 from .ClientCheckLocations import INVENTORY_OFFSET_TO_LOCATION_ID
-from .Rac2Interface import Rac2Planet, PauseState
+from .Rac2Interface import Rac2Planet, PauseState, Vendor
 from .TextManager import TextManager
 from .data import Items, Planets
 from .data.Items import EquipmentData
+from .data.Locations import LocationData
 from .data.RamAddresses import Addresses
 from .pcsx2_interface.pine import Pine
 
@@ -21,24 +22,14 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
 
     game_interface = ctx.game_interface
     planet = ctx.current_planet
-    text_manager = TextManager(ctx)
 
     if planet is Rac2Planet.Title_Screen or planet is None:
         return
 
-    replace_text(ctx, ap_connected, text_manager)
+    replace_text(ctx, ap_connected)
 
-    if ap_connected and game_interface.get_pause_state() == PauseState.VENDOR.value:
-        handle_vendor(ctx, text_manager)
-    else:
-        # reset weapon data back to default when not in vendor
-        equipment_data = game_interface.addresses.planet[ctx.current_planet].equipment_data
-        if equipment_data:
-            for weapon in Items.WEAPONS:
-                weapon_data = equipment_data + weapon.offset * 0xE0
-                text_id = game_interface.pcsx2_interface.read_int32(weapon_data + 0x8)
-                text_manager.inject(text_id, weapon.name)
-                game_interface.pcsx2_interface.write_int16(weapon_data + 0x3C, weapon.icon_id)
+    if ap_connected:
+        handle_vendor(ctx)
 
     # Ship Wupash if option is enabled.
     if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
@@ -74,13 +65,17 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
             ctx.notification_manager.queue_notification(unstuck_message, 5.0)
 
 
-def replace_text(ctx: 'Rac2Context', ap_connected: bool, manager: TextManager):
+def replace_text(ctx: 'Rac2Context', ap_connected: bool):
     try:
+        manager = TextManager(ctx)
+
         # Replace "Short Cuts" button text with "Go to Ship Shack", since that's what the button does now
         manager.inject(0x3202, "Go to Ship Shack")
 
         if not ap_connected:
             return
+
+        process_vendor_text(manager, ctx)
 
         if ctx.current_planet is Rac2Planet.Oozla:
             item_name = get_rich_item_name_from_location(ctx, Locations.OOZLA_MEGACORP_SCIENTIST.location_id)
@@ -158,38 +153,89 @@ def replace_text(ctx: 'Rac2Context', ap_connected: bool, manager: TextManager):
         return
 
 
-def handle_vendor(ctx: "Rac2Context", text_manager: TextManager):
+def handle_vendor(ctx: "Rac2Context"):
     interface: Rac2Interface = ctx.game_interface
     addresses: Addresses = ctx.game_interface.addresses
-    vendor_slot_table: int = addresses.planet[ctx.current_planet].vendor_slot_table
 
+    if interface.get_pause_state() == PauseState.VENDOR.value:
+        if interface.vendor.mode is Vendor.Mode.CLOSED:
+            if interface.vendor.is_megacorp():
+                interface.vendor.change_mode(ctx, Vendor.Mode.MEGACORP)
+            else:
+                interface.vendor.change_mode(ctx, Vendor.Mode.GADGETRON)
+
+    if interface.get_pause_state() != PauseState.VENDOR.value and interface.vendor.mode is not Vendor.Mode.CLOSED:
+        interface.vendor.change_mode(ctx, Vendor.Mode.CLOSED)
+
+    # Use Down/Up to toggle between ammo/weapon mode
     holding_down: bool = interface.pcsx2_interface.read_int16(addresses.controller_input) == 0x4000
     holding_up: bool = interface.pcsx2_interface.read_int16(addresses.controller_input) == 0x1000
-    mode_changed: bool = False
-    # Use Down/Up to toggle between ammo/weapon mode
-    if interface.pcsx2_interface.read_int8(vendor_slot_table - 0xBC) == 0:  # only allow toggle when sub-menu is not up.
-        if holding_down and not ctx.vendor_ammo_mode:
-            ctx.vendor_ammo_mode = True
-            mode_changed = True
-        if holding_up and ctx.vendor_ammo_mode:
-            ctx.vendor_ammo_mode = False
-            mode_changed = True
+    if holding_down and interface.vendor.mode is Vendor.Mode.MEGACORP:
+        interface.vendor.change_mode(ctx, Vendor.Mode.AMMO)
+    if holding_up and interface.vendor.mode is Vendor.Mode.AMMO:
+        interface.vendor.change_mode(ctx, Vendor.Mode.MEGACORP)
 
-    if ctx.vendor_ammo_mode:
-        owned_weapons: list[Items.WeaponData] = [
-            weapon
-            for weapon in Items.WEAPONS
-            if ctx.game_interface.get_current_inventory()[weapon.name] > 0
-        ]
-        for i, weapon in enumerate(owned_weapons):
-            interface.set_vendor_slot(i, weapon.offset, True, 0xCDB)
-        interface.set_vendor_used_slots(len(owned_weapons))
+
+def process_vendor_text(manager: TextManager, ctx: "Rac2Context") -> None:
+    equipment_data: int = ctx.game_interface.addresses.planet[ctx.current_planet].equipment_data
+    if not equipment_data:
+        return
+
+    vendor: Vendor = ctx.game_interface.vendor
+    if vendor.mode is Vendor.Mode.MEGACORP:
+        locations: Sequence[LocationData] = Locations.MEGACORP_VENDOR_LOCATIONS
+        weapons: Sequence[EquipmentData] = Items.MEGACORP_VENDOR_WEAPONS
+        for i in range(len(locations)):
+            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapons[i].offset * 0xE0 + 0x08)
+            location_info = ctx.locations_info[locations[i].location_id]
+            item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
+            manager.inject(text_id, item_name)
+    elif vendor.mode is Vendor.Mode.GADGETRON:
+        locations: Sequence[LocationData] = Locations.GADGETRON_VENDOR_LOCATIONS
+        weapons: Sequence[EquipmentData] = Items.GADGETRON_VENDOR_WEAPONS
+        for i in range(len(locations)):
+            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapons[i].offset * 0xE0 + 0x08)
+            location_info = ctx.locations_info[locations[i].location_id]
+            item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
+            manager.inject(text_id, item_name)
     else:
-        interface.set_vendor_slot(0, 43, False, 0xEC8)
-        interface.set_vendor_used_slots(1)
+        locations: list[LocationData] = list(Locations.MEGACORP_VENDOR_LOCATIONS) + list(Locations.GADGETRON_VENDOR_LOCATIONS)
+        weapons: list[EquipmentData] = list(Items.MEGACORP_VENDOR_WEAPONS) + list(Items.GADGETRON_VENDOR_WEAPONS)
+        weapons.remove(Items.CLANK_ZAPPER)
+        for i in range(len(locations)):
+            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapons[i].offset * 0xE0 + 0x08)
+            manager.inject(text_id, weapons[i].name)
 
-    if mode_changed:
-        interface.set_vendor_cursor(0)
+    # else:
+    #     slots: list[Vendor.VendorSlot] = []
+    #     for i, location_info in enumerate([ctx.locations_info[location.location_id] for location in Locations.MEGACORP_VENDOR_LOCATIONS], 1):
+    #         # Don't place items on the vendor that have already been purchased.
+    #         if location_info.location in ctx.checked_locations:
+    #             continue
+    #
+    #         item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
+    #         item = None
+    #         try:
+    #             item = Items.from_name(item_name)
+    #         except ValueError:
+    #             pass
+    #
+    #         equipment_table = addresses.planet[ctx.current_planet].equipment_data
+    #         text_manager.inject(interface.pcsx2_interface.read_int32(equipment_table + i * 0xE0 + 0x08), item_name)
+    #         if isinstance(item, EquipmentData):
+    #             # TODO: Add correct model
+    #             slots.append(Vendor.VendorSlot(i, False, 0xEC8))
+    #             interface.pcsx2_interface.write_int16(equipment_table + i * 0xE0 + 0x3C, item.icon_id)
+    #         else:
+    #             slots.append(Vendor.VendorSlot(i, False, 0xEC8))
+    #             interface.pcsx2_interface.write_int16(equipment_table + i * 0xE0 + 0x3C, 0xEA75)
+    #
+    #     if mode_changed:
+    #         interface.vendor.populate_slots(slots)
+
+
+    # if mode_changed:
+    #     interface.set_vendor_cursor(0)
     # for vendor_slot in range(32):
     #
     #
