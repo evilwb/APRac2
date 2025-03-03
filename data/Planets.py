@@ -253,3 +253,9 @@ SPACESHIP_SYSTEMS: Dict[int, SpaceshipSystemTextInfo] = {
         challenge_1_completed_text=0x11FF,
     )
 }
+
+
+def get_all_active_locations(options_as_dict: Dict[str, Any]):
+    return [loc for loc in ALL_LOCATIONS
+            if (loc.enable_if is None or loc.enable_if(options_as_dict))
+            and loc.location_id is not None]

@@ -153,17 +153,17 @@ async def handle_checked_location(ctx: 'Rac2Context'):
             cleared_locations.add(NANOTECH_OFFSET_TO_LOCATION_ID[i])
 
     # Check all location flags defined on locations
-    for location in Planets.ALL_LOCATIONS:
+    all_active_locations = Planets.get_all_active_locations(ctx.slot_data)
+    for location in all_active_locations:
         if location.checked_flag_address is not None:
             addr = location.checked_flag_address(ctx.game_interface.addresses)
             if ctx.game_interface.pcsx2_interface.read_int8(addr) != 0:
-                if location.enable_if is None or location.enable_if(ctx.slot_data):
-                    cleared_locations.add(location.location_id)
+                cleared_locations.add(location.location_id)
 
     cleared_locations = cleared_locations.difference(ctx.checked_locations)
     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": cleared_locations}])
     for location_id in cleared_locations:
-        location_name = [loc for loc in Planets.ALL_LOCATIONS if loc.location_id == location_id].pop().name
+        location_name = [loc for loc in all_active_locations if loc.location_id == location_id].pop().name
         ctx.game_interface.logger.info(f"Location checked: {location_name}")
 
         net_item = ctx.locations_info.get(location_id, None)

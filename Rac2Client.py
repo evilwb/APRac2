@@ -12,7 +12,7 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import ClientStatus
 import Utils
 from settings import get_settings
-from .data.Planets import ALL_LOCATIONS
+from .data.Planets import get_all_active_locations
 from . import Rac2Settings
 from .Container import Rac2ProcedurePatch
 from .ClientCheckLocations import handle_checked_location
@@ -108,10 +108,12 @@ class Rac2Context(CommonContext):
                     bool(args["slot_data"]["death_link"])))
 
             # Scout all active locations for lookups that may be required later on
-            all_locations = [loc.location_id for loc in ALL_LOCATIONS
-                             if loc.enable_if is None or loc.enable_if(self.slot_data)]
+            all_locations = [loc.location_id for loc in get_all_active_locations(self.slot_data)]
             self.locations_scouted = set(all_locations)
-            self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.locations_scouted)}])
+            Utils.async_start(self.send_msgs([{
+                "cmd": "LocationScouts",
+                "locations": list(self.locations_scouted)
+            }]))
 
     def run_gui(self):
         from kvui import GameManager
