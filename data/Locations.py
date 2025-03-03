@@ -1,9 +1,9 @@
 from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any
+
 from ..Logic import *
 
 if TYPE_CHECKING:
     from .RamAddresses import Addresses
-
 
 class LocationData(NamedTuple):
     location_id: Optional[int]
