@@ -1,4 +1,4 @@
-from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any
+from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any, Sequence
 from ..Logic import *
 
 if TYPE_CHECKING:
@@ -427,26 +427,86 @@ YEEDIL_TRACTOR_PILLAR_PB = LocationData(
 )
 
 """ Vendors """
-OOZLA_NEW_WEAPON_1 = LocationData(300, "Oozla: Megacorp Vendor - New Weapon 1")
-OOZLA_NEW_WEAPON_2 = LocationData(301, "Oozla: Megacorp Vendor - New Weapon 2")
-ENDAKO_NEW_WEAPON_1 = LocationData(302, "Endako: Megacorp Vendor - New Weapon 1")
-ENDAKO_NEW_WEAPON_2 = LocationData(303, "Endako: Megacorp Vendor - New Weapon 2")
-BARLOW_NEW_WEAPON = LocationData(304, "Barlow: Megacorp Vendor - New Weapon")
-NOTAK_NEW_WEAPON = LocationData(305, "Notak: Megacorp Vendor - New Weapon")
-TABORA_NEW_WEAPON_1 = LocationData(306, "Tabora: Megacorp Vendor - New Weapon 1")
-TABORA_NEW_WEAPON_2 = LocationData(307, "Tabora: Megacorp Vendor - New Weapon 2")
-DOBBO_NEW_WEAPON = LocationData(308, "Dobbo: Megacorp Vendor - New Weapon")
-JOBA_NEW_WEAPON_1 = LocationData(309, "Joba: Megacorp Vendor - New Weapon 1")
-JOBA_NEW_WEAPON_2 = LocationData(310, "Joba: Megacorp Vendor - New Weapon 2")
-TODANO_NEW_WEAPON = LocationData(311, "Todano: Megacorp Vendor - New Weapon")
-ARANOS_NEW_WEAPON_1 = LocationData(312, "Aranos Prison: Megacorp Vendor - New Weapon 1")
-ARANOS_NEW_WEAPON_2 = LocationData(313, "Aranos Prison: Megacorp Vendor - New Weapon 2")
-BARLOW_GADGETRON_1 = LocationData(314, "Barlow: Gadgetron Vendor - Weapon 1")
-BARLOW_GADGETRON_2 = LocationData(315, "Barlow: Gadgetron Vendor - Weapon 2")
-BARLOW_GADGETRON_3 = LocationData(316, "Barlow: Gadgetron Vendor - Weapon 3")
-BARLOW_GADGETRON_4 = LocationData(317, "Barlow: Gadgetron Vendor - Weapon 4")
-BARLOW_GADGETRON_5 = LocationData(318, "Barlow: Gadgetron Vendor - Weapon 5")
-BARLOW_GADGETRON_6 = LocationData(319, "Barlow: Gadgetron Vendor - Weapon 6")
+OOZLA_NEW_WEAPON_1 = LocationData(
+    300, "Oozla: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.CHOPPER.offset
+)
+OOZLA_NEW_WEAPON_2 = LocationData(
+    301, "Oozla: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BLITZ_GUN.offset
+)
+ENDAKO_NEW_WEAPON_1 = LocationData(
+    302, "Endako: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.PULSE_RIFLE.offset
+)
+ENDAKO_NEW_WEAPON_2 = LocationData(
+    303, "Endako: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.MINITURRET_GLOVE.offset
+)
+BARLOW_NEW_WEAPON = LocationData(
+    304, "Barlow: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SEEKER_GUN.offset
+)
+NOTAK_NEW_WEAPON = LocationData(
+    305, "Notak: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SYNTHENOID.offset
+)
+TABORA_NEW_WEAPON_1 = LocationData(
+    306, "Tabora: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.LAVA_GUN.offset
+)
+TABORA_NEW_WEAPON_2 = LocationData(
+    307, "Tabora: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BOUNCER.offset
+)
+DOBBO_NEW_WEAPON = LocationData(
+    308, "Dobbo: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.MINIROCKET_TUBE.offset
+)
+JOBA_NEW_WEAPON_1 = LocationData(
+    309, "Joba: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SPIDERBOT_GLOVE.offset
+)
+JOBA_NEW_WEAPON_2 = LocationData(
+    310, "Joba: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.PLASMA_COIL.offset
+)
+TODANO_NEW_WEAPON = LocationData(
+    311, "Todano: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.HOVERBOMB_GUN.offset
+)
+ARANOS_NEW_WEAPON_1 = LocationData(
+    312, "Aranos Prison: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SHIELD_CHARGER.offset
+)
+ARANOS_NEW_WEAPON_2 = LocationData(
+    313, "Aranos Prison: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.ZODIAC.offset
+)
+BARLOW_GADGETRON_1 = LocationData(
+    314, "Barlow: Gadgetron Vendor - Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BOMB_GLOVE.offset
+)
+BARLOW_GADGETRON_2 = LocationData(
+    315, "Barlow: Gadgetron Vendor - Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.VISIBOMB_GUN.offset
+)
+BARLOW_GADGETRON_3 = LocationData(
+    316, "Barlow: Gadgetron Vendor - Weapon 3",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.TESLA_CLAW.offset
+)
+BARLOW_GADGETRON_4 = LocationData(
+    317, "Barlow: Gadgetron Vendor - Weapon 4",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.DECOY_GLOVE.offset
+)
+BARLOW_GADGETRON_5 = LocationData(
+    318, "Barlow: Gadgetron Vendor - Weapon 5",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.RYNO_II.offset
+)
+BARLOW_GADGETRON_6 = LocationData(
+    319, "Barlow: Gadgetron Vendor - Weapon 6",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.WALLOPER.offset
+)
 
 # Keep in correct order
 MEGACORP_VENDOR_LOCATIONS: Sequence[LocationData] = [

@@ -10,7 +10,7 @@ from .TextManager import wrap_text
 from .data import Items, Locations
 from .data.Locations import LocationData
 from .data.RamAddresses import Addresses
-from .data.Items import ItemData, EquipmentData, CoordData, CollectableData
+from .data.Items import ItemData, EquipmentData, CoordData, CollectableData, WeaponData
 from .pcsx2_interface.pine import Pine
 
 if TYPE_CHECKING:
@@ -249,6 +249,7 @@ class Vendor:
             # Don't add ammo for weapons that don't have ammo.
             slots = [slot for slot in slots if slot.item_id not in [Items.WALLOPER.offset, Items.SHEEPINATOR.offset]]
             self.populate_slots(slots)
+            self._reset_weapon_data(ctx)
         elif new_mode is Vendor.Mode.MEGACORP:
             weapons: list[EquipmentData] = list(Items.MEGACORP_VENDOR_WEAPONS)
             weapons.remove(Items.CLANK_ZAPPER)
@@ -275,10 +276,10 @@ class Vendor:
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
                     # TODO: Add correct model
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47, i))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.icon_id)
                 else:
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47, i))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, 0xEA75)
             if not slots:
                 self.change_mode(ctx, self.Mode.AMMO)
@@ -304,26 +305,25 @@ class Vendor:
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
                     # TODO: Add correct model
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47, i))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C,
                                                                item.icon_id)
                 else:
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47, i))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C,
                                                                0xEA75)
             self.populate_slots(slots)
         elif new_mode is Vendor.Mode.CLOSED:
             # reset weapon data back to default when not in vendor
-            equipment_data = self.interface.addresses.planet[ctx.current_planet].equipment_data
-            if equipment_data:
-                for weapon in Items.WEAPONS:
-                    weapon_data = equipment_data + weapon.offset * 0xE0
-                    self.interface.pcsx2_interface.write_int16(weapon_data + 0x3C, weapon.icon_id)
+            self._reset_weapon_data(ctx)
 
         self.mode = new_mode
 
     def refresh(self, ctx: "Rac2Context") -> None:
-        self.change_mode(ctx, self.mode)
+        try:
+            self.change_mode(ctx, self.mode)
+        except MissingAddressError:
+            return
 
     def set_slot(self, slot_num: int, slot_data: VendorSlot) -> None:
         vendor_slot_table = self._get_vendor_slot_table()
@@ -374,9 +374,8 @@ class Vendor:
             item = self.interface.pcsx2_interface.read_int8(self.interface.addresses.vendor_list + i)
             if item == 0xFF:
                 break
-            items.append(item)
+            items.append(item & 0x3F)
         return items
-
 
     def _get_vendor_slot_table(self) -> int:
         current_planet = self.interface.get_current_planet()
@@ -385,7 +384,6 @@ class Vendor:
 
         vendor_slot_table = self.interface.addresses.planet[current_planet].vendor_slot_table
         if not vendor_slot_table:
-            self.interface.logger.warning(f"No vendor_slot_table address set for planet {current_planet}")
             raise MissingAddressError
 
         return vendor_slot_table
@@ -393,6 +391,13 @@ class Vendor:
     def _is_submenu_up(self) -> bool:
         vendor_slot_table = self._get_vendor_slot_table()
         return self.interface.pcsx2_interface.read_int8(vendor_slot_table + self.SUBMENU_OFFSET) != 0
+
+    def _reset_weapon_data(self, ctx: "Rac2Context") -> None:
+        equipment_data = self.interface.addresses.planet[ctx.current_planet].equipment_data
+        if equipment_data:
+            for weapon in Items.WEAPONS:
+                weapon_data = equipment_data + weapon.offset * 0xE0
+                self.interface.pcsx2_interface.write_int16(weapon_data + 0x3C, weapon.icon_id)
 
 
 def planet_by_id(planet_id) -> Optional[Rac2Planet]:
@@ -431,6 +436,9 @@ class Rac2Interface:
         # TODO: Auto equip Thruster-Pack if you don't have Heli-Pack.
         if equipment in Items.QUICK_SELECTABLE:
             self.add_to_quickselect(equipment)
+
+        if isinstance(equipment, WeaponData) and equipment.max_ammo:
+            self.set_ammo(equipment, equipment.max_ammo)
 
     def unlock_planet(self, planet_number: int):
         planet_list = []
@@ -550,8 +558,14 @@ class Rac2Interface:
 
     def set_nanotech(self, new_value) -> None:
         if not (0 <= new_value <= 0xFF):
-            return
+            raise ValueError(f"Cannot set nanotech to {new_value} must be in range 0-255.")
         self.pcsx2_interface.write_int8(self.addresses.current_nanotech, new_value)
+
+    def set_ammo(self, weapon: WeaponData, new_ammo: int) -> None:
+        if not weapon.max_ammo:
+            raise Exception(f"{weapon} is not a valid ammo based weapon.")
+        new_ammo = max(0, min(weapon.max_ammo, new_ammo))
+        self.pcsx2_interface.write_int32(self.addresses.current_ammo_table + weapon.offset * 4, new_ammo)
 
     def switch_planet(self, new_planet: Rac2Planet) -> bool:
         current_planet = self.get_current_planet()

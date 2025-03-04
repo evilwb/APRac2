@@ -86,28 +86,17 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
         world.push_precollected(world.create_item(weapons[0].name))
         world.push_precollected(world.create_item(weapons[1].name))
         world.starting_weapons = [weapons[0], weapons[1]]
-        equipment_to_add -= world.starting_weapons
+        equipment_to_add = [i for i in equipment_to_add if i not in world.starting_weapons]
 
     # Gadgetron Vendor
     if not world.options.randomize_gadgetron_vendor:
-        locations: list[Locations.LocationData] = [
-            Locations.BARLOW_GADGETRON_1, Locations.BARLOW_GADGETRON_2, Locations.BARLOW_GADGETRON_3,
-            Locations.BARLOW_GADGETRON_4, Locations.BARLOW_GADGETRON_5, Locations.BARLOW_GADGETRON_6,
-        ]
-        for location, weapon in zip(locations, Items.GADGETRON_VENDOR_WEAPONS):
+        for location, weapon in zip(Locations.GADGETRON_VENDOR_LOCATIONS, Items.GADGETRON_VENDOR_WEAPONS):
             world.get_location(location.name).place_locked_item(world.create_item(weapon.name))
             equipment_to_add.remove(weapon)
 
     # Megacorp Vendor
     if not world.options.randomize_megacorp_vendor:
-        locations: list[Locations.LocationData] = [
-            Locations.OOZLA_NEW_WEAPON_1, Locations.OOZLA_NEW_WEAPON_2, Locations.BARLOW_NEW_WEAPON,
-            Locations.ENDAKO_NEW_WEAPON_1, Locations.ENDAKO_NEW_WEAPON_2, Locations.NOTAK_NEW_WEAPON,
-            Locations.TABORA_NEW_WEAPON_1, Locations.TABORA_NEW_WEAPON_2, Locations.DOBBO_NEW_WEAPON,
-            Locations.JOBA_NEW_WEAPON_1, Locations.JOBA_NEW_WEAPON_2, Locations.TODANO_NEW_WEAPON,
-            Locations.ARANOS_NEW_WEAPON_1, Locations.ARANOS_NEW_WEAPON_2
-        ]
-        for location, weapon in zip(locations, list(Items.MEGACORP_VENDOR_WEAPONS)):
+        for location, weapon in zip(list(Locations.MEGACORP_VENDOR_LOCATIONS), list(Items.MEGACORP_VENDOR_WEAPONS)):
             world.get_location(location.name).place_locked_item(world.create_item(weapon.name))
             if weapon in equipment_to_add:
                 equipment_to_add.remove(weapon)

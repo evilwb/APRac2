@@ -211,7 +211,8 @@ async def _handle_game_ready(ctx: Rac2Context):
         current_inventory = ctx.game_interface.get_current_inventory()
         if ctx.current_planet is not None and ctx.current_planet > 0 and ctx.game_interface.get_pause_state() in [0, 5]:
             await handle_received_items(ctx, current_inventory)
-        await handle_checked_location(ctx)
+        if ctx.current_planet and ctx.current_planet > 0:
+            await handle_checked_location(ctx)
         await handle_check_goal_complete(ctx)
 
         if ctx.death_link_enabled:

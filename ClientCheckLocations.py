@@ -50,20 +50,6 @@ INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
     Items.CHARGE_BOOTS.offset: Locations.JOBA_FIRST_HOVERBIKE_RACE.location_id,
     Items.HYPNOMATIC.offset: Locations.DAMOSEL_HYPNOTIST.location_id,
     Items.SHEEPINATOR.offset: Locations.TODANO_FACILITY_INTERIOR.location_id,
-    Items.CHOPPER.offset: Locations.OOZLA_NEW_WEAPON_1.location_id,
-    Items.BLITZ_GUN.offset: Locations.OOZLA_NEW_WEAPON_2.location_id,
-    Items.PULSE_RIFLE.offset: Locations.ENDAKO_NEW_WEAPON_1.location_id,
-    Items.MINITURRET_GLOVE.offset: Locations.ENDAKO_NEW_WEAPON_2.location_id,
-    Items.SEEKER_GUN.offset: Locations.BARLOW_NEW_WEAPON.location_id,
-    Items.SYNTHENOID.offset: Locations.NOTAK_NEW_WEAPON.location_id,
-    Items.LAVA_GUN.offset: Locations.TABORA_NEW_WEAPON_1.location_id,
-    Items.BOUNCER.offset: Locations.TABORA_NEW_WEAPON_2.location_id,
-    Items.MINIROCKET_TUBE.offset: Locations.DOBBO_NEW_WEAPON.location_id,
-    Items.PLASMA_COIL.offset: Locations.JOBA_NEW_WEAPON_1.location_id,
-    Items.SPIDERBOT_GLOVE.offset: Locations.JOBA_NEW_WEAPON_2.location_id,
-    Items.HOVERBOMB_GUN.offset: Locations.TODANO_NEW_WEAPON.location_id,
-    Items.ZODIAC.offset: Locations.ARANOS_NEW_WEAPON_1.location_id,
-    Items.SHIELD_CHARGER.offset: Locations.ARANOS_NEW_WEAPON_2.location_id,
 }
 
 PLAT_BOLT_OFFSET_TO_LOCATION_ID: Dict[int, int] = {

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional, Sequence
 
 from . import Locations
-from .Rac2Interface import Rac2Planet, Rac2Interface, PauseState, Vendor
+from .Rac2Interface import Rac2Planet, Rac2Interface, PauseState, Vendor, MissingAddressError
 from .TextManager import *
 from .data import Items, Planets
 from .data.Items import EquipmentData
@@ -26,7 +26,10 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     replace_text(ctx, ap_connected)
 
     if ap_connected:
-        handle_vendor(ctx)
+        try:
+            handle_vendor(ctx)
+        except MissingAddressError:
+            pass
 
     # Ship Wupash if option is enabled.
     if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):

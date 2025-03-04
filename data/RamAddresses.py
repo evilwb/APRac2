@@ -37,6 +37,7 @@ class Addresses:
             self.current_ratchet_xp: int = 0x1A7A0C
             self.current_lancer_xp: int = 0x1398E0
             self.current_gravity_bomb_xp: int = 0x139910
+            self.current_ammo_table: int = 0x139688
             self.challenge_mode_flag: int = 0x1A7A0A
             self.wrench_weapon_id: int = 0x139572
             self.current_armor_level: int = 0x1A7A18
@@ -72,6 +73,7 @@ class Addresses:
             self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
             self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
             self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
+            self.vendor_purchase_flags: int = self.feltzin_kill_count_table + 0x100
 
             # Pause state is at 0x1A8F00 on all planets except for Oozla where it's at 0x1A8F40.
             self.pause_state: int = 0x1A8F00
@@ -107,6 +109,8 @@ class Addresses:
                     skill_point_text=0x1B9A310,
                     spaceish_wars_func=0x3C1128,
                     display_skill_point_message_func=0x32B018,
+                    equipment_data=0x264A70,
+                    vendor_slot_table=0x231040,
                 ),
                 ENDAKO.number: PlanetAddresses(
                     segment_pointers=0x1BFD00,
@@ -125,6 +129,8 @@ class Addresses:
                     skill_point_text=0x1C8DF50,
                     spaceish_wars_func=0x3DDE78,
                     display_skill_point_message_func=0x348848,
+                    equipment_data=0x27B470,
+                    vendor_slot_table=0x2301C0,
                 ),
                 FELTZIN_SYSTEM.number: PlanetAddresses(
                     segment_pointers=0x1BFA40,
@@ -134,6 +140,7 @@ class Addresses:
                     camara_state=0x1B1B20,
                     spaceish_wars_func=0x3CB760,
                     display_skill_point_message_func=0x33CD60,
+                    equipment_data=0x278A70,
                 ),
                 NOTAK.number: PlanetAddresses(
                     segment_pointers=0x1BFBC0,
@@ -143,6 +150,7 @@ class Addresses:
                     spaceish_wars_func=0x3FEED0,
                     display_skill_point_message_func=0x3662A0,
                     equipment_data=0x26c7f0,
+                    vendor_slot_table=0x230380,
                 ),
                 SIBERIUS.number: PlanetAddresses(
                     segment_pointers=0x1BF580,
@@ -151,6 +159,8 @@ class Addresses:
                     skill_point_text=0x1981130,
                     spaceish_wars_func=0x3AD8E8,
                     display_skill_point_message_func=0x31CBC8,
+                    equipment_data=0x2628A0,
+                    vendor_slot_table=0x22FD40,
                 ),
                 TABORA.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
@@ -159,6 +169,8 @@ class Addresses:
                     skill_point_text=0x1C601C0,
                     spaceish_wars_func=0x3CAEF0,
                     display_skill_point_message_func=0x334920,
+                    equipment_data=0x26CCF0,
+                    vendor_slot_table=0x230640,
                 ),
                 DOBBO.number: PlanetAddresses(
                     segment_pointers=0x1BFD80,
@@ -167,6 +179,8 @@ class Addresses:
                     skill_point_text=0x1CCE990,
                     spaceish_wars_func=0x3B9790,
                     display_skill_point_message_func=0x3226B8,
+                    equipment_data=0x2651F0,
+                    vendor_slot_table=0x230540,
                 ),
                 HRUGIS_CLOUD.number: PlanetAddresses(
                     segment_pointers=0x1BFA00,
@@ -176,6 +190,7 @@ class Addresses:
                     camara_state=0x1B1B20,
                     spaceish_wars_func=0x3CDE80,
                     display_skill_point_message_func=0x33EAC0,
+                    equipment_data=0x27AE70,
                 ),
                 JOBA.number: PlanetAddresses(
                     segment_pointers=0x1C0C40,
@@ -185,6 +200,7 @@ class Addresses:
                     spaceish_wars_func=0x3CDC88,
                     display_skill_point_message_func=0x3384D8,
                     equipment_data=0x279BA0,
+                    vendor_slot_table=0x231400,
                 ),
                 TODANO.number: PlanetAddresses(
                     segment_pointers=0x1C0180,
@@ -193,6 +209,8 @@ class Addresses:
                     skill_point_text=0x1C44EF0,
                     spaceish_wars_func=0x3BF8A0,
                     display_skill_point_message_func=0x3297E8,
+                    equipment_data=0x2636F0,
+                    vendor_slot_table=0x230940,
                 ),
                 BOLDAN.number: PlanetAddresses(
                     segment_pointers=0x1BFC40,
@@ -201,6 +219,8 @@ class Addresses:
                     skill_point_text=0x1CCBA00,
                     spaceish_wars_func=0x3C3688,
                     display_skill_point_message_func=0x32F340,
+                    equipment_data=0x26D270,
+                    vendor_slot_table=0x230400,
                 ),
                 ARANOS_PRISON.number: PlanetAddresses(
                     segment_pointers=0x1BF880,
@@ -209,6 +229,8 @@ class Addresses:
                     skill_point_text=0x1B5A240,
                     spaceish_wars_func=0x3C2F78,
                     display_skill_point_message_func=0x32E0B8,
+                    equipment_data=0x2686F0,
+                    vendor_slot_table=0x230040,
                 ),
                 GORN.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
@@ -218,6 +240,7 @@ class Addresses:
                     camara_state=0x1B1BF0,
                     spaceish_wars_func=0x3D22C0,
                     display_skill_point_message_func=0x33E460,
+                    equipment_data=0x276FF0,
                 ),
                 SNIVELAK.number: PlanetAddresses(
                     segment_pointers=0x1BFE80,
@@ -226,6 +249,8 @@ class Addresses:
                     skill_point_text=0x1CD5660,
                     spaceish_wars_func=0x3B4828,
                     display_skill_point_message_func=0x31E9E8,
+                    equipment_data=0x263DA0,
+                    vendor_slot_table=0x230640,
                 ),
                 SMOLG.number: PlanetAddresses(
                     segment_pointers=0x1BFF40,
@@ -234,6 +259,8 @@ class Addresses:
                     skill_point_text=0x1CEA930,
                     spaceish_wars_func=0x3BE100,
                     display_skill_point_message_func=0x327FA8,
+                    equipment_data=0x263470,
+                    vendor_slot_table=0x230700,
                 ),
                 DAMOSEL.number: PlanetAddresses(
                     segment_pointers=0x1BFB40,
@@ -242,6 +269,8 @@ class Addresses:
                     skill_point_text=0x1C6B7F0,
                     spaceish_wars_func=0x3D7B40,
                     display_skill_point_message_func=0x340D18,
+                    equipment_data=0x26BCF0,
+                    vendor_slot_table=0x230300,
                 ),
                 GRELBIN.number: PlanetAddresses(
                     segment_pointers=0x1BFDC0,
@@ -250,6 +279,8 @@ class Addresses:
                     skill_point_text=0x1C49920,
                     spaceish_wars_func=0x3BA820,
                     display_skill_point_message_func=0x323968,
+                    equipment_data=0x265870,
+                    vendor_slot_table=0x230580,
                 ),
                 YEEDIL.number: PlanetAddresses(
                     segment_pointers=0x1C0340,
@@ -258,6 +289,8 @@ class Addresses:
                     skill_point_text=0x1C1B010,
                     spaceish_wars_func=0x3D6F20,
                     display_skill_point_message_func=0x33B2A8,
+                    equipment_data=0x26D970,
+                    vendor_slot_table=0x230B0,
                 ),
                 DOBBO_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C0000,
