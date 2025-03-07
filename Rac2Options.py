@@ -21,7 +21,7 @@ class StartingWeapons(Choice):
     option_vanilla = 0
     option_balanced = 1
     option_non_broken = 2
-    option_all = 3
+    option_full_arsenal = 3
     default = 0
 
 

@@ -75,7 +75,6 @@ class Rac2Context(CommonContext):
     last_error_message: Optional[str] = None
     death_link_enabled = False
     queued_deaths: int = 0
-    vendor_ammo_mode: bool = False
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -291,6 +290,7 @@ def get_pcsx2_crc(iso_path: str) -> Optional[int]:
             crc ^= int.from_bytes(iso_file.read(4), "little")
 
     return crc
+
 
 def launch():
     Utils.init_logging("RAC2 Client")

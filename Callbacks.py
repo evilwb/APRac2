@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Sequence
+from typing import Sequence
 
 from . import Locations
 from .Rac2Interface import Rac2Planet, Rac2Interface, PauseState, Vendor, MissingAddressError
@@ -7,8 +7,6 @@ from .data import Items, Planets
 from .data.Items import EquipmentData
 from .data.Locations import LocationData
 from .data.RamAddresses import Addresses
-from .ClientCheckLocations import INVENTORY_OFFSET_TO_LOCATION_ID
-from .pcsx2_interface.pine import Pine
 
 if TYPE_CHECKING:
     from .Rac2Client import Rac2Context
@@ -233,70 +231,3 @@ def process_vendor_text(manager: TextManager, ctx: "Rac2Context") -> None:
         for i in range(len(locations)):
             text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapons[i].offset * 0xE0 + 0x08)
             manager.inject(text_id, weapons[i].name)
-
-    # else:
-    #     slots: list[Vendor.VendorSlot] = []
-    #     for i, location_info in enumerate([ctx.locations_info[location.location_id] for location in Locations.MEGACORP_VENDOR_LOCATIONS], 1):
-    #         # Don't place items on the vendor that have already been purchased.
-    #         if location_info.location in ctx.checked_locations:
-    #             continue
-    #
-    #         item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
-    #         item = None
-    #         try:
-    #             item = Items.from_name(item_name)
-    #         except ValueError:
-    #             pass
-    #
-    #         equipment_table = addresses.planet[ctx.current_planet].equipment_data
-    #         text_manager.inject(interface.pcsx2_interface.read_int32(equipment_table + i * 0xE0 + 0x08), item_name)
-    #         if isinstance(item, EquipmentData):
-    #             # TODO: Add correct model
-    #             slots.append(Vendor.VendorSlot(i, False, 0xEC8))
-    #             interface.pcsx2_interface.write_int16(equipment_table + i * 0xE0 + 0x3C, item.icon_id)
-    #         else:
-    #             slots.append(Vendor.VendorSlot(i, False, 0xEC8))
-    #             interface.pcsx2_interface.write_int16(equipment_table + i * 0xE0 + 0x3C, 0xEA75)
-    #
-    #     if mode_changed:
-    #         interface.vendor.populate_slots(slots)
-
-
-    # if mode_changed:
-    #     interface.set_vendor_cursor(0)
-    # for vendor_slot in range(32):
-    #
-    #
-    #     item_id: int = interface.read_int32(vendor_slot_table + vendor_slot * 24)
-    #     # End of slots
-    #     if item_id == 0:
-    #         break
-    #
-    #     location_id = INVENTORY_OFFSET_TO_LOCATION_ID.get(item_id, 0)
-    #     if location_id == 0:
-    #         continue
-    #
-    #     if location_id in ctx.checked_locations:
-    #         continue
-    #
-    #     planet_number: Optional[int] = None
-    #     for planet in Planets.LOGIC_PLANETS:
-    #         for location in planet.locations:
-    #             if location.location_id == location_id:
-    #                 planet_number = planet.number
-    #                 break
-    #     assert planet_number is not None, "Vendor slot location not on any planet."
-    #     has_slot: bool = ctx.game_interface.get_current_inventory()[Items.coord_for_planet(planet_number).name] > 0
-    #
-    #     item: EquipmentData = Items.from_offset(item_id)
-    #     holding_l2: bool = interface.read_int16(addresses.controller_input) & 0x01 != 0
-    #     has_item: bool = ctx.game_interface.get_current_inventory()[item.name] > 0
-    #     text_id = interface.read_int32(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x8)
-    #     if holding_l2 and has_item:
-    #         interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 1)
-    #         text_manager.inject(text_id, item.name)
-    #         interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, item.icon_id)
-    #     elif has_slot:
-    #         interface.write_int32(vendor_slot_table + vendor_slot * 24 + 4, 0)
-    #         text_manager.inject(text_id, text_manager.get_formatted_item_name(location_id))
-    #         interface.write_int16(addresses.planet[ctx.current_planet].equipment_data + item_id * 0xE0 + 0x3C, 0xEA75)

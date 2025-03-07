@@ -284,9 +284,10 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     Weapons
     ----------------------"""
     # Prevent game from giving starting weapons so the client can handle it.
-    for address in addresses.AVAILABLE_ITEM_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x4, NOP * 3)
-        patch.write_token(APTokenTypes.WRITE, address + 0x14, NOP * 21)
+    if world.options.starting_weapons:
+        for address in addresses.AVAILABLE_ITEM_FUNCS:
+            patch.write_token(APTokenTypes.WRITE, address + 0x4, NOP * 3)
+            patch.write_token(APTokenTypes.WRITE, address + 0x14, NOP * 21)
 
     """--------- 
     Oozla 

@@ -138,6 +138,9 @@ class Rac2World(World):
             "death_link",
             "skip_wupash_nebula",
             "extra_spaceship_challenge_locations",
+            "starting_weapons",
+            "randomize_megacorp_vendor",
+            "randomize_gadgetron_vendor",
         )
 
     def fill_slot_data(self) -> Mapping[str, Any]:

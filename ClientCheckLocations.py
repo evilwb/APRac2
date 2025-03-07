@@ -49,7 +49,7 @@ INVENTORY_OFFSET_TO_LOCATION_ID: Dict[int, int] = {
     Items.INFILTRATOR.offset: Locations.JOBA_ARENA_CAGE_MATCH.location_id,
     Items.CHARGE_BOOTS.offset: Locations.JOBA_FIRST_HOVERBIKE_RACE.location_id,
     Items.HYPNOMATIC.offset: Locations.DAMOSEL_HYPNOTIST.location_id,
-    Items.SHEEPINATOR.offset: Locations.TODANO_FACILITY_INTERIOR.location_id,
+    Items.SHEEPINATOR.offset: Locations.TODANO_FACILITY_INTERIOR.location_id
 }
 
 PLAT_BOLT_OFFSET_TO_LOCATION_ID: Dict[int, int] = {

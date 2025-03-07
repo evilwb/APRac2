@@ -6,7 +6,6 @@ from logging import Logger
 from enum import Enum, IntEnum
 from typing import Optional, List, Dict, NamedTuple, TYPE_CHECKING, Sequence
 
-from .TextManager import wrap_text
 from .data import Items, Locations
 from .data.Locations import LocationData
 from .data.RamAddresses import Addresses
@@ -238,6 +237,9 @@ class Vendor:
             return
 
         if new_mode is Vendor.Mode.AMMO:
+            if not ctx.slot_data["randomize_megacorp_vendor"]:
+                return
+
             owned_weapons: list[Items.WeaponData] = [
                 weapon
                 for weapon in Items.WEAPONS
@@ -251,6 +253,9 @@ class Vendor:
             self.populate_slots(slots)
             self._reset_weapon_data(ctx)
         elif new_mode is Vendor.Mode.MEGACORP:
+            if not ctx.slot_data["randomize_megacorp_vendor"]:
+                return
+
             weapons: list[EquipmentData] = list(Items.MEGACORP_VENDOR_WEAPONS)
             weapons.remove(Items.CLANK_ZAPPER)
             locations: Sequence[LocationData] = Locations.MEGACORP_VENDOR_LOCATIONS
@@ -286,6 +291,9 @@ class Vendor:
                 return
             self.populate_slots(slots)
         elif new_mode is Vendor.Mode.GADGETRON:
+            if not ctx.slot_data["randomize_gadgetron_vendor"]:
+                return
+
             weapons: Sequence[EquipmentData] = Items.GADGETRON_VENDOR_WEAPONS
             locations: Sequence[LocationData] = Locations.GADGETRON_VENDOR_LOCATIONS
             slots: list[Vendor.VendorSlot] = []

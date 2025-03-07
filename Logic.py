@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from BaseClasses import CollectionState
 from .data import Items
 
@@ -59,6 +61,9 @@ def can_infiltrate(state: CollectionState, player: int) -> bool:
 
 
 def can_spiderbot(state: CollectionState, player: int) -> bool:
+    if not state.multiworld.worlds[player].options.randomize_megacorp_vendor:
+        return True
+
     return state.has(Items.SPIDERBOT_GLOVE.name, player)
 
 
