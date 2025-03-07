@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
-from .data import Items, Locations
+from .data import Items
 from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData, ItemData
 from .Rac2Options import StartingWeapons
 

@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from BaseClasses import CollectionState
 from .data import Items
 
