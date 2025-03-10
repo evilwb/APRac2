@@ -35,6 +35,12 @@ class RandomizeMegacorpVendor(Toggle):
     display_name = "Randomize Megacorp Vendor"
 
 
+class ExcludeVeryExpensiveItems(DefaultOnToggle):
+    """Exclude RYNO II and Zodiac from the randomization leaving them at their vanilla locations.
+    This will only take effect if the corresponding vendors are randomized"""
+    display_name = "Exclude Very Expensive Items"
+
+
 class SkipWupashNebula(DefaultOnToggle):
     """Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula."""
     display_name = "Skip Wupash Nebula"
@@ -101,6 +107,7 @@ class Rac2Options(PerGameCommonOptions):
     starting_weapons: StartingWeapons
     randomize_megacorp_vendor: RandomizeMegacorpVendor
     randomize_gadgetron_vendor: RandomizeGadgetronVendor
+    exclude_very_expensive_items: ExcludeVeryExpensiveItems
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier

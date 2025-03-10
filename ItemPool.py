@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
-from .data import Items
+from .data import Items, Locations
 from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData, ItemData
 from .Rac2Options import StartingWeapons
 
@@ -98,6 +98,17 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
 
     # Misc Weapons
     equipment_to_add += [Items.SHEEPINATOR]
+
+    # Take out expensive items if they are excluded and in the pool.
+    if world.options.exclude_very_expensive_items:
+        if Items.RYNO_II in equipment_to_add:
+            location = world.multiworld.get_location(Locations.BARLOW_GADGETRON_5.name, world.player)
+            location.place_locked_item(world.create_item(Items.RYNO_II.name))
+            equipment_to_add.remove(Items.RYNO_II)
+        if Items.ZODIAC in equipment_to_add:
+            location = world.multiworld.get_location(Locations.ARANOS_NEW_WEAPON_2.name, world.player)
+            location.place_locked_item(world.create_item(Items.ZODIAC.name))
+            equipment_to_add.remove(Items.ZODIAC)
 
     precollected_ids: list[int] = [item.code for item in world.multiworld.precollected_items[world.player]]
     equipment_to_add = [equipment for equipment in equipment_to_add if equipment.item_id not in precollected_ids]
