@@ -280,8 +280,7 @@ class Vendor:
 
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
-                    # TODO: Add correct model
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, item.oclass_id))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.icon_id)
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
@@ -312,8 +311,7 @@ class Vendor:
 
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
-                    # TODO: Add correct model
-                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, item.oclass_id))
                     self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C,
                                                                item.icon_id)
                 else:
