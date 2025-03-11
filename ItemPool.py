@@ -76,7 +76,7 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
         weapons = [weapon for weapon in Items.WEAPONS if weapon.power <= 5]
     elif world.options.starting_weapons == StartingWeapons.option_non_broken:
         weapons = [weapon for weapon in Items.WEAPONS if weapon.power < 10]
-    elif world.options.starting_weapons == StartingWeapons.option_full_arsenal:
+    elif world.options.starting_weapons == StartingWeapons.option_unrestricted:
         weapons = list(Items.WEAPONS)
 
     world.random.shuffle(weapons)
@@ -106,7 +106,7 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
             location.place_locked_item(world.create_item(Items.RYNO_II.name))
             equipment_to_add.remove(Items.RYNO_II)
         if Items.ZODIAC in equipment_to_add:
-            location = world.multiworld.get_location(Locations.ARANOS_NEW_WEAPON_2.name, world.player)
+            location = world.multiworld.get_location(Locations.ARANOS_VENDOR_WEAPON_2.name, world.player)
             location.place_locked_item(world.create_item(Items.ZODIAC.name))
             equipment_to_add.remove(Items.ZODIAC)
 

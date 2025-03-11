@@ -15,13 +15,13 @@ class StartingWeapons(Choice):
     Vanilla: Start with the Lancer and Gravity Bomb.
     Balanced: Start with two random weapons that are relatively balanced.
     Non-Broken: Start with two random weapons besides RYNO II and Zodiac.
-    Full Arsenal: Start with any two weapons.
+    Unrestricted: Start with any two weapons.
     """
     display_name = "Starting Weapons"
     option_vanilla = 0
     option_balanced = 1
     option_non_broken = 2
-    option_full_arsenal = 3
+    option_unrestricted = 3
     default = 0
 
 

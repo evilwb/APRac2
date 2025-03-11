@@ -113,7 +113,8 @@ class Rac2World(World):
 
         # add platinum bolts in whatever slots we have left
         unfilled = list(self.multiworld.get_unfilled_locations(self.player))
-        remain = len(unfilled) - len(items_to_add) - 1
+        unfilled.remove(Locations.YEEDIL_DEFEAT_MUTATED_PROTOPET)
+        remain = len(unfilled) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
         print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
         for _ in range(remain):
