@@ -79,9 +79,9 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
     elif world.options.starting_weapons == StartingWeapons.option_full_arsenal:
         weapons = list(Items.WEAPONS)
 
-    world.multiworld.random.shuffle(weapons)
-    world.push_precollected(world.create_item(weapons[0].name))
-    world.push_precollected(world.create_item(weapons[1].name))
+    world.random.shuffle(weapons)
+    world.multiworld.push_precollected(world.create_item(weapons[0].name))
+    world.multiworld.push_precollected(world.create_item(weapons[1].name))
     world.starting_weapons = [weapons[0], weapons[1]]
     if Items.LANCER not in world.starting_weapons:
         equipment_to_add.append(Items.LANCER)
