@@ -1,5 +1,3 @@
-from typing import Sequence
-
 from . import Locations
 from .Rac2Interface import Rac2Planet, Rac2Interface, PauseState, Vendor, MissingAddressError
 from .TextManager import *
