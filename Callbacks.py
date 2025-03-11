@@ -184,7 +184,7 @@ def handle_vendor(ctx: "Rac2Context"):
     addresses: Addresses = ctx.game_interface.addresses
 
     if interface.get_pause_state() == PauseState.VENDOR.value:
-        if interface.vendor.mode is Vendor.Mode.CLOSED:
+        if interface.vendor.mode is Vendor.Mode.CLOSED and interface.vendor.get_type() is Vendor.Type.WEAPON:
             if interface.vendor.is_megacorp():
                 interface.vendor.change_mode(ctx, Vendor.Mode.MEGACORP)
             else:

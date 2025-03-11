@@ -210,7 +210,8 @@ class Vendor:
     SUBMENU_OFFSET: int = -0xBC
     MODEL_UPDATE_OFFSET: int = -0xB0
     SLOT_COUNT_OFFSET: int = 0x600
-    VENDOR_TYPE_OFFSET: int = 0x604
+    VENDOR_TYPE_OFFSET: int = -0xF0
+    VENDOR_WEAPON_TYPE_OFFSET: int = 0x604
     SLOT_SIZE: int = 0x18
 
     class Mode(Enum):
@@ -218,6 +219,12 @@ class Vendor:
         MEGACORP = 1
         GADGETRON = 2
         AMMO = 3
+
+    class Type(Enum):
+        WEAPON = 0
+        MOD = 1
+        SHIP = 2
+        ARMOR = 3
 
     class VendorSlot(NamedTuple):
         item_id: int
@@ -370,9 +377,14 @@ class Vendor:
         vendor_slot_table = self._get_vendor_slot_table()
         return self.interface.pcsx2_interface.read_int8(vendor_slot_table + self.CURSOR_OFFSET)
 
+    def get_type(self) -> Type:
+        vendor_slot_table = self._get_vendor_slot_table()
+        type_number = self.interface.pcsx2_interface.read_int8(vendor_slot_table + self.VENDOR_TYPE_OFFSET)
+        return self.Type(type_number)
+
     def is_megacorp(self) -> bool:
         vendor_slot_table = self._get_vendor_slot_table()
-        return self.interface.pcsx2_interface.read_int8(vendor_slot_table + self.VENDOR_TYPE_OFFSET) == 0
+        return self.interface.pcsx2_interface.read_int8(vendor_slot_table + self.VENDOR_WEAPON_TYPE_OFFSET) == 0
 
     def get_unlock_list(self) -> list[int]:
         items = []

@@ -289,7 +289,7 @@ class Addresses:
                     spaceish_wars_func=0x3D6F20,
                     display_skill_point_message_func=0x33B2A8,
                     equipment_data=0x26D970,
-                    vendor_slot_table=0x230B0,
+                    vendor_slot_table=0x230B00,
                 ),
                 DOBBO_ORBIT.number: PlanetAddresses(
                     segment_pointers=0x1C0000,
