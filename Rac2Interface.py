@@ -288,10 +288,10 @@ class Vendor:
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, item.oclass_id))
-                    self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.icon_id)
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
-                    self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, 0xEA75)
+
+                self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.get_icon_id())
             if not slots:
                 self.change_mode(ctx, self.Mode.AMMO)
                 return
@@ -319,12 +319,10 @@ class Vendor:
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, item.oclass_id))
-                    self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C,
-                                                               item.icon_id)
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
-                    self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C,
-                                                               0xEA75)
+
+                self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.get_icon_id())
             self.populate_slots(slots)
         elif new_mode is Vendor.Mode.CLOSED:
             # reset weapon data back to default when not in vendor

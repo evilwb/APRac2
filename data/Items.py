@@ -7,11 +7,22 @@ if TYPE_CHECKING:
     from ..Rac2Interface import Rac2Interface
 
 
-
 @dataclass
 class ItemData(ABC):
     item_id: int
     name: str
+
+    def get_icon_id(self) -> int:
+        if isinstance(self, EquipmentData):
+            return self.icon_id
+        elif isinstance(self, CoordData):
+            return 0xEA97  # Ship Icon
+        elif self is PLATINUM_BOLT:
+            return 0xEAA2  # PLat Bolt icon
+        elif self is NANOTECH_BOOST:
+            return 0xEA9E  # Plus Icon `+`
+        else:
+            return 0xEA75  # Question Mark icon `?`
 
 
 @dataclass
