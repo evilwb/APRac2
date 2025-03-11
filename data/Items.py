@@ -78,7 +78,7 @@ LANCER = WeaponData(115, "Lancer", 30, oclass_id=0x05D2, icon_id=0xEA64, power=3
 SYNTHENOID = WeaponData(116, "Synthenoid", 31, oclass_id=0x0CB2, icon_id=0xEA6D, power=7, max_ammo=12)
 SPIDERBOT_GLOVE = WeaponData(117, "Spiderbot Glove", 32, oclass_id=0x0907, icon_id=0xEA6E, power=4, max_ammo=8)
 BOUNCER = WeaponData(118, "Bouncer", 37, oclass_id=0x0E14, icon_id=0xEA73, power=8, max_ammo=25)
-MINITURRET_GLOVE = WeaponData(119, "Miniturret Glove", 41, oclass_id=0x0C5A, icon_id=0xEA6A, power=5, max_ammo=25)
+MINITURRET_GLOVE = WeaponData(119, "Miniturret Glove", 41, oclass_id=0x0C5A, icon_id=0xEA6A, power=5, max_ammo=20)
 GRAVITY_BOMB = WeaponData(120, "Gravity Bomb", 42, oclass_id=0x0CE3, icon_id=0xEA65, power=3, max_ammo=8)
 ZODIAC = WeaponData(121, "Zodiac", 43, oclass_id=0x0EC8, icon_id=0xEA76, power=10, max_ammo=4)
 RYNO_II = WeaponData(122, "RYNO II", 44, oclass_id=0x0A67, icon_id=0xEA6C, power=10, max_ammo=100)
