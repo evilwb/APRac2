@@ -73,11 +73,11 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
     # Starting Weapons
     weapons: list[EquipmentData] = []
     if world.options.starting_weapons == StartingWeapons.option_balanced:
-        weapons = [weapon for weapon in Items.WEAPONS if weapon.power <= 5]
+        weapons = [weapon for weapon in Items.LV1_WEAPONS if weapon.power <= 5]
     elif world.options.starting_weapons == StartingWeapons.option_non_broken:
-        weapons = [weapon for weapon in Items.WEAPONS if weapon.power < 10]
+        weapons = [weapon for weapon in Items.LV1_WEAPONS if weapon.power < 10]
     elif world.options.starting_weapons == StartingWeapons.option_unrestricted:
-        weapons = list(Items.WEAPONS)
+        weapons = list(Items.LV1_WEAPONS)
 
     if len(weapons) > 0:
         world.random.shuffle(weapons)
