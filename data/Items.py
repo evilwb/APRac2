@@ -136,162 +136,162 @@ WALLOPER = WeaponData(
 
 HEAVY_LANCER = WeaponData(
     125, "Heavy Lancer", 0x3C,
-    oclass_id=0x0C05, icon_id=0xEA64, power=6, max_ammo=0, base_weapon_offset=LANCER.offset)
+    oclass_id=0x0C05, icon_id=0xEA64, power=6, max_ammo=300, base_weapon_offset=LANCER.offset)
 KILONOID = WeaponData(
     126, "Kilonoid", 0x3D,
-    oclass_id=0x0B02, icon_id=0xEA6D, power=14, max_ammo=0, base_weapon_offset=SYNTHENOID.offset)
+    oclass_id=0x0B02, icon_id=0xEA6D, power=14, max_ammo=12, base_weapon_offset=SYNTHENOID.offset)
 PLASMA_STORM = WeaponData(
     127, "Plasma Storm", 0x3E,
-    oclass_id=0x05CA, icon_id=0xEA71, power=16, max_ammo=0, base_weapon_offset=PLASMA_COIL.offset)
+    oclass_id=0x05CA, icon_id=0xEA71, power=16, max_ammo=15, base_weapon_offset=PLASMA_COIL.offset)
 METEOR_GUN = WeaponData(
     128, "Meteor Gun", 0x3F,
-    oclass_id=0x0C59, icon_id=0xEA69, power=12, max_ammo=0, base_weapon_offset=LAVA_GUN.offset)
+    oclass_id=0x0C59, icon_id=0xEA69, power=12, max_ammo=200, base_weapon_offset=LAVA_GUN.offset)
 MEGATURRET_GLOVE = WeaponData(
     129, "Megaturret Glove", 0x40,
-    oclass_id=0x0A65, icon_id=0xEA6A, power=10, max_ammo=0, base_weapon_offset=MINITURRET_GLOVE.offset)
+    oclass_id=0x0A65, icon_id=0xEA6A, power=10, max_ammo=20, base_weapon_offset=MINITURRET_GLOVE.offset)
 MULTISTAR = WeaponData(
     130, "Multi-Star", 0x41,
-    oclass_id=0x0AF6, icon_id=0xEA66, power=8, max_ammo=0, base_weapon_offset=CHOPPER.offset)
+    oclass_id=0x0AF6, icon_id=0xEA66, power=8, max_ammo=35, base_weapon_offset=CHOPPER.offset)
 VAPORIZER = WeaponData(
     131, "Vaporizer", 0x42,
-    oclass_id=0x0C04, icon_id=0xEA68, power=10, max_ammo=0, base_weapon_offset=PULSE_RIFLE.offset)
+    oclass_id=0x0C04, icon_id=0xEA68, power=10, max_ammo=8, base_weapon_offset=PULSE_RIFLE.offset)
 HK_22 = WeaponData(
     132, "HK-22", 0x43,
-    oclass_id=0x0CEE, icon_id=0xEA6B, power=10, max_ammo=0, base_weapon_offset=SEEKER_GUN.offset)
+    oclass_id=0x0CEE, icon_id=0xEA6B, power=10, max_ammo=20, base_weapon_offset=SEEKER_GUN.offset)
 BLITZ_CANNON = WeaponData(
     133, "Blitz Cannon", 0x44,
-    oclass_id=0x0AF1, icon_id=0xEA67, power=8, max_ammo=0, base_weapon_offset=BLITZ_GUN.offset)
+    oclass_id=0x0AF1, icon_id=0xEA67, power=8, max_ammo=40, base_weapon_offset=BLITZ_GUN.offset)
 MEGAROCKET_CANNON = WeaponData(
     134, "Megarocket Cannon", 0x45,
-    oclass_id=0x1004, icon_id=0xEA70, power=14, max_ammo=0, base_weapon_offset=MINIROCKET_TUBE.offset)
+    oclass_id=0x1004, icon_id=0xEA70, power=14, max_ammo=25, base_weapon_offset=MINIROCKET_TUBE.offset)
 TETRABOMB_GUN = WeaponData(
     135, "Tetrabomb Gun", 0x46,
-    oclass_id=0x0E2F, icon_id=0xEA72, power=18, max_ammo=0, base_weapon_offset=HOVERBOMB_GUN.offset)
+    oclass_id=0x0E2F, icon_id=0xEA72, power=18, max_ammo=10, base_weapon_offset=HOVERBOMB_GUN.offset)
 MINI_NUKE = WeaponData(
     136, "Mini-Nuke", 0x47,
-    oclass_id=0x0A5A, icon_id=0xEA65, power=6, max_ammo=0, base_weapon_offset=GRAVITY_BOMB.offset)
+    oclass_id=0x0A5A, icon_id=0xEA65, power=6, max_ammo=8, base_weapon_offset=GRAVITY_BOMB.offset)
 BLACK_SHEEPINATOR = WeaponData(
     137, "Black Sheepinator", 0x48,
     oclass_id=0x0EAD, icon_id=0xEA77, power=8, base_weapon_offset=SHEEPINATOR.offset)
 CLANK_SHOCKER = WeaponData(
     138, "Clank Shocker", 0x49,
-    oclass_id=0x0259, icon_id=0xEA99, power=0, max_ammo=0, base_weapon_offset=CLANK_ZAPPER.offset)
+    oclass_id=0x0259, icon_id=0xEA99, power=0, max_ammo=10, base_weapon_offset=CLANK_ZAPPER.offset)
 HEAVY_BOUNCER = WeaponData(
     139, "Heavy Bouncer", 0x4C,
-    oclass_id=0x0E9E, icon_id=0xEA73, power=16, max_ammo=0, base_weapon_offset=BOUNCER.offset)
+    oclass_id=0x0E9E, icon_id=0xEA73, power=16, max_ammo=25, base_weapon_offset=BOUNCER.offset)
 TESLA_BARRIER = WeaponData(
     140, "Tesla Barrier", 0x4D,
-    oclass_id=0x1192, icon_id=0xEA74, power=18, max_ammo=0, base_weapon_offset=SHIELD_CHARGER.offset)
+    oclass_id=0x1192, icon_id=0xEA74, power=18, max_ammo=5, base_weapon_offset=SHIELD_CHARGER.offset)
 TANKBOT_GLOVE = WeaponData(
     141, "Tankbot Glove", 0x4E,
-    oclass_id=0x0E7A, icon_id=0xEA6E, power=8, max_ammo=0, base_weapon_offset=SPIDERBOT_GLOVE.offset)
+    oclass_id=0x0E7A, icon_id=0xEA6E, power=8, max_ammo=8, base_weapon_offset=SPIDERBOT_GLOVE.offset)
 
 MEGA_HEAVY_LANCER = WeaponData(
     142, "Mega Heavy Lancer", 0x4F,
-    oclass_id=0x0C05, icon_id=0xEA64, power=9, max_ammo=0, base_weapon_offset=LANCER.offset)
+    oclass_id=0x0C05, icon_id=0xEA64, power=9, max_ammo=400, base_weapon_offset=LANCER.offset)
 MEGA_MINI_NUKE = WeaponData(
     143, "Mega Mini-Nuke", 0x51,
     oclass_id=0x0A5A, icon_id=0xEA65, power=9, max_ammo=20, base_weapon_offset=GRAVITY_BOMB.offset)
 MEGA_MULTISTAR = WeaponData(
     144, "Mega Multi-Star", 0x53,
-    oclass_id=0x0AF6, icon_id=0xEA66, power=12, max_ammo=0, base_weapon_offset=CHOPPER.offset)
+    oclass_id=0x0AF6, icon_id=0xEA66, power=12, max_ammo=50, base_weapon_offset=CHOPPER.offset)
 MEGA_HK_22 = WeaponData(
     145, "Mega HK-22", 0x55,
-    oclass_id=0x0CEE, icon_id=0xEA6B, power=15, max_ammo=0, base_weapon_offset=SEEKER_GUN.offset)
+    oclass_id=0x0CEE, icon_id=0xEA6B, power=15, max_ammo=40, base_weapon_offset=SEEKER_GUN.offset)
 MEGA_VAPORIZER = WeaponData(
     146, "Mega Vaporizer", 0x57,
-    oclass_id=0x0C04, icon_id=0xEA68, power=15, max_ammo=0, base_weapon_offset=PULSE_RIFLE.offset)
+    oclass_id=0x0C04, icon_id=0xEA68, power=15, max_ammo=12, base_weapon_offset=PULSE_RIFLE.offset)
 MEGA_MEGATURRET_GLOVE = WeaponData(
     147, "Mega Megaturret Glove", 0x59,
-    oclass_id=0x0A65, icon_id=0xEA6A, power=15, max_ammo=0, base_weapon_offset=MINITURRET_GLOVE.offset)
+    oclass_id=0x0A65, icon_id=0xEA6A, power=15, max_ammo=30, base_weapon_offset=MINITURRET_GLOVE.offset)
 MEGA_BLITZ_CANNON = WeaponData(
     148, "Mega Blitz Cannon", 0x5B,
-    oclass_id=0x0AF1, icon_id=0xEA67, power=12, max_ammo=0, base_weapon_offset=BLITZ_GUN.offset)
+    oclass_id=0x0AF1, icon_id=0xEA67, power=12, max_ammo=50, base_weapon_offset=BLITZ_GUN.offset)
 MEGA_KILONOID = WeaponData(
     149, "Mega Kilonoid", 0x5D,
-    oclass_id=0x0B02, icon_id=0xEA6D, power=21, max_ammo=0, base_weapon_offset=SYNTHENOID.offset)
+    oclass_id=0x0B02, icon_id=0xEA6D, power=21, max_ammo=20, base_weapon_offset=SYNTHENOID.offset)
 MEGA_METEOR_GUN = WeaponData(
     150, "Mega Meteor Gun", 0x5F,
-    oclass_id=0x0C59, icon_id=0xEA69, power=18, max_ammo=0, base_weapon_offset=LAVA_GUN.offset)
+    oclass_id=0x0C59, icon_id=0xEA69, power=18, max_ammo=300, base_weapon_offset=LAVA_GUN.offset)
 MEGA_HEAVY_BOUNCER = WeaponData(
     151, "Mega Heavy Bouncer", 0x61,
-    oclass_id=0x0E9E, icon_id=0xEA73, power=24, max_ammo=0, base_weapon_offset=BOUNCER.offset)
+    oclass_id=0x0E9E, icon_id=0xEA73, power=24, max_ammo=40, base_weapon_offset=BOUNCER.offset)
 MEGA_MEGAROCKET_CANNON = WeaponData(
     152, "Mega Megarocket Cannon", 0x63,
-    oclass_id=0x1004, icon_id=0xEA70, power=21, max_ammo=0, base_weapon_offset=MINIROCKET_TUBE.offset)
+    oclass_id=0x1004, icon_id=0xEA70, power=21, max_ammo=40, base_weapon_offset=MINIROCKET_TUBE.offset)
 MEGA_PLASMA_STORM = WeaponData(
     153, "Mega Plasma Storm", 0x65,
-    oclass_id=0x05CA, icon_id=0xEA71, power=24, max_ammo=0, base_weapon_offset=PLASMA_COIL.offset)
+    oclass_id=0x05CA, icon_id=0xEA71, power=24, max_ammo=25, base_weapon_offset=PLASMA_COIL.offset)
 MEGA_TETRABOMB_GUN = WeaponData(
     154, "Mega Tetrabomb Gun", 0x67,
-    oclass_id=0x0E2F, icon_id=0xEA72, power=27, max_ammo=0, base_weapon_offset=HOVERBOMB_GUN.offset)
+    oclass_id=0x0E2F, icon_id=0xEA72, power=27, max_ammo=15, base_weapon_offset=HOVERBOMB_GUN.offset)
 MEGA_TANKBOT_GLOVE = WeaponData(
     155, "Mega Tankbot Glove", 0x69,
-    oclass_id=0x0E7A, icon_id=0xEA6E, power=12, max_ammo=0, base_weapon_offset=SPIDERBOT_GLOVE.offset)
+    oclass_id=0x0E7A, icon_id=0xEA6E, power=12, max_ammo=16, base_weapon_offset=SPIDERBOT_GLOVE.offset)
 MEGA_TESLA_BARRIER = WeaponData(
     156, "Mega Tesla Barrier", 0x6B,
-    oclass_id=0x1192, icon_id=0xEA74, power=27, max_ammo=0, base_weapon_offset=SHIELD_CHARGER.offset)
+    oclass_id=0x1192, icon_id=0xEA74, power=27, max_ammo=10, base_weapon_offset=SHIELD_CHARGER.offset)
 MEGA_TESLA_CLAW = WeaponData(
     157, "Mega Tesla Claw", 0x72,
-    oclass_id=0x00B1, icon_id=0xEA7A, power=12, max_ammo=0, base_weapon_offset=TESLA_CLAW.offset)
+    oclass_id=0x00B1, icon_id=0xEA7A, power=12, max_ammo=400, base_weapon_offset=TESLA_CLAW.offset)
 MEGA_BOMB_GLOVE = WeaponData(
     158, "Mega Bomb Glove", 0x73,
-    oclass_id=0x00C0, icon_id=0xEA79, power=12, max_ammo=0, base_weapon_offset=BOMB_GLOVE.offset)
+    oclass_id=0x00C0, icon_id=0xEA79, power=12, max_ammo=60, base_weapon_offset=BOMB_GLOVE.offset)
 MEGA_WALLOPER = WeaponData(
     159, "Mega Walloper", 0x74,
     oclass_id=0x00B4, icon_id=0xEA7C, power=12, base_weapon_offset=WALLOPER.offset)
 MEGA_VISIBOMB_GUN = WeaponData(
     160, "Mega Visibomb Gun", 0x75,
-    oclass_id=0x00A3, icon_id=0xEA7D, power=12, max_ammo=0, base_weapon_offset=VISIBOMB_GUN.offset)
+    oclass_id=0x00A3, icon_id=0xEA7D, power=12, max_ammo=30, base_weapon_offset=VISIBOMB_GUN.offset)
 MEGA_DECOY_GLOVE = WeaponData(
     161, "Mega Decoy Glove", 0x76,
-    oclass_id=0x0232, icon_id=0xEA7B, power=0, max_ammo=0, base_weapon_offset=DECOY_GLOVE.offset)
+    oclass_id=0x0232, icon_id=0xEA7B, power=0, max_ammo=30, base_weapon_offset=DECOY_GLOVE.offset)
 
 ULTRA_HEAVY_LANCER = WeaponData(
     162, "Ultra Heavy Lancer", 0x50,
-    oclass_id=0x0C05, icon_id=0xEA64, power=12, max_ammo=0, base_weapon_offset=LANCER.offset)
+    oclass_id=0x0C05, icon_id=0xEA64, power=12, max_ammo=500, base_weapon_offset=LANCER.offset)
 ULTRA_MINI_NUKE = WeaponData(
     163, "Ultra Mini-Nuke", 0x52,
     oclass_id=0x0A5A, icon_id=0xEA65, power=12, max_ammo=30, base_weapon_offset=GRAVITY_BOMB.offset)
 ULTRA_MULTISTAR = WeaponData(
     164, "Ultra Multi-Star", 0x54,
-    oclass_id=0x0AF6, icon_id=0xEA66, power=16, max_ammo=0, base_weapon_offset=CHOPPER.offset)
+    oclass_id=0x0AF6, icon_id=0xEA66, power=16, max_ammo=70, base_weapon_offset=CHOPPER.offset)
 ULTRA_HK_22 = WeaponData(
     165, "Ultra HK-22", 0x56,
-    oclass_id=0x0CEE, icon_id=0xEA6B, power=20, max_ammo=0, base_weapon_offset=SEEKER_GUN.offset)
+    oclass_id=0x0CEE, icon_id=0xEA6B, power=20, max_ammo=50, base_weapon_offset=SEEKER_GUN.offset)
 ULTRA_VAPORIZER = WeaponData(
     166, "Ultra Vaporizer", 0x58,
-    oclass_id=0x0C04, icon_id=0xEA68, power=20, max_ammo=0, base_weapon_offset=PULSE_RIFLE.offset)
+    oclass_id=0x0C04, icon_id=0xEA68, power=20, max_ammo=20, base_weapon_offset=PULSE_RIFLE.offset)
 ULTRA_MEGATURRET_GLOVE = WeaponData(
     167, "Ultra Megaturret Glove", 0x5A,
-    oclass_id=0x0A65, icon_id=0xEA6A, power=20, max_ammo=0, base_weapon_offset=MINITURRET_GLOVE.offset)
+    oclass_id=0x0A65, icon_id=0xEA6A, power=20, max_ammo=50, base_weapon_offset=MINITURRET_GLOVE.offset)
 ULTRA_BLITZ_CANNON = WeaponData(
     168, "Ultra Blitz Cannon", 0x5C,
-    oclass_id=0x0AF1, icon_id=0xEA67, power=16, max_ammo=0, base_weapon_offset=BLITZ_GUN.offset)
+    oclass_id=0x0AF1, icon_id=0xEA67, power=16, max_ammo=60, base_weapon_offset=BLITZ_GUN.offset)
 ULTRA_KILONOID = WeaponData(
     169, "Ultra Kilonoid", 0x5E,
-    oclass_id=0x0B02, icon_id=0xEA6D, power=28, max_ammo=0, base_weapon_offset=SYNTHENOID.offset)
+    oclass_id=0x0B02, icon_id=0xEA6D, power=28, max_ammo=40, base_weapon_offset=SYNTHENOID.offset)
 ULTRA_METEOR_GUN = WeaponData(
     170, "Ultra Meteor Gun", 0x60,
-    oclass_id=0x0C59, icon_id=0xEA69, power=24, max_ammo=0, base_weapon_offset=LAVA_GUN.offset)
+    oclass_id=0x0C59, icon_id=0xEA69, power=24, max_ammo=400, base_weapon_offset=LAVA_GUN.offset)
 ULTRA_HEAVY_BOUNCER = WeaponData(
     171, "Ultra Heavy Bouncer", 0x62,
-    oclass_id=0x0E9E, icon_id=0xEA73, power=32, max_ammo=0, base_weapon_offset=BOUNCER.offset)
+    oclass_id=0x0E9E, icon_id=0xEA73, power=32, max_ammo=60, base_weapon_offset=BOUNCER.offset)
 ULTRA_MEGAROCKET_CANNON = WeaponData(
     172, "Ultra Megarocket Cannon", 0x64,
-    oclass_id=0x1004, icon_id=0xEA70, power=28, max_ammo=0, base_weapon_offset=MINIROCKET_TUBE.offset)
+    oclass_id=0x1004, icon_id=0xEA70, power=28, max_ammo=60, base_weapon_offset=MINIROCKET_TUBE.offset)
 ULTRA_PLASMA_STORM = WeaponData(
     173, "Ultra Plasma Storm", 0x66,
-    oclass_id=0x05CA, icon_id=0xEA71, power=32, max_ammo=0, base_weapon_offset=PLASMA_COIL.offset)
+    oclass_id=0x05CA, icon_id=0xEA71, power=32, max_ammo=50, base_weapon_offset=PLASMA_COIL.offset)
 ULTRA_TETRABOMB_GUN = WeaponData(
     174, "Ultra Tetrabomb Gun", 0x68,
-    oclass_id=0x0E2F, icon_id=0xEA72, power=36, max_ammo=0, base_weapon_offset=HOVERBOMB_GUN.offset)
+    oclass_id=0x0E2F, icon_id=0xEA72, power=36, max_ammo=25, base_weapon_offset=HOVERBOMB_GUN.offset)
 ULTRA_TANKBOT_GLOVE = WeaponData(
     175, "Ultra Tankbot Glove", 0x6A,
-    oclass_id=0x0E7A, icon_id=0xEA6E, power=16, max_ammo=0, base_weapon_offset=SPIDERBOT_GLOVE.offset)
+    oclass_id=0x0E7A, icon_id=0xEA6E, power=16, max_ammo=24, base_weapon_offset=SPIDERBOT_GLOVE.offset)
 ULTRA_TESLA_BARRIER = WeaponData(
     176, "Ultra Tesla Barrier", 0x6C,
-    oclass_id=0x1192, icon_id=0xEA74, power=36, max_ammo=0, base_weapon_offset=SHIELD_CHARGER.offset)
+    oclass_id=0x1192, icon_id=0xEA74, power=36, max_ammo=15, base_weapon_offset=SHIELD_CHARGER.offset)
 
 
 @dataclass
@@ -349,7 +349,7 @@ ARMOR_UPGRADE = ProgressiveUpgradeData(402, "Armor Upgrade", ["Tetrafiber Armor"
                                        lambda interface: interface.get_armor_level(),
                                        lambda interface, level: interface.set_armor_level(level))
 
-EQUIPMENT: Sequence[WeaponData] = [
+EQUIPMENT: Sequence[EquipmentData] = [
     HELI_PACK,
     THRUSTER_PACK,
     MAPPER,
