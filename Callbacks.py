@@ -34,10 +34,6 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
         except MissingAddressError:
             pass
 
-    # Ship Wupash if option is enabled.
-    if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
-        game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
-
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
         if game_interface.switch_planet(Rac2Planet.Ship_Shack):
