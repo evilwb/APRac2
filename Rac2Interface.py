@@ -247,16 +247,25 @@ class Vendor:
             if not ctx.slot_data["randomize_megacorp_vendor"]:
                 return
 
-            owned_weapons: list[Items.WeaponData] = [
-                weapon
-                for weapon in Items.WEAPONS
-                if ctx.game_interface.get_current_inventory()[weapon.name] > 0
-            ]
+            current_inventory: dict[str, int] = ctx.game_interface.get_current_inventory()
+            owned_weapons: list[Items.WeaponData] = []
+            already_found_weapon_offsets: list[int] = []
+            for weapon in Items.WEAPONS:
+                if current_inventory[weapon.name] <= 0:
+                    continue
+                offset = weapon.base_weapon_offset or weapon.offset
+                # Another version of the same weapon was already found
+                if offset in already_found_weapon_offsets:
+                    continue
+                # Don't add ammo for weapons that don't have ammo
+                if weapon.max_ammo <= 0:
+                    continue
+                already_found_weapon_offsets.append(offset)
+                owned_weapons.append(weapon)
+
             if len(owned_weapons) == 0:
                 return
-            slots = [Vendor.VendorSlot(weapon.offset, True) for weapon in owned_weapons]
-            # Don't add ammo for weapons that don't have ammo.
-            slots = [slot for slot in slots if slot.item_id not in [Items.WALLOPER.offset, Items.SHEEPINATOR.offset]]
+            slots = [Vendor.VendorSlot(weapon.base_weapon_offset or weapon.offset, True) for weapon in owned_weapons]
             self.populate_slots(slots)
             self._reset_weapon_data(ctx)
         elif new_mode is Vendor.Mode.MEGACORP:
@@ -448,7 +457,14 @@ class Rac2Interface:
         self.vendor = Vendor(self)
 
     def give_equipment_to_player(self, equipment: EquipmentData):
-        self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.offset, 1)
+        if isinstance(equipment, WeaponData) and equipment.base_weapon_offset is not None:
+            addr = self.addresses.weapon_subid_table + equipment.base_weapon_offset
+            current_weapon_subid = self.pcsx2_interface.read_int8(addr)
+            if current_weapon_subid < equipment.offset:
+                self.pcsx2_interface.write_int8(addr, equipment.offset)
+            self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.base_weapon_offset, 1)
+        else:
+            self.pcsx2_interface.write_int8(self.addresses.inventory + equipment.offset, 1)
         # TODO: Auto equip Thruster-Pack if you don't have Heli-Pack.
         if equipment in Items.QUICK_SELECTABLE:
             self.add_to_quickselect(equipment)
@@ -486,9 +502,12 @@ class Rac2Interface:
         if item is Items.HYPNOMATIC_PART:
             self.pcsx2_interface.write_int8(self.addresses.hypnomatic_part_count, new_amount)
 
-    # TODO: Deal with armor and weapons
+    # TODO: Deal with armor
 
     def count_inventory_item(self, item: ItemData) -> int:
+        if isinstance(item, WeaponData) and item.base_weapon_offset is not None:
+            current_subid = self.pcsx2_interface.read_int8(self.addresses.weapon_subid_table + item.base_weapon_offset)
+            return 1 if current_subid >= item.offset else 0
         if isinstance(item, EquipmentData):
             return self.pcsx2_interface.read_int8(self.addresses.inventory + item.offset)
         if isinstance(item, CoordData):
@@ -512,7 +531,7 @@ class Rac2Interface:
         return inventory
 
     def get_wrench_level(self) -> int:
-        wrench_id = self.pcsx2_interface.read_int8(self.addresses.wrench_weapon_id)
+        wrench_id = self.pcsx2_interface.read_int8(self.addresses.weapon_subid_table + 0xA)
         if wrench_id == 0x4A:
             return 1
         elif wrench_id == 0x4B:
@@ -526,7 +545,7 @@ class Rac2Interface:
                 wrench_id = 0x4A
             elif level == 2:
                 wrench_id = 0x4B
-            self.pcsx2_interface.write_int8(self.addresses.wrench_weapon_id, wrench_id)
+            self.pcsx2_interface.write_int8(self.addresses.weapon_subid_table + 0xA, wrench_id)
             return True
         except RuntimeError:
             return False
@@ -540,6 +559,9 @@ class Rac2Interface:
             return True
         except RuntimeError:
             return False
+
+    def get_equipped_weapon(self) -> int:
+        return self.pcsx2_interface.read_int8(self.addresses.equipped_weapon)
 
     def get_alive(self) -> bool:
         planet = self.get_current_planet()
@@ -581,7 +603,14 @@ class Rac2Interface:
         if not weapon.max_ammo:
             raise Exception(f"{weapon} is not a valid ammo based weapon.")
         new_ammo = max(0, min(weapon.max_ammo, new_ammo))
-        self.pcsx2_interface.write_int32(self.addresses.current_ammo_table + weapon.offset * 4, new_ammo)
+        weapon_offset = weapon.base_weapon_offset or weapon.offset
+        self.pcsx2_interface.write_int32(self.addresses.current_ammo_table + ((weapon_offset & 0x3F) * 0x4), new_ammo)
+
+    def get_ammo(self, weapon: WeaponData) -> int:
+        if not weapon.max_ammo:
+            raise Exception(f"{weapon} is not a valid ammo based weapon.")
+        weapon_offset = weapon.base_weapon_offset or weapon.offset
+        return self.pcsx2_interface.read_int32(self.addresses.current_ammo_table + ((weapon_offset & 0x3F) * 0x4))
 
     def switch_planet(self, new_planet: Rac2Planet) -> bool:
         current_planet = self.get_current_planet()
@@ -784,3 +813,11 @@ class Rac2Interface:
             return None
 
         return MemorySegmentTable.from_list(array.array('I', table_bytes).tolist())
+
+    def set_weapon_xp(self, base_weapon_offset: int, xp: int):
+        address = self.addresses.current_weapon_xp_table + ((base_weapon_offset & 0x3F) * 0x4)
+        self.pcsx2_interface.write_int32(address, xp)
+
+    def get_weapon_xp(self, base_weapon_offset: int) -> int:
+        address = self.addresses.current_weapon_xp_table + ((base_weapon_offset & 0x3F) * 0x4)
+        return self.pcsx2_interface.read_int32(address)

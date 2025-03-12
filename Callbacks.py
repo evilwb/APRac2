@@ -22,14 +22,17 @@ def update(ctx: 'Rac2Context', ap_connected: bool):
     replace_text(ctx, ap_connected)
 
     if ap_connected:
+        if ctx.slot_data is not None:
+            # Ship Wupash if option is enabled.
+            if ctx.slot_data.get("skip_wupash_nebula", False):
+                game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
+            # Handle some edge-case weapons XP if extended weapon progression is enabled
+            if ctx.slot_data.get("extend_weapon_progression", False):
+                handle_specific_weapon_xp(ctx)
         try:
             handle_vendor(ctx)
         except MissingAddressError:
             pass
-
-    # Ship Wupash if option is enabled.
-    if ap_connected and ctx.slot_data.get("skip_wupash_nebula", False):
-        game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
 
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
@@ -59,6 +62,29 @@ def init(ctx: 'Rac2Context', ap_connected: bool):
         has_infiltrator = ctx.game_interface.count_inventory_item(Items.INFILTRATOR) > 0
         if not (has_gravity_boots and has_levitator and has_infiltrator):
             ctx.notification_manager.queue_notification(unstuck_message, 5.0)
+
+
+def handle_specific_weapon_xp(ctx: 'Rac2Context'):
+    game_interface = ctx.game_interface
+
+    # If extended weapon progression is enabled, we need to regularly transfer XP from Qwark Statuette to Walloper,
+    # since the Walloper adds XP to the wrong equipment and it would be hard to fix
+    pending_walloper_xp = game_interface.get_weapon_xp(Items.QWARK_STATUETTE.offset)
+    if pending_walloper_xp > 0:
+        current_walloper_xp = game_interface.get_weapon_xp(Items.WALLOPER.offset)
+        game_interface.set_weapon_xp(Items.QWARK_STATUETTE.offset, 0)
+        # There are rare times where that XP increases even without using the walloper (most likely enemies killing
+        # other enemies), so we discard the XP instead of transferring it if walloper is not equipped
+        if game_interface.get_equipped_weapon() == Items.WALLOPER.offset:
+            game_interface.set_weapon_xp(Items.WALLOPER.offset, current_walloper_xp + pending_walloper_xp)
+
+    # Track decoy glove ammo to add experience on use, since it cannot do damage
+    decoy_glove_ammo = game_interface.get_ammo(Items.DECOY_GLOVE)
+    used_decoy_gloves = ctx.previous_decoy_glove_ammo - decoy_glove_ammo
+    ctx.previous_decoy_glove_ammo = decoy_glove_ammo
+    if used_decoy_gloves > 0:
+        decoy_glove_xp = game_interface.get_weapon_xp(Items.DECOY_GLOVE.offset)
+        game_interface.set_weapon_xp(Items.DECOY_GLOVE.offset, decoy_glove_xp + 0x180)
 
 
 def replace_text(ctx: 'Rac2Context', ap_connected: bool):

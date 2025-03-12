@@ -141,6 +141,7 @@ class Rac2World(World):
             "starting_weapons",
             "randomize_megacorp_vendor",
             "randomize_gadgetron_vendor",
+            "extend_weapon_progression",
         )
 
     def fill_slot_data(self) -> Mapping[str, Any]:
