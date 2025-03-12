@@ -100,7 +100,7 @@ class ExtraSpaceshipChallengeLocations(Toggle):
     display_name = "Extra Spaceship Challenge Locations"
 
 
-class ExtendedWeaponProgression(Toggle):
+class ExtendWeaponProgression(Toggle):
     """If enabled, make all weapon tiers obtainable through weapon experience. This means LV2 (orange) weapons can
     upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
     This effectively makes all weapons that are usually restricted to NG+ available with enough grinding."""
@@ -124,4 +124,4 @@ class Rac2Options(PerGameCommonOptions):
     nanotech_xp_multiplier: NanotechExperienceMultiplier
     weapon_xp_multiplier: WeaponExperienceMultiplier
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
-    extended_weapon_progression: ExtendedWeaponProgression
+    extend_weapon_progression: ExtendWeaponProgression

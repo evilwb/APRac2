@@ -5,8 +5,8 @@ from typing import Any, Callable, TYPE_CHECKING, Optional
 
 import settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
-from .Rac2Options import ShuffleWeaponVendors, Rac2Options
-from .data import Items, IsoAddresses, RamAddresses, ExperienceTables
+from .Rac2Options import Rac2Options
+from .data import ExperienceTables
 from . import MIPS, TextManager
 from .data import IsoAddresses, RamAddresses
 from .data.RamAddresses import PlanetAddresses
@@ -277,13 +277,13 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     if world.options.free_challenge_selection:
         patch_free_challenge_selection(patch, addresses)
 
-    if world.options.extended_weapon_progression:
+    if world.options.extend_weapon_progression:
         patch_extended_weapon_progression(patch, addresses)
 
     if world.options.nanotech_xp_multiplier != 100:
         alter_nanotech_xp_tables(patch, addresses, world.options.nanotech_xp_multiplier.value)
 
-    if world.options.weapon_xp_multiplier != 100 or world.options.extended_weapon_progression:
+    if world.options.weapon_xp_multiplier != 100 or world.options.extend_weapon_progression:
         alter_weapon_data_tables(patch, addresses, world.options)
 
     """----------------------
@@ -765,7 +765,7 @@ def alter_weapon_data_tables(patch: Rac2ProcedurePatch, addresses: IsoAddresses,
     # Therefore, we need to use the multiplicative inverse of that mult to get the factor we need to apply to this
     # table to mimic the effect of gained XP increase / decrease.
     factor = 1.0 / (options.weapon_xp_multiplier.value * 0.01)
-    weapon_upgrades_table = get_weapon_upgrades_table(factor, options.extended_weapon_progression != 0)
+    weapon_upgrades_table = get_weapon_upgrades_table(factor, options.extend_weapon_progression != 0)
     for address in addresses.WEAPON_DATA_TABLES:
         for weapon_id, (required_xp, upgraded_weapon_id) in weapon_upgrades_table.items():
             weapon_addr = address + (weapon_id * 0xE0)
