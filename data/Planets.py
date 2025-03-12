@@ -1,12 +1,10 @@
-from typing import List, Sequence
-
 from .Locations import *
 
 
 class PlanetData(NamedTuple):
     name: str
     number: int
-    locations: List[LocationData] = []
+    locations: Sequence[LocationData] = []
 
 
 ARANOS_TUTORIAL = PlanetData("Aranos Tutorial", 0)
@@ -17,6 +15,8 @@ OOZLA = PlanetData("Oozla", 1, [
     OOZLA_TRACTOR_PUZZLE_PB,
     OOZLA_SWAMP_RUINS_PB,
     OOZLA_SWAMP_MONSTER_II,
+    OOZLA_VENDOR_WEAPON_1,
+    OOZLA_VENDOR_WEAPON_2,
 ])
 MAKTAR_NEBULA = PlanetData("Maktar Nebula", 2, [
     MAKTAR_ARENA_CHALLENGE,
@@ -33,12 +33,21 @@ ENDAKO = PlanetData("Endako", 3, [
     ENDAKO_LEDGE_PB,
     ENDAKO_CRANE_PB,
     ENDAKO_CRANE_NT,
+    ENDAKO_VENDOR_WEAPON_1,
+    ENDAKO_VENDOR_WEAPON_2,
 ])
 BARLOW = PlanetData("Barlow", 4, [
     BARLOW_INVENTOR,
     BARLOW_HOVERBIKE_RACE_TRANSMISSION,
     BARLOW_HOVERBIKE_RACE_PB,
     BARLOW_HOUND_CAVE_PB,
+    BARLOW_VENDOR_WEAPON,
+    BARLOW_GADGETRON_1,
+    BARLOW_GADGETRON_2,
+    BARLOW_GADGETRON_3,
+    BARLOW_GADGETRON_4,
+    BARLOW_GADGETRON_5,
+    BARLOW_GADGETRON_6,
 ])
 FELTZIN_SYSTEM = PlanetData("Feltzin System", 5, [
     FELTZIN_DEFEAT_THUG_SHIPS,
@@ -55,6 +64,7 @@ NOTAK = PlanetData("Notak", 6, [
     NOTAK_PROMENADE_SIGN_PB,
     NOTAK_TIMED_DYNAMO_PB,
     NOTAK_PROMENADE_END_NT,
+    NOTAK_VENDOR_WEAPON,
 ])
 SIBERIUS = PlanetData("Siberius", 7, [
     SIBERIUS_DEFEAT_THIEF,
@@ -69,6 +79,8 @@ TABORA = PlanetData("Tabora", 8, [
     TABORA_NORTHEAST_DESERT_PB,
     TABORA_CANYON_GLIDE_PILLAR_NT,
     TABORA_OMNIWRENCH_10000,
+    TABORA_VENDOR_WEAPON_1,
+    TABORA_VENDOR_WEAPON_2,
 ])
 DOBBO = PlanetData("Dobbo", 9, [
     DOBBO_DEFEAT_THUG_LEADER,
@@ -76,6 +88,7 @@ DOBBO = PlanetData("Dobbo", 9, [
     DOBBO_SPIDERBOT_ROOM_PB,
     DOBBO_FACILITY_GLIDE_PB,
     DOBBO_FACILITY_GLIDE_NT,
+    DOBBO_VENDOR_WEAPON,
 ])
 HRUGIS_CLOUD = PlanetData("Hrugis Cloud", 10, [
     HRUGIS_DESTROY_DEFENSES,
@@ -93,6 +106,8 @@ JOBA = PlanetData("Joba", 11, [
     JOBA_LEVITATOR_TOWER_PB,
     JOBA_HOVERBIKE_RACE_SHORTCUT_NT,
     JOBA_TIMED_DYNAMO_NT,
+    JOBA_VENDOR_WEAPON_1,
+    JOBA_VENDOR_WEAPON_2,
 ])
 TODANO = PlanetData("Todano", 12, [
     TODANO_SEARCH_ROCKET_SILO,
@@ -102,6 +117,7 @@ TODANO = PlanetData("Todano", 12, [
     TODANO_END_TOUR_PB,
     TODANO_SPIDERBOT_CONVEYOR_PB,
     TODANO_ROCKET_SILO_NT,
+    TODANO_VENDOR_WEAPON,
 ])
 BOLDAN = PlanetData("Boldan", 13, [
     BOLDAN_FIND_FIZZWIDGET,
@@ -115,6 +131,8 @@ ARANOS_PRISON = PlanetData("Aranos Prison", 14, [
     ARANOS_PLUMBER,
     ARANOS_UNDER_SHIP_PB,
     ARANOS_OMNIWRENCH_12000,
+    ARANOS_VENDOR_WEAPON_1,
+    ARANOS_VENDOR_WEAPON_2,
 ])
 GORN = PlanetData("Gorn", 15, [
     GORN_DEFEAT_THUG_FLEET,
@@ -161,7 +179,7 @@ WUPASH_NEBULA = PlanetData("Wupash Nebula", 25)
 JAMMING_ARRAY = PlanetData("Jamming Array", 26)
 INSOMNIAC_MUSEUM = PlanetData("Insomniac Museum", 30)
 
-LOGIC_PLANETS = [
+LOGIC_PLANETS: Sequence[PlanetData] = [
     OOZLA,
     MAKTAR_NEBULA,
     ENDAKO,
