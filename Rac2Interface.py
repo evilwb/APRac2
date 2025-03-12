@@ -247,16 +247,25 @@ class Vendor:
             if not ctx.slot_data["randomize_megacorp_vendor"]:
                 return
 
-            owned_weapons: list[Items.WeaponData] = [
-                weapon
-                for weapon in Items.WEAPONS
-                if ctx.game_interface.get_current_inventory()[weapon.name] > 0
-            ]
+            current_inventory: dict[str, int] = ctx.game_interface.get_current_inventory()
+            owned_weapons: list[Items.WeaponData] = []
+            already_found_weapon_offsets: list[int] = []
+            for weapon in Items.WEAPONS:
+                if current_inventory[weapon.name] <= 0:
+                    continue
+                offset = weapon.base_weapon_offset or weapon.offset
+                # Another version of the same weapon was already found
+                if offset in already_found_weapon_offsets:
+                    continue
+                # Don't add ammo for weapons that don't have ammo
+                if weapon.max_ammo <= 0:
+                    continue
+                already_found_weapon_offsets.append(offset)
+                owned_weapons.append(weapon)
+
             if len(owned_weapons) == 0:
                 return
-            slots = [Vendor.VendorSlot(weapon.offset, True) for weapon in owned_weapons]
-            # Don't add ammo for weapons that don't have ammo.
-            slots = [slot for slot in slots if slot.item_id not in [Items.WALLOPER.offset, Items.SHEEPINATOR.offset]]
+            slots = [Vendor.VendorSlot(weapon.base_weapon_offset or weapon.offset, True) for weapon in owned_weapons]
             self.populate_slots(slots)
             self._reset_weapon_data(ctx)
         elif new_mode is Vendor.Mode.MEGACORP:
