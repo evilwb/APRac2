@@ -90,7 +90,7 @@ def handle_received_collectables(ctx: 'Rac2Context', current_items: dict[str, in
         diff = received_amount - in_game_amount
         if diff > 0 and in_game_amount < item.max_capacity:
             new_amount = min(received_amount, item.max_capacity)
-            ctx.game_interface.give_collectable_to_player(item, new_amount)
+            ctx.game_interface.give_collectable_to_player(item, new_amount, in_game_amount)
             show_item_reception_message(ctx, received_collectables[-1], None, diff)
             ctx.game_interface.vendor.refresh(ctx)
 

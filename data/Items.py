@@ -324,13 +324,14 @@ YEEDIL_COORDS = CoordData(220, "Yeedil Coordinates", 20)
 
 @dataclass
 class CollectableData(ItemData):
-    max_capacity: int
+    max_capacity: int = 0x7F
 
 
 # Collectables
 PLATINUM_BOLT = CollectableData(301, "Platinum Bolt", 40)
 NANOTECH_BOOST = CollectableData(302, "Nanotech Boost", 10)
 HYPNOMATIC_PART = CollectableData(303, "Hypnomatic Part", 3)
+BOLT_PACK = CollectableData(304, "Bolt Pack")
 
 
 @dataclass
@@ -462,6 +463,7 @@ COLLECTABLES: Sequence[CollectableData] = [
     PLATINUM_BOLT,
     NANOTECH_BOOST,
     HYPNOMATIC_PART,
+    BOLT_PACK,
 ]
 UPGRADES: Sequence[ProgressiveUpgradeData] = [
     WRENCH_UPGRADE,
