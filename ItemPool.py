@@ -130,7 +130,7 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
         item for item in world.multiworld.precollected_items[world.player]
         if item.code == Items.NANOTECH_BOOST.item_id
     ])
-    assert precollected_nanotech_boosts <= Items.NANOTECH_BOOST.max_capacity, "Added to many Nanotech Boosts to Start Inventory"
+    assert precollected_nanotech_boosts <= Items.NANOTECH_BOOST.max_capacity, "Added too many Nanotech Boosts to Start Inventory"
     for _ in range(Items.NANOTECH_BOOST.max_capacity - precollected_nanotech_boosts):
         collectable_items.append(world.create_item(Items.NANOTECH_BOOST.name))
 
@@ -138,7 +138,7 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
         item for item in world.multiworld.precollected_items[world.player]
         if item.code == Items.HYPNOMATIC_PART.item_id
     ])
-    assert precollected_hypnomatic_parts <= Items.HYPNOMATIC_PART.max_capacity, "Added to many Hypnomatic Parts to Start Inventory"
+    assert precollected_hypnomatic_parts <= Items.HYPNOMATIC_PART.max_capacity, "Added too many Hypnomatic Parts to Start Inventory"
     for _ in range(Items.HYPNOMATIC_PART.max_capacity - precollected_hypnomatic_parts):
         collectable_items.append(world.create_item(Items.HYPNOMATIC_PART.name))
 

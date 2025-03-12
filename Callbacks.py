@@ -83,7 +83,7 @@ def handle_specific_weapon_xp(ctx: 'Rac2Context'):
             game_interface.set_weapon_xp(Items.WALLOPER.offset, current_walloper_xp + pending_walloper_xp)
 
     # Track decoy glove ammo to add experience on use, since it cannot do damage
-    decoy_glove_ammo = game_interface.get_weapon_ammo(Items.DECOY_GLOVE.offset)
+    decoy_glove_ammo = game_interface.get_ammo(Items.DECOY_GLOVE)
     used_decoy_gloves = ctx.previous_decoy_glove_ammo - decoy_glove_ammo
     ctx.previous_decoy_glove_ammo = decoy_glove_ammo
     if used_decoy_gloves > 0:

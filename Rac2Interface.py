@@ -594,7 +594,14 @@ class Rac2Interface:
         if not weapon.max_ammo:
             raise Exception(f"{weapon} is not a valid ammo based weapon.")
         new_ammo = max(0, min(weapon.max_ammo, new_ammo))
-        self.pcsx2_interface.write_int32(self.addresses.current_ammo_table + weapon.offset * 4, new_ammo)
+        address = self.addresses.current_ammo_table + ((weapon.base_weapon_offset & 0x3F) * 0x4)
+        self.pcsx2_interface.write_int32(address, new_ammo)
+
+    def get_ammo(self, weapon: WeaponData) -> int:
+        if not weapon.max_ammo:
+            raise Exception(f"{weapon} is not a valid ammo based weapon.")
+        address = self.addresses.current_ammo_table + ((weapon.base_weapon_offset & 0x3F) * 0x4)
+        return self.pcsx2_interface.read_int32(address)
 
     def switch_planet(self, new_planet: Rac2Planet) -> bool:
         current_planet = self.get_current_planet()
@@ -804,12 +811,4 @@ class Rac2Interface:
 
     def get_weapon_xp(self, base_weapon_offset: int) -> int:
         address = self.addresses.current_weapon_xp_table + ((base_weapon_offset & 0x3F) * 0x4)
-        return self.pcsx2_interface.read_int32(address)
-
-    def set_weapon_ammo(self, base_weapon_offset: int, ammo: int):
-        address = self.addresses.current_ammo_table + ((base_weapon_offset & 0x3F) * 0x4)
-        self.pcsx2_interface.write_int32(address, ammo)
-
-    def get_weapon_ammo(self, base_weapon_offset: int) -> int:
-        address = self.addresses.current_ammo_table + ((base_weapon_offset & 0x3F) * 0x4)
         return self.pcsx2_interface.read_int32(address)
