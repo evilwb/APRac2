@@ -79,7 +79,11 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
     elif world.options.starting_weapons == StartingWeapons.option_unrestricted:
         weapons = list(Items.WEAPONS)
 
-    world.random.shuffle(weapons)
+    if len(weapons) > 0:
+        world.random.shuffle(weapons)
+    else:
+        weapons = [Items.LANCER, Items.GRAVITY_BOMB]
+
     world.multiworld.push_precollected(world.create_item(weapons[0].name))
     world.multiworld.push_precollected(world.create_item(weapons[1].name))
     world.starting_weapons = [weapons[0], weapons[1]]
