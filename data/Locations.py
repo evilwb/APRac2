@@ -1,5 +1,4 @@
-from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any
-
+from typing import Optional, NamedTuple, Dict, Callable, TYPE_CHECKING, Any, Sequence
 from ..Logic import *
 
 if TYPE_CHECKING:
@@ -54,7 +53,6 @@ BARLOW_HOVERBIKE_RACE_PB = LocationData(
     lambda state, player: can_improved_jump(state, player) and can_electrolyze(state, player)
 )
 BARLOW_HOUND_CAVE_PB = LocationData(43, "Barlow: Hound Cave - Platinum Bolt", can_swingshot)
-
 
 """ Feltzin System """
 FELTZIN_DEFEAT_THUG_SHIPS = LocationData(50, "Feltzin: Defeat Thug Ships")
@@ -426,3 +424,135 @@ YEEDIL_TRACTOR_PILLAR_PB = LocationData(
         and can_tractor(state, player)
         and can_grind(state, player)
 )
+
+""" Megacorp Vendor """
+OOZLA_VENDOR_WEAPON_1 = LocationData(
+    300, "Oozla: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.CHOPPER.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+OOZLA_VENDOR_WEAPON_2 = LocationData(
+    301, "Oozla: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BLITZ_GUN.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+ENDAKO_VENDOR_WEAPON_1 = LocationData(
+    302, "Endako: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.PULSE_RIFLE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+ENDAKO_VENDOR_WEAPON_2 = LocationData(
+    303, "Endako: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.MINITURRET_GLOVE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+BARLOW_VENDOR_WEAPON = LocationData(
+    304, "Barlow: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SEEKER_GUN.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+NOTAK_VENDOR_WEAPON = LocationData(
+    305, "Notak: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SYNTHENOID.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+TABORA_VENDOR_WEAPON_1 = LocationData(
+    306, "Tabora: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.LAVA_GUN.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+TABORA_VENDOR_WEAPON_2 = LocationData(
+    307, "Tabora: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BOUNCER.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+DOBBO_VENDOR_WEAPON = LocationData(
+    308, "Dobbo: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.MINIROCKET_TUBE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+JOBA_VENDOR_WEAPON_1 = LocationData(
+    309, "Joba: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SPIDERBOT_GLOVE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+JOBA_VENDOR_WEAPON_2 = LocationData(
+    310, "Joba: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.PLASMA_COIL.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+TODANO_VENDOR_WEAPON = LocationData(
+    311, "Todano: Megacorp Vendor - New Weapon",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.HOVERBOMB_GUN.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+ARANOS_VENDOR_WEAPON_1 = LocationData(
+    312, "Aranos Prison: Megacorp Vendor - New Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.SHIELD_CHARGER.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+ARANOS_VENDOR_WEAPON_2 = LocationData(
+    313, "Aranos Prison: Megacorp Vendor - New Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.ZODIAC.offset,
+    enable_if=lambda options_dict: options_dict["randomize_megacorp_vendor"]
+)
+
+""" Gadgetron Vendor """
+BARLOW_GADGETRON_1 = LocationData(
+    314, "Barlow: Gadgetron Vendor - Weapon 1",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.BOMB_GLOVE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+BARLOW_GADGETRON_2 = LocationData(
+    315, "Barlow: Gadgetron Vendor - Weapon 2",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.VISIBOMB_GUN.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+BARLOW_GADGETRON_3 = LocationData(
+    316, "Barlow: Gadgetron Vendor - Weapon 3",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.TESLA_CLAW.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+BARLOW_GADGETRON_4 = LocationData(
+    317, "Barlow: Gadgetron Vendor - Weapon 4",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.DECOY_GLOVE.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+BARLOW_GADGETRON_5 = LocationData(
+    318, "Barlow: Gadgetron Vendor - Weapon 5",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.RYNO_II.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+BARLOW_GADGETRON_6 = LocationData(
+    319, "Barlow: Gadgetron Vendor - Weapon 6",
+    checked_flag_address=lambda ram: ram.secondary_inventory + Items.WALLOPER.offset,
+    enable_if=lambda options_dict: options_dict["randomize_gadgetron_vendor"]
+)
+
+# Keep in correct order
+MEGACORP_VENDOR_LOCATIONS: Sequence[LocationData] = [
+    OOZLA_VENDOR_WEAPON_1,
+    OOZLA_VENDOR_WEAPON_2,
+    ENDAKO_VENDOR_WEAPON_1,
+    ENDAKO_VENDOR_WEAPON_2,
+    BARLOW_VENDOR_WEAPON,
+    NOTAK_VENDOR_WEAPON,
+    TABORA_VENDOR_WEAPON_1,
+    TABORA_VENDOR_WEAPON_2,
+    DOBBO_VENDOR_WEAPON,
+    JOBA_VENDOR_WEAPON_1,
+    JOBA_VENDOR_WEAPON_2,
+    TODANO_VENDOR_WEAPON,
+    ARANOS_VENDOR_WEAPON_1,
+    ARANOS_VENDOR_WEAPON_2,
+]
+
+# Keep in correct order
+GADGETRON_VENDOR_LOCATIONS: Sequence[LocationData] = [
+    BARLOW_GADGETRON_1,
+    BARLOW_GADGETRON_2,
+    BARLOW_GADGETRON_3,
+    BARLOW_GADGETRON_4,
+    BARLOW_GADGETRON_5,
+    BARLOW_GADGETRON_6,
+]

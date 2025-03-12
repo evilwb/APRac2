@@ -10,22 +10,40 @@ from Options import (
 from dataclasses import dataclass
 
 
-class ShuffleWeaponVendors(Choice):
-    """Shuffle what items appear at the Megacorp and Gadgetron vendors. Also shuffles your two starting weapons.
-    Off: The vendors will stay unmodified.
-    Weapons: All weapons that are normally available at the vendors will be shuffled among the vendor slots.
+class StartingWeapons(Choice):
+    """Randomize what two weapons you start the game with.
+    Vanilla: Start with the Lancer and Gravity Bomb.
+    Balanced: Start with two random weapons that are relatively balanced.
+    Non-Broken: Start with two random weapons besides RYNO II and Zodiac.
+    Unrestricted: Start with any two weapons.
     """
-
-    option_off = 0
-    option_weapons = 1
+    display_name = "Starting Weapons"
+    option_vanilla = 0
+    option_balanced = 1
+    option_non_broken = 2
+    option_unrestricted = 3
     default = 0
 
 
-class SkipWupashNebula(Toggle):
-    """Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula."""
+class RandomizeGadgetronVendor(Toggle):
+    """Randomize what items appear at the Gadgetron vendor on Barlow."""
+    display_name = "Randomize Gadgetron Vendor"
 
+
+class RandomizeMegacorpVendor(Toggle):
+    """Randomize what items appear at the Megacorp vendor. New items will get added as you visit more planets."""
+    display_name = "Randomize Megacorp Vendor"
+
+
+class ExcludeVeryExpensiveItems(DefaultOnToggle):
+    """Exclude RYNO II and Zodiac from the randomization leaving them at their vanilla locations.
+    This will only take effect if the corresponding vendors are randomized"""
+    display_name = "Exclude Very Expensive Items"
+
+
+class SkipWupashNebula(DefaultOnToggle):
+    """Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula."""
     display_name = "Skip Wupash Nebula"
-    default = True
 
 
 class AllowFirstPersonMode(DefaultOnToggle):
@@ -93,7 +111,10 @@ class ExtendedWeaponProgression(Toggle):
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
-    shuffle_weapon_vendors: ShuffleWeaponVendors
+    starting_weapons: StartingWeapons
+    randomize_megacorp_vendor: RandomizeMegacorpVendor
+    randomize_gadgetron_vendor: RandomizeGadgetronVendor
+    exclude_very_expensive_items: ExcludeVeryExpensiveItems
     skip_wupash_nebula: SkipWupashNebula
     allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier

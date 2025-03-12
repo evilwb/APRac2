@@ -9,6 +9,7 @@ from BaseClasses import Item, Tutorial, ItemClassification
 
 from . import ItemPool
 from .data import Items, Locations, Planets
+from .data.Items import EquipmentData
 from .data.Planets import PlanetData
 from .Regions import create_regions
 from .Container import Rac2ProcedurePatch, generate_patch
@@ -79,6 +80,7 @@ class Rac2World(World):
     location_name_to_id = {location.name: location.location_id for location in Planets.ALL_LOCATIONS if location.location_id}
     settings: Rac2Settings
     starting_planet: Optional[PlanetData] = None
+    starting_weapons: list[EquipmentData] = []
     prefilled_item_map: Dict[str, str] = {}  # Dict of location name to item name
 
     def get_filler_item_name(self) -> str:
@@ -110,9 +112,8 @@ class Rac2World(World):
         items_to_add += ItemPool.create_upgrades(self)
 
         # add platinum bolts in whatever slots we have left
-        options = self.get_options_as_dict()
-        active_locations = [loc for loc in Planets.ALL_LOCATIONS if loc.enable_if is None or loc.enable_if(options)]
-        remain = (len(active_locations) - 1) - len(items_to_add)
+        unfilled = [i for i in self.multiworld.get_unfilled_locations(self.player) if not i.is_event]
+        remain = len(unfilled) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
         print(f"Not enough items to fill all locations. Adding {remain} Platinum Bolt(s) to the item pool")
         for _ in range(remain):
@@ -137,6 +138,9 @@ class Rac2World(World):
             "death_link",
             "skip_wupash_nebula",
             "extra_spaceship_challenge_locations",
+            "starting_weapons",
+            "randomize_megacorp_vendor",
+            "randomize_gadgetron_vendor",
             "extended_weapon_progression",
         )
 

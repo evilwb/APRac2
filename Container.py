@@ -8,6 +8,7 @@ from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes
 from .Rac2Options import ShuffleWeaponVendors, Rac2Options
 from .data import Items, IsoAddresses, RamAddresses, ExperienceTables
 from . import MIPS, TextManager
+from .data import IsoAddresses, RamAddresses
 from .data.RamAddresses import PlanetAddresses
 from .data.ExperienceTables import get_weapon_upgrades_table
 
@@ -158,9 +159,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x68, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x6C, bytes([0x03, 0x00, 0x50, 0x14]))
 
-    # Disable game failsafe that disable Clank if you don't have heli-pack unlocked when loading into a planet.
+    # Disable game failsafe sets lancer as the equipped weapon if there is no equipped weapon on level start.
     for address in addresses.SETUP_RATCHET_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x3BC, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x244, NOP)
 
     # prevent planets from getting added to the ship menu when a new planet is unlocked
     for address in addresses.UNLOCK_PLANET_FUNCS:
@@ -203,6 +204,26 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         elif world.options.no_revisit_reward_change:
             # Put the base scaling from vanilla game for XP & Bolts even for revisits
             patch.write_token(APTokenTypes.WRITE, address, bytes([100, 50, 40, 30, 25, 20, 15, 10] * 4))
+
+    """ Normally, when the game gives you equipment (Gadgets/Items/Weapons), it will set a Primary and Secondary byte. 
+    The Primary byte is what the game uses to determine if you have the equipment. The Secondary byte doesn't seem to 
+    be used for anything. For the randomizer, the Primary byte will continue to be used to indicate whether the 
+    equipment is collected but the Secondary byte will be repurposed to keep track of whether the location has been
+    visited. Here, the give equipment function for each planet is modified to only set the Secondary byte to mark that 
+    the locations has been visited and prevent giving normal equipment. """
+    for address in addresses.GIVE_EQUIPMENT_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x14, bytes([0x01, 0x00, 0x03, 0x24]))  # addiu v1,zero,0x1
+        patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([0x21, 0x38, 0x82, 0x00]))  # addu a3,a0,v0
+        patch.write_token(APTokenTypes.WRITE, address + 0x1C, bytes([0x38, 0x00, 0xE3, 0xA0]))  # sb v1,0x38(a3)
+        patch.write_token(APTokenTypes.WRITE, address + 0x20, NOP * 43)
+
+    for address in addresses.VENDOR_CONFIRM_MENU_FUNCS:
+        # Prevent auto-equipping anything purchased at the vendor.
+        patch.write_token(APTokenTypes.WRITE, address + 0x740, NOP)
+
+        # Prevent vendor from overwriting slots after purchases.
+        patch.write_token(APTokenTypes.WRITE, address + 0x60C, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
 
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
@@ -266,51 +287,13 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         alter_weapon_data_tables(patch, addresses, world.options)
 
     """----------------------
-    Shuffle Weapons Vendors
+    Weapons
     ----------------------"""
-    # Handle "weapons" mode.
-    if world.options.shuffle_weapon_vendors == ShuffleWeaponVendors.option_weapons:
-        weapons = list(Items.LV1_WEAPONS)
-        weapons.remove(Items.CLANK_ZAPPER)
-        weapons.remove(Items.SHEEPINATOR)
-        weapons.remove(Items.SPIDERBOT_GLOVE)
-        unlock_planets = [1, 1, 3, 3, 4, 6, 8, 8, 9, 11, 12, 14, 14]
-        world.random.shuffle(weapons)
-
-        first_weapon = weapons[0]
-        second_weapon = weapons[1]
-        megacorp_weapons = weapons[2:len(unlock_planets) + 2]
-        gadgetron_weapons = weapons[len(unlock_planets) + 2:]
-
-        # Patch starting weapons.
+    # Prevent game from giving starting weapons so the client can handle it.
+    if world.options.starting_weapons:
         for address in addresses.AVAILABLE_ITEM_FUNCS:
-            # First weapon.
-            weapon_id = first_weapon.offset
-            low = (0x7AF8 + weapon_id).to_bytes(2, "little")
-            patch.write_token(APTokenTypes.WRITE, address + 0x8, low)
-            patch.write_token(APTokenTypes.WRITE, address + 0x18, weapon_id.to_bytes(1, "little"))
-            patch.write_token(APTokenTypes.WRITE, address + 0x20, weapon_id.to_bytes(1, "little"))
-            patch.write_token(APTokenTypes.WRITE, address + 0x24, bytes([0x40, 0x00, 0x83, 0x34]))
-            patch.write_token(APTokenTypes.WRITE, address + 0x28, weapon_id.to_bytes(1, "little"))
-
-            # Second weapon.
-            weapon_id = second_weapon.offset
-            low = (0x7AF8 + weapon_id).to_bytes(2, "little")
-            patch.write_token(APTokenTypes.WRITE, address + 0x40, low)
-            patch.write_token(APTokenTypes.WRITE, address + 0x50, weapon_id.to_bytes(1, "little"))
-            patch.write_token(APTokenTypes.WRITE, address + 0x58, weapon_id.to_bytes(1, "little"))
-            patch.write_token(APTokenTypes.WRITE, address + 0x5C, bytes([0x40, 0x00, 0x83, 0x34]))
-
-        # Patch Megacorp vendor.
-        for address in addresses.VENDOR_REQUIREMENT_TABLES:
-            for i, planet in enumerate(unlock_planets):
-                patch.write_token(APTokenTypes.WRITE, address + i * 8, megacorp_weapons[i].offset.to_bytes(4, "little"))
-                patch.write_token(APTokenTypes.WRITE, address + i * 8 + 4, planet.to_bytes(4, "little"))
-
-        # Patch Gadgetron vendor.
-        for address in addresses.POPULATE_VENDOR_SLOT_FUNCS:
-            for i, offset in enumerate(range(0x8C0, 0x8D8, 4)):
-                patch.write_token(APTokenTypes.WRITE, address + offset, gadgetron_weapons[i].offset.to_bytes(1, "little"))
+            patch.write_token(APTokenTypes.WRITE, address + 0x4, NOP * 3)
+            patch.write_token(APTokenTypes.WRITE, address + 0x14, NOP * 21)
 
     """--------- 
     Oozla 
