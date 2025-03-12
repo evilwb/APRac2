@@ -73,6 +73,7 @@ class Addresses:
             self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
             self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
             self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
+            self.bolt_pack_count: int = self.feltzin_kill_count_table + 0x4
 
             # Pause state is at 0x1A8F00 on all planets except for Oozla where it's at 0x1A8F40.
             self.pause_state: int = 0x1A8F00
