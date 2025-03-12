@@ -82,7 +82,7 @@ class NanotechExperienceMultiplier(Range):
     """A multiplier applied to experience gained for Nanotech levels, in percent."""
     display_name = "Nanotech XP Multiplier"
     range_start = 20
-    range_end = 400
+    range_end = 600
     default = 100
 
 
@@ -90,7 +90,7 @@ class WeaponExperienceMultiplier(Range):
     """A multiplier applied to experience gained for weapon levels, in percent."""
     display_name = "Weapon XP Multiplier"
     range_start = 20
-    range_end = 400
+    range_end = 600
     default = 100
 
 
@@ -98,6 +98,13 @@ class ExtraSpaceshipChallengeLocations(Toggle):
     """In the vanilla game, only the first challenge and the race challenge completed perfectly give an item as a
     reward. If enabled, this option makes all spaceship challenges reward an item on first completion."""
     display_name = "Extra Spaceship Challenge Locations"
+
+
+class ExtendWeaponProgression(Toggle):
+    """If enabled, make all weapon tiers obtainable through weapon experience. This means LV2 (orange) weapons can
+    upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
+    This effectively makes all weapons that are usually restricted to NG+ available with enough grinding."""
+    display_name = "Extended Weapon Progression"
 
 
 @dataclass
@@ -117,3 +124,4 @@ class Rac2Options(PerGameCommonOptions):
     nanotech_xp_multiplier: NanotechExperienceMultiplier
     weapon_xp_multiplier: WeaponExperienceMultiplier
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
+    extend_weapon_progression: ExtendWeaponProgression

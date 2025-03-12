@@ -73,11 +73,11 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
     # Starting Weapons
     weapons: list[EquipmentData] = []
     if world.options.starting_weapons == StartingWeapons.option_balanced:
-        weapons = [weapon for weapon in Items.WEAPONS if weapon.power <= 5]
+        weapons = [weapon for weapon in Items.LV1_WEAPONS if weapon.power <= 5]
     elif world.options.starting_weapons == StartingWeapons.option_non_broken:
-        weapons = [weapon for weapon in Items.WEAPONS if weapon.power < 10]
+        weapons = [weapon for weapon in Items.LV1_WEAPONS if weapon.power < 10]
     elif world.options.starting_weapons == StartingWeapons.option_unrestricted:
-        weapons = list(Items.WEAPONS)
+        weapons = list(Items.LV1_WEAPONS)
 
     if len(weapons) > 0:
         world.random.shuffle(weapons)
@@ -130,7 +130,7 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
         item for item in world.multiworld.precollected_items[world.player]
         if item.code == Items.NANOTECH_BOOST.item_id
     ])
-    assert precollected_nanotech_boosts <= Items.NANOTECH_BOOST.max_capacity, "Added to many Nanotech Boosts to Start Inventory"
+    assert precollected_nanotech_boosts <= Items.NANOTECH_BOOST.max_capacity, "Added too many Nanotech Boosts to Start Inventory"
     for _ in range(Items.NANOTECH_BOOST.max_capacity - precollected_nanotech_boosts):
         collectable_items.append(world.create_item(Items.NANOTECH_BOOST.name))
 
@@ -138,7 +138,7 @@ def create_collectables(world: "Rac2World") -> list["Item"]:
         item for item in world.multiworld.precollected_items[world.player]
         if item.code == Items.HYPNOMATIC_PART.item_id
     ])
-    assert precollected_hypnomatic_parts <= Items.HYPNOMATIC_PART.max_capacity, "Added to many Hypnomatic Parts to Start Inventory"
+    assert precollected_hypnomatic_parts <= Items.HYPNOMATIC_PART.max_capacity, "Added too many Hypnomatic Parts to Start Inventory"
     for _ in range(Items.HYPNOMATIC_PART.max_capacity - precollected_hypnomatic_parts):
         collectable_items.append(world.create_item(Items.HYPNOMATIC_PART.name))
 

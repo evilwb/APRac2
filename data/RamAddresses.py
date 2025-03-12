@@ -1,5 +1,3 @@
-from typing import Dict
-
 from .Planets import *
 
 
@@ -35,11 +33,10 @@ class Addresses:
             self.current_bolts: int = 0x1A79F8
             self.current_bolt_multiplier: int = 0x1A7A32
             self.current_ratchet_xp: int = 0x1A7A0C
-            self.current_lancer_xp: int = 0x1398E0
-            self.current_gravity_bomb_xp: int = 0x139910
             self.current_ammo_table: int = 0x139688
+            self.current_weapon_xp_table: int = 0x139868
+            self.weapon_subid_table = 0x139568
             self.challenge_mode_flag: int = 0x1A7A0A
-            self.wrench_weapon_id: int = 0x139572
             self.current_armor_level: int = 0x1A7A18
             self.joba_hoverbike_1_victories: int = 0x13960F
             self.clank_disabled: int = 0x18C31C
@@ -47,6 +44,8 @@ class Addresses:
             self.checkpoint_data: int = 0x19B2E8
             self.planet_state: int = 0x19B4A8
             self.loaded_flag: int = 0x1A7BE5
+            self.equipped_weapon: int = 0x1A7398
+            # self.held_weapon: int = 0x18B068
             self.quickselect: int = 0x1A73B8
             self.current_planet: int = 0x1A79F0
             self.nanotech_boost_table: int = 0x1A7A28
