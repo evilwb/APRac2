@@ -56,10 +56,12 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
         if isinstance(item, EquipmentData) and current_items[item.name] == 0:
             ctx.game_interface.give_equipment_to_player(item)
             show_item_reception_message(ctx, network_item)
+            ctx.game_interface.vendor.refresh(ctx)
 
         if isinstance(item, CoordData) and current_items[item.name] == 0:
             ctx.game_interface.unlock_planet(item.planet_number)
             show_item_reception_message(ctx, network_item)
+            ctx.game_interface.vendor.refresh(ctx)
 
         if isinstance(item, ProgressiveUpgradeData):
             current_level = item.get_level_func(ctx.game_interface)
@@ -70,6 +72,7 @@ async def handle_received_items(ctx: 'Rac2Context', current_items: dict[str, int
                 item.set_level_func(ctx.game_interface, new_level)
             if current_level < new_level:
                 show_item_reception_message(ctx, network_item, item.progressive_names[new_level - 1])
+                ctx.game_interface.vendor.refresh(ctx)
 
     handle_received_collectables(ctx, current_items)
     resync_problem_items(ctx)
@@ -89,6 +92,7 @@ def handle_received_collectables(ctx: 'Rac2Context', current_items: dict[str, in
             new_amount = min(received_amount, item.max_capacity)
             ctx.game_interface.give_collectable_to_player(item, new_amount)
             show_item_reception_message(ctx, received_collectables[-1], None, diff)
+            ctx.game_interface.vendor.refresh(ctx)
 
 
 def resync_problem_items(ctx: 'Rac2Context'):
