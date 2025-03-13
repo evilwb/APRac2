@@ -40,12 +40,23 @@ Ratchet & Clank 2:
   # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
   death_link: false
 
-  # Shuffle what items appear at the Megacorp and Gadgetron vendors. Also shuffles your two starting weapons.
+  # Randomize what two weapons you start the game with.
   #
-  # off: The vendors will stay unmodified.
-  #
-  # weapons: All weapons that are normally available at the vendors will be shuffled among the vendor slots.
-  shuffle_weapon_vendors: off
+  # vanilla: Start with the Lancer and Gravity Bomb.
+  # balanced: Start with two random weapons that are relatively balanced.
+  # non_broken: Start with two random weapons besides RYNO II and Zodiac.
+  # unrestricted: Start with any two non-upgraded weapons.
+  starting_weapons: vanilla
+
+  # Randomize what items appear at the Megacorp vendor. New items will get added as you visit more planets.
+  randomize_megacorp_vendor: false
+
+  # Randomize what items appear at the Gadgetron vendor on Barlow.
+  randomize_gadgetron_vendor: false
+
+  # Exclude RYNO II and Zodiac from the randomization leaving them at their vanilla locations.
+  # This will only take effect if the corresponding vendors are randomized.
+  exclude_very_expensive_items: true
 
   # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
   skip_wupash_nebula: true
@@ -83,6 +94,15 @@ Ratchet & Clank 2:
   # Minimum value is 10
   # Maximum value is 400
   weapon_xp_multiplier: 100
+
+  # In the vanilla game, only the first challenge and the race challenge completed perfectly give an item as a
+  # reward. If enabled, this option makes all spaceship challenges reward an item on first completion.
+  extra_spaceship_challenge_locations: false
+
+  # If enabled, make all weapon tiers obtainable through weapon experience. This means LV2 (orange) weapons can
+  # upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
+  # This effectively makes all weapons that are usually restricted to NG+ available with enough grinding.
+  extend_weapon_progression: false
 
   # Item & Location Options
   local_items:
