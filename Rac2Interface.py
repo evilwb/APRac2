@@ -297,6 +297,8 @@ class Vendor:
                 equipment_table = self.interface.addresses.planet[ctx.current_planet].equipment_data
                 if isinstance(item, EquipmentData):
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, item.oclass_id))
+                elif item is Items.BOLT_PACK:
+                    slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x0D))
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
 
