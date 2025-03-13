@@ -302,8 +302,7 @@ class Vendor:
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
 
-                real_weapon_offset = self.interface.pcsx2_interface.read_int8(self.interface.addresses.weapon_subid_table + weapons[i].offset)
-                self.interface.pcsx2_interface.write_int16(equipment_table + real_weapon_offset * 0xE0 + 0x3C, item.get_icon_id())
+                self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.get_icon_id())
             if not slots:
                 self.change_mode(ctx, self.Mode.AMMO)
                 return
@@ -336,8 +335,7 @@ class Vendor:
                 else:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
 
-                real_weapon_offset = self.interface.pcsx2_interface.read_int8(self.interface.addresses.weapon_subid_table + weapons[i].offset)
-                self.interface.pcsx2_interface.write_int16(equipment_table + real_weapon_offset * 0xE0 + 0x3C, item.get_icon_id())
+                self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, item.get_icon_id())
             self.populate_slots(slots)
         elif new_mode is Vendor.Mode.CLOSED:
             # reset weapon data back to default when not in vendor
