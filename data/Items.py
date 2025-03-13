@@ -471,7 +471,7 @@ UPGRADES: Sequence[ProgressiveUpgradeData] = [
 ]
 ALL: Sequence[ItemData] = [*EQUIPMENT, *WEAPONS, *COORDS, *COLLECTABLES, *UPGRADES]
 QUICK_SELECTABLE: Sequence[ItemData] = [
-    *WEAPONS,
+    *LV1_WEAPONS,
     SWINGSHOT,
     DYNAMO,
     THERMANATOR,
