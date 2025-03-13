@@ -46,3 +46,5 @@ Some of the changes include:
   - You start at Slim's Ship Shack which will act as a hub.
   - You start with 3 random planets unlocked.
   - Holding `L1 + R1 + L2 + R2 + SELECT` will reset you to the Ship Shack.
+  - When the Megacorp Weapon Vendor is randomized, the vendor is split between two modes, one for buying new items and one for buying ammo. 
+You can switch between these modes by pressing up/down while in the vendor.

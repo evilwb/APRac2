@@ -15,7 +15,7 @@ class StartingWeapons(Choice):
     Vanilla: Start with the Lancer and Gravity Bomb.
     Balanced: Start with two random weapons that are relatively balanced.
     Non-Broken: Start with two random weapons besides RYNO II and Zodiac.
-    Unrestricted: Start with any two weapons.
+    Unrestricted: Start with any two non-upgraded weapons.
     """
     display_name = "Starting Weapons"
     option_vanilla = 0
@@ -31,7 +31,8 @@ class RandomizeGadgetronVendor(Toggle):
 
 
 class RandomizeMegacorpVendor(Toggle):
-    """Randomize what items appear at the Megacorp vendor. New items will get added as you visit more planets."""
+    """ Randomize what items appear at the Megacorp vendor. New items will get added as you visit more planets.
+    When enabled, you can switch between buying items and buying ammo by pressing up/down when in the vendor."""
     display_name = "Randomize Megacorp Vendor"
 
 
