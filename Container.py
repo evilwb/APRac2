@@ -249,6 +249,11 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x4, bytes([0x13, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
 
+    # For some reason, the "Weapons" menu sets the secondary inventory flag for any weapon you hover with your cursor.
+    # This is a problem for us since secondary inventory is tied to locations, so we just disable that behavior.
+    for address in addresses.WEAPONS_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x408, MIPS.nop())
+
     # Same for nanotech boosts
     for address, spaceish_wars_address in zip(addresses.NANOTECH_COUNT_FUNCS, addresses.SPACEISH_WARS_FUNCS):
         # Inject a custom procedure run on each tick of the main loop of each planet.
