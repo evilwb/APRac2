@@ -12,17 +12,18 @@ class ItemData(ABC):
     item_id: int
     name: str
 
-    def get_icon_id(self) -> int:
-        if isinstance(self, EquipmentData):
-            return self.icon_id
-        elif isinstance(self, CoordData):
-            return 0xEA97  # Ship Icon
-        elif self is PLATINUM_BOLT:
-            return 0xEAA2  # PLat Bolt icon
-        elif self is NANOTECH_BOOST:
-            return 0xEA9E  # Plus Icon `+`
-        else:
-            return 0xEA75  # Question Mark icon `?`
+
+def get_icon_id(item: ItemData) -> int:
+    if isinstance(item, EquipmentData):
+        return item.icon_id
+    elif isinstance(item, CoordData):
+        return 0xEA97  # Ship Icon
+    elif item is PLATINUM_BOLT:
+        return 0xEAA2  # PLat Bolt icon
+    elif item is NANOTECH_BOOST:
+        return 0xEA9E  # Plus Icon `+`
+    else:
+        return 0xEA75  # Question Mark icon `?`
 
 
 @dataclass
