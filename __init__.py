@@ -78,6 +78,8 @@ class Rac2World(World):
     topology_present = True
     item_name_to_id = {item.name: item.item_id for item in Items.ALL}
     location_name_to_id = {location.name: location.location_id for location in Planets.ALL_LOCATIONS if location.location_id}
+    item_name_groups = Items.get_item_groups()
+    location_name_groups = Planets.get_location_groups()
     settings: Rac2Settings
     starting_planet: Optional[PlanetData] = None
     starting_weapons: list[EquipmentData] = []
