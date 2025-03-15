@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from abc import ABC
 
-from typing import Callable, TYPE_CHECKING, Sequence, Optional
+from typing import Callable, TYPE_CHECKING, Sequence, Optional, Dict, Set
 
 if TYPE_CHECKING:
     from ..Rac2Interface import Rac2Interface
@@ -509,3 +509,12 @@ def coord_for_planet(number: int) -> CoordData:
     assert len(matching) > 0, f"No coords for planet number '{number}'."
     assert len(matching) < 2, f"Multiple coords for planet number '{number}'. Please report."
     return matching[0]
+
+
+def get_item_groups() -> Dict[str, Set[str]]:
+    groups: Dict[str, Set[str]] = {
+        "Weapons": {w.name for w in WEAPONS},
+        "Coordinates": {c.name for c in COORDS},
+        "Equipment": {e.name for e in EQUIPMENT},
+    }
+    return groups

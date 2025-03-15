@@ -1,3 +1,5 @@
+from typing import Set
+
 from .Locations import *
 
 
@@ -207,6 +209,42 @@ ALL_LOCATIONS: Sequence[LocationData] = [
     for locations in [planet.locations for planet in LOGIC_PLANETS]
     for location in locations
 ]
+
+
+def get_location_groups() -> Dict[str, Set[str]]:
+    groups: Dict[str, Set[str]] = {}
+    for planet in LOGIC_PLANETS:
+        groups[planet.name] = {loc.name for loc in planet.locations}
+    groups.update({
+        "Spaceship": {
+            *groups[FELTZIN_SYSTEM.name],
+            *groups[HRUGIS_CLOUD.name],
+            *groups[GORN.name]
+        },
+        "Hoverbike": {
+            BARLOW_HOVERBIKE_RACE_TRANSMISSION.name,
+            BARLOW_HOVERBIKE_RACE_PB.name,
+            JOBA_FIRST_HOVERBIKE_RACE.name,
+            JOBA_HOVERBIKE_RACE_SHORTCUT_NT.name,
+        },
+        "Giant Clank": {
+            DOBBO_DEFEAT_THUG_LEADER.name,
+            DAMOSEL_DEFEAT_MOTHERSHIP.name,
+        },
+        "Arena": {
+            MAKTAR_ARENA_CHALLENGE.name,
+            JOBA_ARENA_BATTLE.name,
+            JOBA_ARENA_CAGE_MATCH.name,
+        },
+        "Tanky Bosses": {
+            SNIVELAK_RESCUE_ANGELA.name,
+            OOZLA_SWAMP_MONSTER_II.name,
+            DOBBO_DEFEAT_THUG_LEADER.name,
+            DAMOSEL_DEFEAT_MOTHERSHIP.name,
+        },
+    })
+
+    return groups
 
 
 class SpaceshipSystemTextInfo(NamedTuple):
