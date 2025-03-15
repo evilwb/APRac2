@@ -12,24 +12,25 @@ class ItemData(ABC):
     item_id: int
     name: str
 
-    def get_icon_id(self) -> int:
-        if isinstance(self, EquipmentData):
-            return self.icon_id
-        elif isinstance(self, CoordData):
-            return 0xEA97  # Ship Icon
-        elif self is PLATINUM_BOLT:
-            return 0xEAA2  # PLat Bolt icon
-        elif self is NANOTECH_BOOST:
-            return 0xEA9E  # Plus Icon `+`
-        else:
-            return 0xEA75  # Question Mark icon `?`
+
+def get_icon_id(item: ItemData) -> int:
+    if isinstance(item, EquipmentData):
+        return item.icon_id
+    elif isinstance(item, CoordData):
+        return 0xEA97  # Ship Icon
+    elif item is PLATINUM_BOLT:
+        return 0xEAA2  # PLat Bolt icon
+    elif item is NANOTECH_BOOST:
+        return 0xEA9E  # Plus Icon `+`
+    else:
+        return 0xEA75  # Question Mark icon `?`
 
 
 @dataclass
 class EquipmentData(ItemData):
     offset: int
-    oclass_id: Optional[int] = None
-    icon_id: Optional[int] = None
+    oclass_id: Optional[int] = 0x0047  # Wrench model
+    icon_id: Optional[int] = 0xEA75    # Question Mark icon `?`
 
 
 # Gadgets/Items
@@ -41,12 +42,12 @@ LEVITATOR = EquipmentData(5, "Levitator", 8, oclass_id=0x096C, icon_id=0xEA90)
 SWINGSHOT = EquipmentData(6, "Swingshot", 13, oclass_id=0x00D0, icon_id=0xEA8B)
 GRAVITY_BOOTS = EquipmentData(7, "Gravity Boots", 19, oclass_id=0x00AD, icon_id=0xEA88)
 GRIND_BOOTS = EquipmentData(8, "Grindboots", 20, oclass_id=0x00C3, icon_id=0xEA8C)
-GLIDER = EquipmentData(9, "Glider", 21, oclass_id=0x0047, icon_id=0xEA91)
+GLIDER = EquipmentData(9, "Glider", 21, icon_id=0xEA91)
 DYNAMO = EquipmentData(10, "Dynamo", 36, oclass_id=0x0825, icon_id=0xEA7F)
 ELECTROLYZER = EquipmentData(11, "Electrolyzer", 38, oclass_id=0x0870, icon_id=0xEA81)
 THERMANATOR = EquipmentData(12, "Thermanator", 39, oclass_id=0x0FB0, icon_id=0xEA82)
 TRACTOR_BEAM = EquipmentData(13, "Tractor Beam", 46, oclass_id=0x00BC, icon_id=0xEA80)
-QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 49, oclass_id=0x0000, icon_id=0xEA9C)
+QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 49, icon_id=0xEA9C)
 BOX_BREAKER = EquipmentData(15, "Box Breaker", 50, oclass_id=0x1238, icon_id=0xEAA1)
 INFILTRATOR = EquipmentData(16, "Infiltrator", 51, oclass_id=0x0BD3, icon_id=0xEA83)
 CHARGE_BOOTS = EquipmentData(17, "Charge Boots", 54, oclass_id=0x0E70, icon_id=0xEA89)

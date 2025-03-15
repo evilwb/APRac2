@@ -234,15 +234,13 @@ def process_vendor_text(manager: TextManager, ctx: "Rac2Context") -> None:
     vendor: Vendor = ctx.game_interface.vendor
     if vendor.mode is Vendor.Mode.MEGACORP:
         for location, weapon in zip(Locations.MEGACORP_VENDOR_LOCATIONS, Items.MEGACORP_VENDOR_WEAPONS):
-            real_weapon_offset = ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.weapon_subid_table + weapon.offset)
-            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + real_weapon_offset * 0xE0 + 0x08)
+            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapon.offset * 0xE0 + 0x08)
             location_info = ctx.locations_info[location.location_id]
             item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
             manager.inject(text_id, item_name)
     elif vendor.mode is Vendor.Mode.GADGETRON:
         for location, weapon in zip(Locations.GADGETRON_VENDOR_LOCATIONS, Items.GADGETRON_VENDOR_WEAPONS):
-            real_weapon_offset = ctx.game_interface.pcsx2_interface.read_int8(ctx.game_interface.addresses.weapon_subid_table + weapon.offset)
-            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + real_weapon_offset * 0xE0 + 0x08)
+            text_id = ctx.game_interface.pcsx2_interface.read_int32(equipment_data + weapon.offset * 0xE0 + 0x08)
             location_info = ctx.locations_info[location.location_id]
             item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
             manager.inject(text_id, item_name)

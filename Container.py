@@ -225,6 +225,22 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         patch.write_token(APTokenTypes.WRITE, address + 0x60C, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
 
+    """ Prevent any inference of an upgraded weapon type, always take the base Lv1 weapon so that we know which
+    weapon to edit temporarily into a fake buyable item. """
+    for address in addresses.VENDOR_LOOP_FUNCS:
+        # Take the right item to determine the icon to draw
+        patch.write_token(APTokenTypes.WRITE, address + 0x244, MIPS.nop())
+        patch.write_token(APTokenTypes.WRITE, address + 0x248, bytes([0x00, 0x00, 0x43, 0x24]))  # addiu v1,v0,0x0
+        # Take the right item to determine the icon color
+        patch.write_token(APTokenTypes.WRITE, address + 0x27C, MIPS.nop())
+        patch.write_token(APTokenTypes.WRITE, address + 0x284, bytes([0x00, 0x00, 0x43, 0x24]))  # addiu v1,v0,0x0
+    for address in addresses.VENDOR_ITEM_NAME_HANDLING_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x29C, MIPS.nop())
+        patch.write_token(APTokenTypes.WRITE, address + 0x2A8, bytes([0x00, 0x00, 0x62, 0x24]))  # addiu v0,v1,0x0
+    for address in addresses.VENDOR_ITEM_PRICE_HANDLING_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0xD0, MIPS.nop())
+        patch.write_token(APTokenTypes.WRITE, address + 0xD8, bytes([0x00, 0x00, 0x82, 0x24]))  # addiu v0,a0,0x0
+
     """ Normally, the game will iterate through the entire collected platinum bolt table whenever it needs to get your 
     current platinum bolt count. This changes it to read a single byte that we control to get that count instead. This 
     is done to decouple the platinum bolt count from platinum bolt locations checked. This same concept is also applied 
@@ -232,6 +248,11 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.PLAT_BOLT_COUNT_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x4, bytes([0x13, 0x00, 0x00, 0x10]))
         patch.write_token(APTokenTypes.WRITE, address + 0x8, bytes([0xE4, 0xB2, 0x46, 0x90]))
+
+    # For some reason, the "Weapons" menu sets the secondary inventory flag for any weapon you hover with your cursor.
+    # This is a problem for us since secondary inventory is tied to locations, so we just disable that behavior.
+    for address in addresses.WEAPONS_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x408, MIPS.nop())
 
     # Same for nanotech boosts
     for address, spaceish_wars_address in zip(addresses.NANOTECH_COUNT_FUNCS, addresses.SPACEISH_WARS_FUNCS):
