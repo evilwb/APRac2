@@ -84,7 +84,7 @@ Ratchet & Clank 2:
   # A multiplier applied to experience gained for Nanotech levels, in percent.
   #
   # You can define additional values between the minimum and maximum values.
-  # Minimum value is 30
+  # Minimum value is 20
   # Maximum value is 600
   nanotech_xp_multiplier: 100
 
