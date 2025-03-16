@@ -237,6 +237,7 @@ class Vendor:
         self.mode: Vendor.Mode = Vendor.Mode.CLOSED
         self.interface: Rac2Interface = interface
         self.slots: list[Vendor.VendorSlot] = []
+        self.recently_bought_locations: list[int] = []
 
     def change_mode(self, ctx: "Rac2Context", new_mode: Mode):
         # only allow toggle when sub-menu is not up.
@@ -277,16 +278,16 @@ class Vendor:
             locations: Sequence[LocationData] = Locations.MEGACORP_VENDOR_LOCATIONS
             slots: list[Vendor.VendorSlot] = []
             unlock_list: list[int] = self.get_unlock_list()
-            for i in range(len(locations)):
+            for i, loc in enumerate(locations):
                 # Don't place items on the vendor that have already been purchased.
-                if locations[i].location_id in ctx.checked_locations:
+                if loc.location_id in ctx.checked_locations or loc.location_id in self.recently_bought_locations:
                     continue
 
                 # Do not add to vendor unless the item is unlocked
                 if weapons[i].offset not in unlock_list:
                     continue
 
-                location_info = ctx.locations_info[locations[i].location_id]
+                location_info = ctx.locations_info[loc.location_id]
                 item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
                 item = None
                 try:
@@ -314,12 +315,12 @@ class Vendor:
             weapons: Sequence[EquipmentData] = Items.GADGETRON_VENDOR_WEAPONS
             locations: Sequence[LocationData] = Locations.GADGETRON_VENDOR_LOCATIONS
             slots: list[Vendor.VendorSlot] = []
-            for i in range(len(locations)):
+            for i, loc in enumerate(locations):
                 # Don't place items on the vendor that have already been purchased.
-                if locations[i].location_id in ctx.checked_locations:
+                if loc.location_id in ctx.checked_locations or loc.location_id in self.recently_bought_locations:
                     continue
 
-                location_info = ctx.locations_info[locations[i].location_id]
+                location_info = ctx.locations_info[loc.location_id]
                 item_name = ctx.item_names.lookup_in_slot(location_info.item, location_info.player)
                 item = None
                 try:
@@ -340,8 +341,12 @@ class Vendor:
         elif new_mode is Vendor.Mode.CLOSED:
             # reset weapon data back to default when not in vendor
             self._reset_weapon_data(ctx)
+            self.recently_bought_locations = []
 
         self.mode = new_mode
+
+    def notify_item_bought(self, location_id: int):
+        self.recently_bought_locations.append(location_id)
 
     def refresh(self, ctx: "Rac2Context") -> None:
         try:
