@@ -196,11 +196,12 @@ async def _handle_game_ready(ctx: Rac2Context):
         ctx.is_loading = True
         return
 
-    if ctx.current_planet != ctx.game_interface.get_current_planet():
+    connected_to_server = (ctx.server is not None) and (ctx.slot is not None)
+    if ctx.current_planet != ctx.game_interface.get_current_planet() and connected_to_server:
         ctx.previous_planet = ctx.current_planet
         ctx.current_planet = ctx.game_interface.get_current_planet()
-        init(ctx, ctx.server is not None and ctx.slot is not None)
-    update(ctx, ctx.server is not None and ctx.slot is not None)
+        init(ctx)
+    update(ctx, connected_to_server)
 
     if ctx.server:
         ctx.last_error_message = None

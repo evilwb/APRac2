@@ -27,6 +27,20 @@ class Addresses:
             # self.unlocked_movie_field1: int = 0x13976C
             # self.unlocked_movie_field2: int = 0x139770
             # self.siberius_thief_defeated: int = 0x139771
+            self.cutscene_flags = [
+                (0x13977E, 0x80),  # Flight cutscene on Maktar unlocked
+                (0x139783, 0x08),  # First flight to Boldan special cutscene
+                (0x13978C, 0x80),  # Cutscene when meeting Oozla scientist
+                (0x1397AC, 0x10),  # Feltzin entrance cutscene
+                (0x1397BE, 0x30),  # Tabora entrance cutscene
+                (0x1397BA, 0x08),  # Tabora entrance cutscene
+                (0x1397D1, 0x01),  # Hrugis entrance cutscene
+                (0x1397E8, 0x02),  # Gorn entrance cutscene
+                (0x1397B1, 0x02),  # Notak entrance cutscene
+                (0x139811, 0x08),  # Flight cutscene on Gorn unlocked
+                (0x139815, 0x60),  # Flight cutscene on Tabora unlocked
+                (0x139815, 0x80),  # Flight cutscene on Boldan unlocked
+            ]
             self.current_weapon_xp_table: int = 0x139868
             self.selectable_planets: int = 0x139948
 
