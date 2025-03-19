@@ -6,82 +6,69 @@ class Addresses:
         if game_version == "SCUS-97268":
             # Global addresses
             self.controller_input: int = 0x138320
-            self.endako_ratchet_freed: int = 0x1395C0
-            self.endako_apartment_visited: int = 0x1395C1
-            self.thermanator_tutorial_complete: int = 0x1395CA
-            self.bought_from_worker_bots: int = 0x1395CD
-            self.ship_shack_discovered: int = 0x1395CF
-            self.dobbo_defeat_thug_leader: int = 0x1395E6
-            self.electrolyzer_battle_victories: int = 0x1395E9
-            self.barlow_hoverbike_race_victories: int = 0x139605
+            # self.endako_ratchet_freed: int = 0x1395C0
+            # self.endako_apartment_visited: int = 0x1395C1
+            # self.thermanator_tutorial_complete: int = 0x1395CA
+            # self.bought_from_worker_bots: int = 0x1395CD
+            # self.ship_shack_discovered: int = 0x1395CF
+            self.weapon_subid_table = 0x139568
+            # self.dobbo_defeat_thug_leader: int = 0x1395E6
+            # self.electrolyzer_battle_victories: int = 0x1395E9
+            # self.barlow_hoverbike_race_victories: int = 0x139605
+            # self.joba_hoverbike_1_victories: int = 0x13960F
             self.feltzin_challenge_wins: int = 0x139619
             self.hrugis_challenge_wins: int = 0x13961E
             self.gorn_challenge_wins: int = 0x139623
             self.hypnomatic_part1: int = 0x13963C
             self.hypnomatic_part2: int = 0x13963E
             self.hypnomatic_part3: int = 0x139641
-            self.unlocked_movie_field0: int = 0x139768
-            self.unlocked_movie_field1: int = 0x13976C
-            self.unlocked_movie_field2: int = 0x139770
-            self.siberius_thief_defeated: int = 0x139771
+            self.current_ammo_table: int = 0x139688
+            # self.unlocked_movie_field0: int = 0x139768
+            # self.unlocked_movie_field1: int = 0x13976C
+            # self.unlocked_movie_field2: int = 0x139770
+            # self.siberius_thief_defeated: int = 0x139771
+            self.current_weapon_xp_table: int = 0x139868
             self.selectable_planets: int = 0x139948
+
             self.ratchet_position: int = 0x189EA0
+            # self.held_weapon: int = 0x18B068
             self.current_moby_instance_pointer: int = 0x18C0B0
-            self.raritanium_count: int = 0x1A79FC
             self.ratchet_state: int = 0x18C0B4
             self.current_nanotech: int = 0x18C2EC
-            self.current_bolts: int = 0x1A79F8
-            self.current_bolt_multiplier: int = 0x1A7A32
-            self.current_ratchet_xp: int = 0x1A7A0C
-            self.current_ammo_table: int = 0x139688
-            self.current_weapon_xp_table: int = 0x139868
-            self.weapon_subid_table = 0x139568
-            self.challenge_mode_flag: int = 0x1A7A0A
-            self.current_armor_level: int = 0x1A7A18
-            self.joba_hoverbike_1_victories: int = 0x13960F
             self.clank_disabled: int = 0x18C31C
+
             self.platinum_bolt_table: int = 0x19B278
-            self.checkpoint_data: int = 0x19B2E8
-            self.planet_state: int = 0x19B4A8
-            self.loaded_flag: int = 0x1A7BE5
+            # self.checkpoint_data: int = 0x19B2E8
+            self.enemy_kill_count_table: int = 0x19B4A8
+
             self.equipped_weapon: int = 0x1A7398
-            # self.held_weapon: int = 0x18B068
             self.quickselect: int = 0x1A73B8
             self.current_planet: int = 0x1A79F0
+            self.current_bolts: int = 0x1A79F8
+            # self.raritanium_count: int = 0x1A79FC
+            # self.challenge_mode_flag: int = 0x1A7A0A
+            # self.current_ratchet_xp: int = 0x1A7A0C
+            self.current_armor_level: int = 0x1A7A18
             self.nanotech_boost_table: int = 0x1A7A28
-            self.skill_point_table: int = 0x1A7A60
-            self.ship_upgrades: int = 0x1A7AF0
+            # self.current_bolt_multiplier: int = 0x1A7A32
+            # self.skill_point_table: int = 0x1A7A60
+            # self.ship_upgrades: int = 0x1A7AF0
             self.inventory: int = 0x1A7AF8
             self.secondary_inventory: int = 0x1A7B30
             self.vendor_list: int = 0x1A7B68
             self.unlocked_planets: int = 0x1A7BC8
+            self.loaded_flag: int = 0x1A7BE5
             self.highlighted_planets: int = 0x1A7BE8
             self.wupash_complete_flag: int = 0x1A7C01
-            # I use some unused addresses at the end of the platinum bolt table to store some extra data for AP.
-            self.platinum_bolt_count: int = self.platinum_bolt_table + 0x6C
-            self.nanotech_boost_count: int = self.platinum_bolt_table + 0x6D
-            self.hypnomatic_part_count: int = self.platinum_bolt_table + 0x6E
-
-            # The "enemy kill count table" is actually one table per planet of 0x400 bytes each, holding the number
-            # of times two enemies were killed (one in the upper half, the other in the lower half of the byte).
-            # As one might expect, this is way too much and most of this data is empty, but still saved on the memcard.
-            # We use the table for Feltzin since spaceship systems don't use that mechanic at all, but still have that
-            # table.
-            self.enemy_kill_count_table: int = 0x19B4A8
-            self.feltzin_kill_count_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
-            self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
-            self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
-            self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
-            self.bolt_pack_count: int = self.feltzin_kill_count_table + 0x4
 
             # Pause state is at 0x1A8F00 on all planets except for Oozla where it's at 0x1A8F40.
             self.pause_state: int = 0x1A8F00
             self.oozla_pause_state: int = 0x1A8F40
 
             # Addresses for data that only exists on certain planets
-            self.oozla_box_breaker_func: int = 0x416440
-            self.endako_free_ratchet_func: int = 0x3D20F8
-            self.hrugis_race_controller_func: int = 0x42D1F0
+            # self.oozla_box_breaker_func: int = 0x416440
+            # self.endako_free_ratchet_func: int = 0x3D20F8
+            # self.hrugis_race_controller_func: int = 0x42D1F0
 
             # Addresses for data that exists on all/most planets but has a different address per planet
             self.planet: Dict[int, PlanetAddresses] = {
@@ -338,6 +325,26 @@ class Addresses:
                     next_planet=0x1B2840,
                 ),
             }
+
+            ################################################
+            #  Custom addresses
+            ################################################
+
+            # I use some unused addresses at the end of the platinum bolt table to store some extra data for AP.
+            self.platinum_bolt_count: int = self.platinum_bolt_table + 0x6C
+            self.nanotech_boost_count: int = self.platinum_bolt_table + 0x6D
+            self.hypnomatic_part_count: int = self.platinum_bolt_table + 0x6E
+
+            # The "enemy kill count table" is actually one table per planet of 0x400 bytes each, holding the number
+            # of times two enemies were killed (one in the upper half, the other in the lower half of the byte).
+            # As one might expect, this is way too much and most of this data is empty, but still saved on the memcard.
+            # We use the table for Feltzin since spaceship systems don't use that mechanic at all, but still have that
+            # table.
+            self.feltzin_kill_count_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
+            self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
+            self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
+            self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
+            self.bolt_pack_count: int = self.feltzin_kill_count_table + 0x4
 
 
 class PlanetAddresses(NamedTuple):
