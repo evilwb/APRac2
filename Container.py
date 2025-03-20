@@ -277,7 +277,7 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
 
     # Fix crash when breaking ammo crate while having no valid ammo based weapons collected
     for address in addresses.ROLL_RANDOM_NUMBER_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([0x01, 0x00, 0x10, 0x24]))  # addiu s0,zero,0x1
+        patch.write_token(APTokenTypes.WRITE, address + 0x1C, bytes([0x01, 0x00, 0x10, 0x24]))  # addiu s0,zero,0x1
 
     # Reuse "Short Cuts" button on special manu to travel to Ship Shack.
     for address in addresses.SPECIAL_MENU_FUNCS:
