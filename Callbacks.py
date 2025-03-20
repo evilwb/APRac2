@@ -12,39 +12,49 @@ if TYPE_CHECKING:
 
 def update(ctx: 'Rac2Context', ap_connected: bool):
     """Called continuously as long as a planet is loaded"""
-
     game_interface = ctx.game_interface
     planet = ctx.current_planet
 
     if planet is Rac2Planet.Title_Screen or planet is None:
         return
 
-    replace_text(ctx, ap_connected)
-
-    if ap_connected:
-        if ctx.slot_data is not None:
-            # Ship Wupash if option is enabled.
-            if ctx.slot_data.get("skip_wupash_nebula", False):
-                game_interface.pcsx2_interface.write_int8(game_interface.addresses.wupash_complete_flag, 1)
-            # Handle some edge-case weapons XP if extended weapon progression is enabled
-            if ctx.slot_data.get("extend_weapon_progression", False):
-                handle_specific_weapon_xp(ctx)
-        try:
-            handle_vendor(ctx)
-        except MissingAddressError:
-            pass
-
     button_input: int = game_interface.pcsx2_interface.read_int16(game_interface.addresses.controller_input)
     if button_input == 0x10F:  # L1 + L2 + R1 + R2 + SELECT
         if game_interface.switch_planet(Rac2Planet.Ship_Shack):
             game_interface.logger.info("Resetting to Ship Shack")
 
+    replace_text(ctx, ap_connected)
+
     if not ap_connected:
         if ctx.notification_manager.queue_size() == 0:
             ctx.notification_manager.queue_notification("\14Warning!\10 Not connected to Archipelago server", 1.0)
+        return
+
+    try:
+        handle_vendor(ctx)
+    except MissingAddressError:
+        pass
+
+    if ctx.slot_data is not None:
+        # Handle some edge-case weapons XP if extended weapon progression is enabled
+        if ctx.slot_data.get("extend_weapon_progression", False):
+            handle_specific_weapon_xp(ctx)
 
 
-def init(ctx: 'Rac2Context', ap_connected: bool):
+def init(ctx: 'Rac2Context'):
+    """Called every time the player lands on a planet or connects to Archipelago server"""
+    if ctx.current_planet is Rac2Planet.Title_Screen or ctx.current_planet is None:
+        return
+
+    # Ship Wupash if option is enabled.
+    if ctx.slot_data.get("skip_wupash_nebula", False):
+        ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.wupash_complete_flag, 1)
+
+    for addr, bitmask in ctx.game_interface.addresses.cutscene_flags:
+        value = ctx.game_interface.pcsx2_interface.read_int8(addr)
+        if value & bitmask == 0:
+            ctx.game_interface.pcsx2_interface.write_int8(addr, value | bitmask)
+
     # TODO: Make these warnings better
     unstuck_message: str = (
         "It appears that you don't have the required equipment to escape this area.\1\1"
