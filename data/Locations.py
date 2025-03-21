@@ -378,7 +378,6 @@ DAMOSEL_PYRAMID_PB = LocationData(
     lambda state, player:
         can_swingshot(state, player)
         and can_improved_jump(state, player)
-        and can_thermanate(state, player)
         and can_hypnotize(state, player)
 )
 
