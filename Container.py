@@ -158,6 +158,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     for address in addresses.IS_BUYABLE_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x68, NOP)
         patch.write_token(APTokenTypes.WRITE, address + 0x6C, bytes([0x03, 0x00, 0x50, 0x14]))
+    # Make it so the vendor unlocks weapon slots for weapons you own and have upgraded at least once
+    for address in addresses.UNLOCK_VENDOR_SLOT_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([0x00, 0x00, 0xC3, 0x24]))  # addiu v1,a2,0x0
 
     # Disable game failsafe sets lancer as the equipped weapon if there is no equipped weapon on level start.
     for address in addresses.SETUP_RATCHET_FUNCS:
