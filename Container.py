@@ -1,4 +1,5 @@
 import hashlib
+import math
 import shutil
 import mmap
 from typing import Any, Callable, TYPE_CHECKING, Optional
@@ -136,6 +137,21 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     generated_game_name = f"AP{hex((world.multiworld.seed + world.player) & 0xFFFFF)[2:].upper()}"
     for address in addresses.MEMCARD_GAME_NAMES:
         patch.write_token(APTokenTypes.WRITE, address, generated_game_name.encode())
+
+    # Change what data gets saved on the memory card to enable saving custom stuff
+    custom_data_length = 4 * math.ceil((ram.custom_data_table_end - ram.custom_data_table) / 4)
+    for address in addresses.MEMCARD_SAVED_DATA_TABLES:
+        # Merge two contiguous entries to free an entry for custom data
+        patch.write_token(APTokenTypes.WRITE, address + 0x94, bytes([0x70]))
+        # Make the freed entry point on our custom data with the proper length
+        patch.write_token(APTokenTypes.WRITE, address + 0xA0, ram.custom_data_table.to_bytes(4, 'little'))
+        patch.write_token(APTokenTypes.WRITE, address + 0xA4, custom_data_length.to_bytes(4, 'little'))
+    # Change the default save file contained in MISC.WAD to reflect above changes in size
+    address = addresses.DEFAULT_MEMCARD_SAVE_FILE
+    global_data_block_size = 0x1CF8 + custom_data_length
+    patch.write_token(APTokenTypes.WRITE, address, global_data_block_size.to_bytes(4, 'little'))
+    global_data_block_size -= 8
+    patch.write_token(APTokenTypes.WRITE, address + 0x08, global_data_block_size.to_bytes(4, 'little'))
 
     """---------------
     Multiple planets

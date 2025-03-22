@@ -354,11 +354,12 @@ class Addresses:
             # As one might expect, this is way too much and most of this data is empty, but still saved on the memcard.
             # We use the table for Feltzin since spaceship systems don't use that mechanic at all, but still have that
             # table.
-            self.feltzin_kill_count_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
-            self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
-            self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
-            self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
-            self.bolt_pack_count: int = self.feltzin_kill_count_table + 0x4
+            self.custom_data_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
+            self.bolt_pack_count: int = self.custom_data_table
+            self.tabora_wrench_cutscene_flag: int = self.custom_data_table + 0x1
+            self.aranos_wrench_cutscene_flag: int = self.custom_data_table + 0x2
+            self.custom_text_notification_trigger: int = self.custom_data_table + 0x3
+            self.custom_data_table_end: int = self.custom_data_table + 0x4
 
 
 class PlanetAddresses(NamedTuple):
