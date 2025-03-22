@@ -162,9 +162,10 @@ async def pcsx2_sync_task(ctx: Rac2Context):
 
 
 async def handle_check_goal_complete(ctx: Rac2Context):
-    if ctx.current_planet is Rac2Planet.Yeedil and ctx.game_interface.get_moby(197).state == 0x11:
-        await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
-    pass
+    if ctx.current_planet is Rac2Planet.Yeedil:
+        moby = ctx.game_interface.get_moby(197)
+        if moby is not None and ctx.game_interface.get_moby(197).state == 0x11:
+            await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
 
 async def handle_deathlink(ctx: Rac2Context):
