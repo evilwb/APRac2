@@ -108,6 +108,20 @@ class ExtendWeaponProgression(Toggle):
     display_name = "Extended Weapon Progression"
 
 
+class AllowFirstPersonModeGlitchLocations(Choice):
+    """Allows the logic to use checks reachable with 1st person mode glitch.
+    The setting relates to the difficulty of performing the glitch. For exmaple:
+    Easy: Getting the Platinum Bolt near the Tractor Beam exchange in Oozla.
+    Medium: Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator.
+    Hard: Getting to the Mutated Protopet without the Hypnomatic."""
+    display_name = "Allow 1st Person Mode Glitch"
+    option_no = 0
+    option_easy = 1
+    option_medium = 2
+    option_hard = 3
+    default = 0
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -126,3 +140,4 @@ class Rac2Options(PerGameCommonOptions):
     weapon_xp_multiplier: WeaponExperienceMultiplier
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
     extend_weapon_progression: ExtendWeaponProgression
+    allow_first_person_mode_glitch_locations: AllowFirstPersonModeGlitchLocations

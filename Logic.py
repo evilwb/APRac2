@@ -71,3 +71,15 @@ def has_qwark_statuette(state: CollectionState, player: int) -> bool:
 
 def has_hypnomatic_parts(state: CollectionState, player: int) -> bool:
     return state.has(Items.HYPNOMATIC_PART.name, player, 3)
+
+
+FIRST_PERSON_EASY = 1
+FIRST_PERSON_MEDIUM = 2
+FIRST_PERSON_HARD = 3
+
+
+def is_first_person_mode_glitch_location_allowed(state: CollectionState, player: int, difficulty: int) -> bool:
+    if state.multiworld.worlds[player].options.allow_first_person_mode:
+        return state.multiworld.worlds[player].options.allow_first_person_mode_glitch_locations >= difficulty
+
+    return false
