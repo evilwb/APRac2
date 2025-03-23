@@ -57,6 +57,7 @@ class Addresses:
 
             self.equipped_weapon: int = 0x1A7398
             self.quickselect: int = 0x1A73B8
+            self.easy_cutscene_skip: int = 0x1A7478
             self.current_planet: int = 0x1A79F0
             self.current_bolts: int = 0x1A79F8
             # self.raritanium_count: int = 0x1A79FC

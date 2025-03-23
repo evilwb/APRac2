@@ -46,6 +46,9 @@ def init(ctx: 'Rac2Context'):
     if ctx.current_planet is Rac2Planet.Title_Screen or ctx.current_planet is None:
         return
 
+    # Allow skipping cutscenes by only pressing START on loaded saves.
+    ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.easy_cutscene_skip, 0x1)
+
     # Ship Wupash if option is enabled.
     if ctx.slot_data.get("skip_wupash_nebula", False):
         ctx.game_interface.pcsx2_interface.write_int8(ctx.game_interface.addresses.wupash_complete_flag, 1)
