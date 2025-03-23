@@ -150,6 +150,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
     patch.write_token(APTokenTypes.WRITE, addresses.TITLE_SCREEN_MAIN_FUNC + 0x8F0, bytes([0xF5, 0x8B, 0x80, 0xA3]))
     patch.write_token(APTokenTypes.WRITE, addresses.QUIT_TITLE_MAIN_FUNC + 0x830, bytes([0xF5, 0x8B, 0x80, 0xA3]))
 
+    # Allow intro cinematic to be skipped by not setting this variable that blocks the ability to skip it.
+    patch.write_token(APTokenTypes.WRITE, addresses.TITLE_SCREEN_MAIN_FUNC + 0x524, MIPS.nop())
+
     # Disable game failsafe that unlocks any planet we land on if we don't have it unlocked already.
     for address in addresses.SETUP_PLANET_FUNCS:
         patch.write_token(APTokenTypes.WRITE, address + 0x144, bytes([0x07, 0x00, 0x00, 0x10]))
