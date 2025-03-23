@@ -1,4 +1,4 @@
-from worlds.rac2.data.Planets import *
+from worlds.rac2.data import Planets
 
 
 def get_planet_id_from_iso_address(address):
@@ -201,7 +201,15 @@ class AddressesSCUS97268:
         0xB6BF1144, 0xB9803FBC, 0xBAFC7AF0, 0xBF9C6DF8, 0xC3315BFC, 0xC62D316C, 0xC8F428B0, 0xCA5AE1C0, 0xCD97DC9C,
         0xD00C1DA8, 0xD240DDF0, 0xD6790700, 0xDAEE2B1C, 0xDCCAB6B8, 0xDE86B62C, 0xDFA214B8, 0xE0682840, 0xE151F054
     ]
+
     MEMCARD_GAME_NAMES: list[int] = [0x3010BD, 0x3010D5, 0x3010ED, 0x30110D, 0x30112D, 0x301141, 0x30115D]
+    # MEMCARD_SAVED_DATA_TABLES: list[int] = [
+    #     0x003AF8B8, 0x949B5C84,
+    #     0x9D292724, 0x9EB1F958, 0xA193E324, 0xA5DDA684, 0xA8EF558C, 0xACA9CBC8, 0xAE398904, 0xB070F218, 0xB2F6AE6C,
+    #     0xB6B82B1C, 0xB978CFF8, 0xBAF57CD4, 0xBF94F7F4, 0xC32A12EC, 0xC625C84C, 0xC8EC991C, 0xCA5416AC, 0xCD908DAC,
+    #     0xD003BF84, 0xD239E950, 0xD6712A84, 0xDAE6DCAC, 0xDCC32E6C, 0xDE7F0B4C, 0xDF9AD70C, 0xE060BE78, 0xE14A9C2C
+    # ]
+    # DEFAULT_MEMCARD_SAVE_FILE: int = 0x948F31F4
 
     ROLL_RANDOM_NUMBER_FUNCS: list[int] = [
         0x00400F60, 0x94A06324,
@@ -211,33 +219,33 @@ class AddressesSCUS97268:
     ]
 
     PLANET_WADS = {
-        ARANOS_TUTORIAL.number: [0x9D04C000, 0x9DF0C27F],   # LEVEL0.WAD
-        OOZLA.number: [0x9E909800, 0x9FDE9D53],             # LEVEL1.WAD
-        MAKTAR_NEBULA.number: [0xA1753800, 0xA2B143F7],     # LEVEL2.WAD
-        ENDAKO.number: [0xA5B5E000, 0xA6C3185F],            # LEVEL3.WAD
-        BARLOW.number: [0xA8CD7000, 0xAA4689DB],            # LEVEL4.WAD
-        FELTZIN_SYSTEM.number: [0xAC85B800, 0xAD8452CF],    # LEVEL5.WAD
-        NOTAK.number: [0xAE11F800, 0xAF3A2BDF],             # LEVEL6.WAD
-        SIBERIUS.number: [0xB04BB800, 0xB19FB52F],          # LEVEL7.WAD
-        TABORA.number: [0xB2D04000, 0xB40AA02F],            # LEVEL8.WAD
-        DOBBO.number: [0xB690A000, 0xB7AFD2DF],             # LEVEL9.WAD
-        HRUGIS_CLOUD.number: [0xB955E000, 0xBA3188BF],      # LEVEL10.WAD
-        JOBA.number: [0xBAD77000, 0xBC2CEA9F],              # LEVEL11.WAD
-        TODANO.number: [0xBF6F8000, 0xC07B628F],            # LEVEL12.WAD
-        BOLDAN.number: [0xC3067800, 0xC418DAAF],            # LEVEL13.WAD
-        ARANOS_PRISON.number: [0xC5FE2800, 0xC706FF9F],     # LEVEL14.WAD
-        GORN.number: [0xC8C75000, 0xC99E65BF],              # LEVEL15.WAD
-        SNIVELAK.number: [0xCA2D4800, 0xCB4563DF],          # LEVEL16.WAD
-        SMOLG.number: [0xCD6E7800, 0xCE6E081F],             # LEVEL17.WAD
-        DAMOSEL.number: [0xCFDEE800, 0xD0ECDABF],           # LEVEL18.WAD
-        GRELBIN.number: [0xD2144800, 0xD39392D7],           # LEVEL19.WAD
-        YEEDIL.number: [0xD64EA000, 0xD794D25B],            # LEVEL20.WAD
-        INSOMNIAC_MUSEUM.number: [0xDAC72800, 0xDB9300DF],  # LEVEL21.WAD
-        DOBBO_ORBIT.number: [0xDCA0C800, 0xDD708D2F],       # LEVEL22.WAD
-        DAMOSEL_ORBIT.number: [0xDE57C000, 0xDF1811CF],     # LEVEL23.WAD
-        SHIP_SHACK.number: [0xDF7F1800, 0xDFFE82D6],        # LEVEL24.WAD
-        WUPASH_NEBULA.number: [0xE03D5000, 0xE0C12E8C],     # LEVEL25.WAD
-        JAMMING_ARRAY.number: [0xE12CC800, 0xE1D47A8F],     # LEVEL26.WAD
+        Planets.ARANOS_TUTORIAL.number: [0x9D04C000, 0x9DF0C27F],   # LEVEL0.WAD
+        Planets.OOZLA.number: [0x9E909800, 0x9FDE9D53],             # LEVEL1.WAD
+        Planets.MAKTAR_NEBULA.number: [0xA1753800, 0xA2B143F7],     # LEVEL2.WAD
+        Planets.ENDAKO.number: [0xA5B5E000, 0xA6C3185F],            # LEVEL3.WAD
+        Planets.BARLOW.number: [0xA8CD7000, 0xAA4689DB],            # LEVEL4.WAD
+        Planets.FELTZIN_SYSTEM.number: [0xAC85B800, 0xAD8452CF],    # LEVEL5.WAD
+        Planets.NOTAK.number: [0xAE11F800, 0xAF3A2BDF],             # LEVEL6.WAD
+        Planets.SIBERIUS.number: [0xB04BB800, 0xB19FB52F],          # LEVEL7.WAD
+        Planets.TABORA.number: [0xB2D04000, 0xB40AA02F],            # LEVEL8.WAD
+        Planets.DOBBO.number: [0xB690A000, 0xB7AFD2DF],             # LEVEL9.WAD
+        Planets.HRUGIS_CLOUD.number: [0xB955E000, 0xBA3188BF],      # LEVEL10.WAD
+        Planets.JOBA.number: [0xBAD77000, 0xBC2CEA9F],              # LEVEL11.WAD
+        Planets.TODANO.number: [0xBF6F8000, 0xC07B628F],            # LEVEL12.WAD
+        Planets.BOLDAN.number: [0xC3067800, 0xC418DAAF],            # LEVEL13.WAD
+        Planets.ARANOS_PRISON.number: [0xC5FE2800, 0xC706FF9F],     # LEVEL14.WAD
+        Planets.GORN.number: [0xC8C75000, 0xC99E65BF],              # LEVEL15.WAD
+        Planets.SNIVELAK.number: [0xCA2D4800, 0xCB4563DF],          # LEVEL16.WAD
+        Planets.SMOLG.number: [0xCD6E7800, 0xCE6E081F],             # LEVEL17.WAD
+        Planets.DAMOSEL.number: [0xCFDEE800, 0xD0ECDABF],           # LEVEL18.WAD
+        Planets.GRELBIN.number: [0xD2144800, 0xD39392D7],           # LEVEL19.WAD
+        Planets.YEEDIL.number: [0xD64EA000, 0xD794D25B],            # LEVEL20.WAD
+        Planets.INSOMNIAC_MUSEUM.number: [0xDAC72800, 0xDB9300DF],  # LEVEL21.WAD
+        Planets.DOBBO_ORBIT.number: [0xDCA0C800, 0xDD708D2F],       # LEVEL22.WAD
+        Planets.DAMOSEL_ORBIT.number: [0xDE57C000, 0xDF1811CF],     # LEVEL23.WAD
+        Planets.SHIP_SHACK.number: [0xDF7F1800, 0xDFFE82D6],        # LEVEL24.WAD
+        Planets.WUPASH_NEBULA.number: [0xE03D5000, 0xE0C12E8C],     # LEVEL25.WAD
+        Planets.JAMMING_ARRAY.number: [0xE12CC800, 0xE1D47A8F],     # LEVEL26.WAD
     }
 
     # Oozla
