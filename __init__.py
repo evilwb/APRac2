@@ -148,3 +148,7 @@ class Rac2World(World):
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         return self.get_options_as_dict()
+
+    def generate_early(self):
+        if self.options.allow_first_person_mode_glitch_locations > 0:
+            assert self.options.allow_first_person_mode, "First Person Mode glitches enabled but not First Person Mode itself."

@@ -8,7 +8,8 @@ if TYPE_CHECKING:
 class LocationData(NamedTuple):
     location_id: Optional[int]
     name: str
-    access_rule: Optional[Callable[[CollectionState, int], bool]] = None
+    vanilla_requirements: Optional[list[Callable[[CollectionState, int], bool]]] = None
+    alternative_routes: Optional[list[AlternativeRoute]] = None
     checked_flag_address: Optional[Callable[["Addresses"], int]] = None
     enable_if: Optional[Callable[[Dict[str, Any]], bool]] = None
     is_vendor: bool = False
@@ -18,79 +19,91 @@ class LocationData(NamedTuple):
 OOZLA_OUTSIDE_MEGACORP_STORE = LocationData(10, "Oozla: Outside Megacorp Store - Dynamo")
 OOZLA_END_STORE_CUTSCENE = LocationData(
     11, "Oozla: End of Store Cutscene", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or can_dynamo(state, player) 
+    vanilla_requirements=[can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo]
+        )
+    ]
 )
 OOZLA_MEGACORP_SCIENTIST = LocationData(12, "Oozla: Megacorp Scientist - Tractor Beam")
 OOZLA_TRACTOR_PUZZLE_PB = LocationData(
     13, "Oozla: Tractor Puzzle - Platinum Bolt", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or can_tractor(state, player) 
+    vanilla_requirements=[can_tractor],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_tractor]
+        )
+    ]
 )
 OOZLA_SWAMP_RUINS_PB = LocationData(
-    14, "Oozla: Swamp Ruins - Platinum Bolt", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or can_dynamo(state, player) 
+    14, "Oozla: Swamp Ruins - Platinum Bolt",
+    vanilla_requirements=[can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo]
+        )
+    ]
 )
 OOZLA_SWAMP_MONSTER_II = LocationData(
     15, "Oozla: Swamp Monster II - Box Breaker",
-    lambda state, player: 
-        can_dynamo(state, player)
-        and can_gravity(state, player)
+    vanilla_requirements=[can_dynamo, can_gravity]
 )
 
 """ Maktar """
 MAKTAR_ARENA_CHALLENGE = LocationData(20, "Maktar: Arena Challenge - Electrolyzer")
 MAKTAR_PHOTO_BOOTH = LocationData(
     21, "Maktar: Photo Booth", 
-    lambda state, player:
-        (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            and can_improved_jump(state, player))
-        or can_electrolyze(state, player)
+    vanilla_requirements=[can_electrolyze],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_electrolyze],
+            alternative_checks=[can_heli]
+        )
+    ]
 )
-MAKTAR_DEACTIVATE_JAMMING_ARRAY = LocationData(22, "Maktar: Deactivate Jamming Array", can_tractor)
-MAKTAR_JAMMING_ARRAY_PB = LocationData(23, "Maktar: Jamming Array - Platinum Bolt", can_tractor)
+MAKTAR_DEACTIVATE_JAMMING_ARRAY = LocationData(22, "Maktar: Deactivate Jamming Array", [can_tractor])
+MAKTAR_JAMMING_ARRAY_PB = LocationData(23, "Maktar: Jamming Array - Platinum Bolt", [can_tractor])
 MAKTAR_CRANE_PB = LocationData(24, "Maktar: Crane - Platinum Bolt")
 
 """ Endako """
 ENDAKO_CLANK_APARTMENT_SS = LocationData(30, "Endako: Clank's Apartment - Swingshot")
 ENDAKO_CLANK_APARTMENT_GB = LocationData(31, "Endako: Clank's Apartment - Grindboots")
-ENDAKO_RESCUE_CLANK_HELI = LocationData(32, "Endako: Rescue Clank Heli-Pack", can_electrolyze)
-ENDAKO_RESCUE_CLANK_THRUSTER = LocationData(33, "Endako: Rescue Clank Thruster-Pack", can_electrolyze)
+ENDAKO_RESCUE_CLANK_HELI = LocationData(32, "Endako: Rescue Clank Heli-Pack", [can_electrolyze])
+ENDAKO_RESCUE_CLANK_THRUSTER = LocationData(33, "Endako: Rescue Clank Thruster-Pack", [can_electrolyze])
 ENDAKO_LEDGE_PB = LocationData(34, "Endako: Ledge - Platinum Bolt")
-ENDAKO_CRANE_PB = LocationData(35, "Endako: Crane - Platinum Bolt", can_electrolyze)
-ENDAKO_CRANE_NT = LocationData(
-    36, "Endako: Crane - Nanotech Boost",
-    lambda state, player: 
-        can_electrolyze(state, player) 
-        and can_infiltrate(state, player)
-)
+ENDAKO_CRANE_PB = LocationData(35, "Endako: Crane - Platinum Bolt", [can_electrolyze])
+ENDAKO_CRANE_NT = LocationData(36, "Endako: Crane - Nanotech Boost", [can_electrolyze, can_infiltrate])
 
 """ Barlow """
 BARLOW_INVENTOR = LocationData(
     40, "Barlow: Inventor - Thermanator", 
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or can_swingshot(state, player)
+    vanilla_requirements=[can_swingshot],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_swingshot]
+        )
+    ]
 )
 BARLOW_HOVERBIKE_RACE_TRANSMISSION = LocationData(
     41, "Barlow: Hoverbike Race Transmission",
-    lambda state, player: 
-        can_electrolyze(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_improved_jump(state, player))
+    vanilla_requirements=[can_electrolyze, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump]
+        )
+    ]
 )
 BARLOW_HOVERBIKE_RACE_PB = LocationData(
     42, "Barlow: Hoverbike Race - Platinum Bolt",
-    lambda state, player: 
-        can_electrolyze(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_improved_jump(state, player))
+    vanilla_requirements=[can_electrolyze, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump]
+        )
+    ]
 )
-BARLOW_HOUND_CAVE_PB = LocationData(43, "Barlow: Hound Cave - Platinum Bolt", can_swingshot)
+BARLOW_HOUND_CAVE_PB = LocationData(43, "Barlow: Hound Cave - Platinum Bolt", [can_swingshot])
 
 """ Feltzin System """
 FELTZIN_DEFEAT_THUG_SHIPS = LocationData(50, "Feltzin: Defeat Thug Ships")
@@ -115,86 +128,94 @@ FELTZIN_RACE = LocationData(
 """ Notak """
 NOTAK_TOP_PIER_TELESCREEN = LocationData(
     60, "Notak: Top of Pier Telescreen",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_improved_jump(state, player) 
-            and can_thermanate(state, player))
+    vanilla_requirements=[can_improved_jump, can_thermanate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump, can_thermanate]
+        )
+    ]
 )
 NOTAK_WORKER_BOTS = LocationData(
     61, "Notak: Worker Bots",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_heli(state, player) 
-            and can_thermanate(state, player))
+    vanilla_requirements=[can_heli, can_thermanate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_heli, can_thermanate]
+        )
+    ]
 )
 NOTAK_BEHIND_BUILDING_PB = LocationData(62, "Notak: Behind Building - Platinum Bolt")
 NOTAK_PROMENADE_SIGN_PB = LocationData(63, "Notak: Promenade Sign - Platinum Bolt")
 NOTAK_TIMED_DYNAMO_PB = LocationData(
     64, "Notak: Timed Dynamo - Platinum Bolt",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_improved_jump(state, player)
-            and can_thermanate(state, player)
-            and can_dynamo(state, player))
+    vanilla_requirements=[can_improved_jump, can_thermanate, can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump, can_thermanate, can_dynamo]
+        )
+    ]
 )
 NOTAK_PROMENADE_END_NT = LocationData(65, "Notak: Promenade End - Nanotech Boost")
 
 """ Siberius """
-SIBERIUS_DEFEAT_THIEF = LocationData(70, "Siberius: Defeat Thief", can_swingshot)
+SIBERIUS_DEFEAT_THIEF = LocationData(70, "Siberius: Defeat Thief", [can_swingshot])
 SIBERIUS_FLAMEBOT_LEDGE_PB = LocationData(
     71, "Siberius: Flamebot Ledge - Platinum Bolt", 
-    lambda state, player: 
-        can_tractor(state, player)
-        or is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
+    vanilla_requirements=[can_tractor],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_tractor]
+        )
+    ]
 )
 SIBERIUS_FENCED_AREA_PB = LocationData(
     72, "Siberius: Fenced Area - Platinum Bolt", 
-    lambda state, player:
-        can_heli(state, player)
-        or is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
+    vanilla_requirements=[can_heli],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_heli]
+        )
+    ]
 )
 
 """ Tabora """
-TABORA_MEET_ANGELA = LocationData(
-    80, "Tabora: Meet Angela",
-    lambda state, player:
-        can_heli(state, player)
-        and can_swingshot(state, player)
-)
+TABORA_MEET_ANGELA = LocationData(80, "Tabora: Meet Angela", [can_heli, can_swingshot])
 TABORA_UNDERGROUND_MINES_END = LocationData(
     81, "Tabora: Underground Mines - Glider", 
-    lambda state, player:
-        can_heli(state, player)
-        and can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_thermanate(state, player))
+    vanilla_requirements=[can_heli, can_swingshot, can_thermanate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_thermanate]
+        )
+    ]
 )
 TABORA_UNDERGROUND_MINES_PB = LocationData(
     82, "Tabora: Underground Mines - Platinum Bolt", 
-    lambda state, player:
-        can_heli(state, player)
-        and can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_thermanate(state, player))
+    vanilla_requirements=[can_heli, can_swingshot, can_thermanate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_thermanate]
+        )
+    ]
 )
 TABORA_CANYON_GLIDE_PB = LocationData(
     83, "Tabora: Canyon Glide - Platinum Bolt",
-    lambda state, player: 
-        can_heli(state, player)
-        and can_swingshot(state, player)
-        and can_glide(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_thermanate(state, player))
+    vanilla_requirements=[can_heli, can_swingshot, can_thermanate, can_glide],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_thermanate]
+        )
+    ]
 )
-TABORA_NORTHEAST_DESERT_PB = LocationData(84, "Tabora: Northeast Desert - Platinum Bolt")
+TABORA_NORTHEAST_DESERT_PB = LocationData(84, "Tabora: Northeast Desert - Platinum Bolt", [can_heli, can_swingshot])
 TABORA_CANYON_GLIDE_PILLAR_NT = LocationData(
     85, "Tabora: Canyon Glide Pillar - Nanotech Boost",
-    lambda state, player: 
-        can_heli(state, player)
-        and can_swingshot(state, player)
-        and can_glide(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_thermanate(state, player))
+    vanilla_requirements=[can_heli, can_swingshot, can_thermanate, can_glide],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_thermanate]
+        )
+    ]
 )
 TABORA_OMNIWRENCH_10000 = LocationData(
     86, "Tabora: OmniWrench 10000",
@@ -204,44 +225,46 @@ TABORA_OMNIWRENCH_10000 = LocationData(
 """ Dobbo """
 DOBBO_DEFEAT_THUG_LEADER = LocationData(
     90, "Dobbo: Defeat Thug Leader",
-    lambda state, player:
-        can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or (can_improved_jump(state, player)
-                and can_dynamo(state, player)))
+    vanilla_requirements=[can_swingshot, can_improved_jump, can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump, can_dynamo]
+        )
+    ]
 )
 DOBBO_FACILITY_TERMINAL = LocationData(
     91, "Dobbo: Facility Terminal",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_dynamo(state, player)
-            and can_swingshot(state, player)
-            and can_glide(state, player)
-            and can_electrolyze(state, player))
+    vanilla_requirements=[can_swingshot, can_glide, can_dynamo, can_electrolyze],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_swingshot, can_glide, can_dynamo, can_electrolyze]
+        )
+    ]
 )
 DOBBO_SPIDERBOT_ROOM_PB = LocationData(
     92, "Dobbo: Spiderbot Room - Platinum Bolt",
-    lambda state, player:
-        can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY))
-            or (can_dynamo(state, player)
-                and can_spiderbot(state, player))
+    vanilla_requirements=[can_swingshot, can_dynamo, can_spiderbot],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_dynamo, can_spiderbot]
+        )
+    ]
 )
 DOBBO_FACILITY_GLIDE_PB = LocationData(
     93, "Dobbo: Facility Glide End - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_dynamo(state, player) 
-            and can_swingshot(state, player) 
-            and can_glide(state, player))
+    vanilla_requirements=[can_swingshot, can_dynamo, can_glide],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_swingshot, can_dynamo, can_glide])
+    ]
 )
 DOBBO_FACILITY_GLIDE_NT = LocationData(
     94, "Dobbo: Facility Glide Beginning - Nanotech Boost",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_dynamo(state, player) 
-            and can_swingshot(state, player) 
-            and can_glide(state, player))
+    vanilla_requirements=[can_swingshot, can_dynamo, can_glide],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_swingshot, can_dynamo, can_glide])
+    ]
 )
 
 """ Hrugis """
@@ -264,180 +287,235 @@ HRUGIS_RACE = LocationData(
 )
 
 """ Joba """
-JOBA_FIRST_HOVERBIKE_RACE = LocationData(110, "Joba: First Hoverbike Race - Charge Boots", can_swingshot)
+JOBA_FIRST_HOVERBIKE_RACE = LocationData(110, "Joba: First Hoverbike Race - Charge Boots", [can_swingshot])
 JOBA_SHADY_SALESMAN = LocationData(
     111, "Joba: Shady Salesman - Levitator",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_dynamo(state, player) 
-            and can_improved_jump(state, player))
+    vanilla_requirements=[can_dynamo, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
 JOBA_ARENA_BATTLE = LocationData(
     112, "Joba: Arena Battle - Gravity Boots",
-    lambda state, player:
-        can_levitate(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            or (can_dynamo(state, player)
-                and can_improved_jump(state, player)))
+    vanilla_requirements=[can_dynamo, can_improved_jump, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
 JOBA_ARENA_CAGE_MATCH = LocationData(
     113, "Joba: Arena Cage Match - Infiltrator",
-    lambda state, player:
-        can_levitate(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            or (can_dynamo(state, player)
-                and can_improved_jump(state, player)))
+    vanilla_requirements=[can_dynamo, can_improved_jump, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
 JOBA_HIDDEN_CLIFF_PB = LocationData(
     114, "Joba: Hidden Cliff - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_dynamo(state, player) 
-            and can_swingshot(state, player))
+    vanilla_requirements=[can_dynamo, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
 JOBA_LEVITATOR_TOWER_PB = LocationData(
     115, "Joba: Levitator Tower - Platinum Bolt",
-    lambda state, player:
-        can_levitate(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            or (can_dynamo(state, player)
-                and can_improved_jump(state, player)))
+    vanilla_requirements=[can_dynamo, can_improved_jump, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
-JOBA_HOVERBIKE_RACE_SHORTCUT_NT = LocationData(116, "Joba: Hoverbike Race Shortcut - Nanotech Boost", can_swingshot)
+JOBA_HOVERBIKE_RACE_SHORTCUT_NT = LocationData(116, "Joba: Hoverbike Race Shortcut - Nanotech Boost", [can_swingshot])
 JOBA_TIMED_DYNAMO_NT = LocationData(
     117, "Joba: Timed Dynamo Course - Nanotech Boost", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or can_dynamo
+    vanilla_requirements=[can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo]
+        )
+    ]
 )
 
 """ Todano """
 TODANO_SEARCH_ROCKET_SILO = LocationData(
     120, "Todano: Search Rocket Silo",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_improved_jump(state, player)
-            and can_electrolyze(state, player)
-            and can_infiltrate(state, player))
+    vanilla_requirements=[can_electrolyze, can_improved_jump, can_infiltrate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze, can_improved_jump, can_infiltrate]
+        )
+    ]
 )
 TODANO_STUART_ZURGO_TRADE = LocationData(
     121, "Todano: Stuart Zurgo Trade - Armor Magnetizer",
-    lambda state, player:
-        has_qwark_statuette(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-            or (can_tractor(state, player)
-                and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                    or can_electrolyze(state, player))))
+    vanilla_requirements=[can_tractor, can_electrolyze, has_qwark_statuette],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_tractor, can_electrolyze]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze]
+        )
+    ]
 )
 TODANO_FACILITY_INTERIOR = LocationData(
     122, "Todano: Facility Interior - Sheepinator",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-        or (can_tractor(state, player)
-            and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                or can_electrolyze(state, player)))
+    vanilla_requirements=[can_tractor, can_electrolyze],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_tractor, can_electrolyze]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze]
+        )
+    ]
 )
 TODANO_NEAR_STUART_ZURGO_PB = LocationData(
     123, "Todano: Near Stuart Zurgo - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-        or (can_tractor(state, player)
-            and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                or can_electrolyze(state, player)))
+    vanilla_requirements=[can_tractor, can_electrolyze],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_tractor, can_electrolyze]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze]
+        )
+    ]
 )
 TODANO_END_TOUR_PB = LocationData(124, "Todano: End of Tour - Platinum Bolt")
 TODANO_SPIDERBOT_CONVEYOR_PB = LocationData(
     125, "Todano: Spiderbot Conveyor - Platinum Bolt",
-    lambda state, player:
-        can_improved_jump(state, player)
-        and can_spiderbot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-            or (can_tractor(state, player)
-                and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                    or can_electrolyze(state, player))))
+    vanilla_requirements=[can_electrolyze, can_tractor, can_improved_jump, can_spiderbot],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_electrolyze, can_tractor]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze]
+        )
+    ]
 )
 TODANO_ROCKET_SILO_NT = LocationData(
     126, "Todano: Rocket Silo - Nanotech Boost",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_electrolyze(state, player) 
-            and can_infiltrate(state, player))
+    vanilla_requirements=[can_electrolyze, can_infiltrate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_electrolyze, can_infiltrate]
+        )
+    ]
 )
 
 """ Boldan """
 BOLDAN_FIND_FIZZWIDGET = LocationData(
     130, "Boldan: Find Fizzwidget",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-        or (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            and can_improved_jump(state, player))
-        or (can_gravity(state, player)
-            and can_swingshot(state, player))
-            and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                or can_levitate(state, player))
+    vanilla_requirements=[can_levitate, can_swingshot, can_gravity],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_levitate, can_swingshot, can_gravity]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_levitate, can_swingshot],
+            alternative_checks=[can_improved_jump]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_levitate]
+        )
+    ]
 )
 BOLDAN_SPIDERBOT_ALLEY_PB = LocationData(
     131, "Boldan: Spiderbot Alley - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_levitate(state, player) 
-            and can_spiderbot(state, player))
+    vanilla_requirements=[can_levitate, can_spiderbot],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_levitate, can_spiderbot]
+        )
+    ]
 )
 BOLDAN_FLOATING_PLATFORM_PB = LocationData(
     132, "Boldan: Floating Platform - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_gravity(state, player) 
-            and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                or can_levitate(state, player)))
+    vanilla_requirements=[can_levitate, can_gravity],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_levitate, can_gravity]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_levitate]
+        )
+    ]
 )
 BOLDAN_UPPER_DOME_PB = LocationData(
     133, "Boldan: Upper Dome - Platinum Bolt",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-        or (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            and can_improved_jump(state, player))
-        or (can_gravity(state, player)
-            and can_swingshot(state, player))
-            and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                or can_levitate(state, player))
+    vanilla_requirements=[can_levitate, can_swingshot, can_gravity],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_levitate, can_swingshot, can_gravity]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_levitate, can_swingshot],
+            alternative_checks=[can_improved_jump]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_levitate]
+        )
+    ]
 )
 BOLDAN_FOUNTAIN_NT = LocationData(
     134, "Boldan: Fountain - Nanotech Boost", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or can_levitate(state, player)
+    vanilla_requirements=[can_levitate, can_spiderbot],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_levitate, can_spiderbot]
+        )
+    ]
 )
 
 """ Aranos Prison """
 ARANOS_CONTROL_ROOM = LocationData(
     140, "Aranos: Control Room",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-        or (can_infiltrate(state, player)
-            and can_levitate(state, player)
-            and (can_gravity(state, player)
-                or is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)))
+    vanilla_requirements=[can_gravity, can_infiltrate, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_gravity, can_infiltrate, can_levitate]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_gravity]
+        )
+    ]
 )
 ARANOS_PLUMBER = LocationData(
     141, "Aranos: Plumber - Qwark Statuette",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or (can_gravity(state, player)
-            and (can_levitate(state, player)))
+    vanilla_requirements=[can_gravity, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_gravity, can_levitate]
+        )
+    ]
 )
 ARANOS_UNDER_SHIP_PB = LocationData(
     142, "Aranos: Under Ship - Platinum Bolt", 
-    lambda state, player:
-        (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-            or can_gravity(state, player))
-        and can_heli(state, player)
+    vanilla_requirements=[can_gravity, can_heli],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_gravity]
+        )
+    ]
 )
 ARANOS_OMNIWRENCH_12000 = LocationData(
     143, "Aranos: OmniWrench 12000",
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_MEDIUM)
-        or can_gravity(state, player),
+    vanilla_requirements=[can_gravity],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_gravity]
+        )
+    ],
     checked_flag_address=lambda ram: ram.aranos_wrench_cutscene_flag
 )
 
@@ -463,161 +541,151 @@ GORN_RACE = LocationData(
 """ Snivelak """
 SNIVELAK_RESCUE_ANGELA = LocationData(
     160, "Snivelak: Rescue Angela",
-    lambda state, player:
-        can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or (can_grind(state, player)
-                and can_gravity(state, player)
-                and can_dynamo(state, player)))
+    vanilla_requirements=[can_swingshot, can_grind, can_gravity, can_dynamo],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_grind, can_gravity, can_dynamo]
+        )
+    ]
 )
 SNIVELAK_DYNAMO_PLATFORMS_PB = LocationData(
     161, "Snivelak: Dynamo Platforms - Platinum Bolt",
-    lambda state, player:
-        can_swingshot(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or (can_grind(state, player)
-            and can_gravity(state, player)
-            and can_dynamo(state, player)
-            and can_heli(state, player)))
+    vanilla_requirements=[can_swingshot, can_grind, can_gravity, can_dynamo, can_heli],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_grind, can_gravity, can_dynamo, can_heli]
+        )
+    ]
 )
 SNIVELAK_SWINGSHOT_TOWER_NT = LocationData(
     162, "Snivelak: Swingshot Tower - Nanotech Boost",
-    lambda state, player: 
-        can_swingshot(state, player) 
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or can_heli(state, player))
+    vanilla_requirements=[can_swingshot, can_heli],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_heli]
+        )
+    ]
 )
 
 """ Smolg """
 SMOLG_BALLOON_TRANSMISSION = LocationData(
     170, "Smolg: Balloon Transmission",
-    lambda state, player:
-        can_electrolyze(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            and can_improved_jump(state, player)
-            and can_dynamo(state, player))
+    vanilla_requirements=[can_improved_jump, can_dynamo, can_electrolyze],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump, can_dynamo]
+        )
+    ]
 )
 SMOLG_DISTRIBUTION_FACILITY_END = LocationData(
     171, "Smolg: Distribution Facility End - Hypnomatic Part",
-    access_rule=lambda state, player:
-        can_electrolyze(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-            or (can_improved_jump(state, player)
-                and can_dynamo(state, player)
-                and can_grind(state, player)
-                and can_infiltrate(state, player))),
+    vanilla_requirements=[can_improved_jump, can_dynamo, can_electrolyze, can_grind, can_infiltrate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump, can_dynamo, can_grind, can_infiltrate]
+        )
+    ],
     checked_flag_address=lambda ram: ram.hypnomatic_part1
 )
 SMOLG_MUTANT_CRAB = LocationData(
     172, "Smolg: Mutant Crab",
-    lambda state, player: 
-        can_levitate(state, player)
-        and (can_swingshot(state, player)
-            or (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                and can_electrolyze(state, player)))
+    vanilla_requirements=[can_swingshot, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_swingshot],
+            alternative_checks=[can_electrolyze]
+        )
+    ]
 )
 SMOLG_FLOATING_PLATFORM_PB = LocationData(
     173, "Smolg: Floating Platform - Platinum Bolt",
-    lambda state, player: 
-        can_levitate(state, player)
-        and (can_swingshot(state, player)
-            or (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-                and can_electrolyze(state, player)))
+    vanilla_requirements=[can_swingshot, can_levitate],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_swingshot],
+            alternative_checks=[can_electrolyze]
+        )
+    ]
 )
 SMOLG_WAREHOUSE_PB = LocationData(
     174, "Smolg: Warehouse - Platinum Bolt",
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or (can_improved_jump(state, player) 
-            and can_dynamo(state, player))
+    vanilla_requirements=[can_dynamo, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_dynamo, can_improved_jump]
+        )
+    ]
 )
 
 """ Damosel """
-DAMOSEL_HYPNOTIST = LocationData(
-    180, "Damosel: Hypnotist",
-    lambda state, player:
-        can_swingshot(state, player)
-        and can_improved_jump(state, player)
-        and can_thermanate(state, player)
-        and has_hypnomatic_parts(state, player)
-)
+DAMOSEL_HYPNOTIST = LocationData(180, "Damosel: Hypnotist", [can_swingshot, can_improved_jump, can_thermanate, has_hypnomatic_parts])
 DAMOSEL_TRAIN_RAILS = LocationData(
     181, "Damosel: Train Rails - Hypnomatic Part",
-    access_rule=can_grind,
+    vanilla_requirements=[can_grind],
     checked_flag_address=lambda ram: ram.hypnomatic_part2
 )
 DAMOSEL_DEFEAT_MOTHERSHIP = LocationData(182, "Damosel: Defeat Mothership - Mapper")
-DAMOSEL_FROZEN_FOUNTAIN_PB = LocationData(
-    183, "Damosel: Frozen Fountain - Platinum Bolt",
-    lambda state, player:
-        can_swingshot(state, player)
-        and can_improved_jump(state, player)
-        and can_thermanate(state, player)
-        and can_grind(state, player)
-)
-DAMOSEL_PYRAMID_PB = LocationData(
-    184, "Damosel: Pyramid - Platinum Bolt",
-    lambda state, player:
-        can_swingshot(state, player)
-        and can_improved_jump(state, player)
-        and can_hypnotize(state, player)
-)
+DAMOSEL_FROZEN_FOUNTAIN_PB = LocationData(183, "Damosel: Frozen Fountain - Platinum Bolt", [can_swingshot, can_improved_jump, can_thermanate, can_grind])
+DAMOSEL_PYRAMID_PB = LocationData(184, "Damosel: Pyramid - Platinum Bolt", [can_swingshot, can_improved_jump, can_hypnotize])
 
 """ Grelbin """
 GRELBIN_FIND_ANGELA = LocationData(
     190, "Grelbin: Find Angela", 
-    lambda state, player: 
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or can_hypnotize
+    vanilla_requirements=[can_hypnotize],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_hypnotize]
+        )
+    ]
 )
 GRELBIN_MYSTIC_MORE_MOONSTONES = LocationData(
     191, "Grelbin: Mystic More Moonstones - Hypnomatic Part",
-    access_rule=lambda state, player: can_glide(state, player) and can_infiltrate(state, player),
+    vanilla_requirements=[can_glide, can_infiltrate],
     checked_flag_address=lambda ram: ram.hypnomatic_part3
 )
-GRELBIN_ICE_PLAINS_PB = LocationData(
-    192, "Grelbin: Ice Plains - Platinum Bolt",
-    lambda state, player: can_glide(state, player) and can_infiltrate(state, player)
-)
-GRELBIN_UNDERWATER_TUNNEL_PB = LocationData(193, "Grelbin: Underwater Tunnel - Platinum Bolt", can_hypnotize)
-GRELBIN_YETI_CAVE_PB = LocationData(
-    194, "Grelbin: Yeti Cave - Platinum Bolt",
-    lambda state, player:
-        can_glide(state, player)
-        and can_infiltrate(state, player)
-        and can_hypnotize(state, player)
-)
+GRELBIN_ICE_PLAINS_PB = LocationData(192, "Grelbin: Ice Plains - Platinum Bolt", [can_glide, can_infiltrate])
+GRELBIN_UNDERWATER_TUNNEL_PB = LocationData(193, "Grelbin: Underwater Tunnel - Platinum Bolt", [can_hypnotize])
+GRELBIN_YETI_CAVE_PB = LocationData(194, "Grelbin: Yeti Cave - Platinum Bolt", [can_glide, can_infiltrate, can_hypnotize])
 
 """ Yeedil """
 YEEDIL_DEFEAT_MUTATED_PROTOPET = LocationData(
     None, "Yeedil: Defeat Mutated Protopet",
-    lambda state, player:
-        can_infiltrate(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-            or (can_swingshot(state, player)
-                and can_hypnotize(state, player)
-                and can_dynamo(state, player)
-                and can_electrolyze(state, player)
-                and can_improved_jump(state, player)))
+    vanilla_requirements=[can_hypnotize, can_swingshot, can_dynamo, can_infiltrate, can_electrolyze, can_improved_jump],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_hypnotize, can_swingshot, can_dynamo, can_electrolyze, can_improved_jump]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump]
+        )
+    ]
 )
 YEEDIL_BRIDGE_GRINDRAIL_PB = LocationData(
     200, "Yeedil: Bridge Grindrail - Platinum Bolt", 
-    lambda state, player:
-        is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_EASY)
-        or can_grind(state, player)
+    vanilla_requirements=[can_grind],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_grind]
+        )
+    ]
 )
 YEEDIL_TRACTOR_PILLAR_PB = LocationData(
     201, "Yeedil: Tractor Pillar - Platinum Bolt",
-    lambda state, player:
-        can_infiltrate(state, player)
-        and (is_first_person_mode_glitch_location_allowed(state, player, FIRST_PERSON_HARD)
-            or (can_swingshot(state, player)
-                and can_hypnotize(state, player)
-                and can_dynamo(state, player)
-                and can_electrolyze(state, player)
-                and can_improved_jump(state, player)
-                and can_tractor(state, player)
-                and can_grind(state, player)))
+    vanilla_requirements=[can_hypnotize, can_swingshot, can_dynamo, can_infiltrate, can_electrolyze, can_improved_jump, can_tractor, can_grind],
+    alternative_routes=[
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_HARD,
+            [can_hypnotize, can_swingshot, can_dynamo, can_electrolyze, can_improved_jump, can_tractor, can_grind]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_MEDIUM,
+            [can_dynamo, can_improved_jump, can_tractor, can_grind]
+        ),
+        AlternativeRoute(lambda options: options.allow_first_person_mode_glitch_locations >= FIRST_PERSON_EASY,
+            [can_improved_jump]
+        )
+    ]
 )
 
 """ Megacorp Vendor """

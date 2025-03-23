@@ -1,5 +1,13 @@
 from BaseClasses import CollectionState
+from typing import Callable, NamedTuple, Optional
 from .data import Items
+from .Rac2Options import Rac2Options
+
+
+class AlternativeRoute(NamedTuple):
+    condition: Callable[[Rac2Options], bool]
+    skipped_checks: list[Callable[[CollectionState, int], bool]]
+    alternative_checks: Optional[list[Callable[[CollectionState, int], bool]]] = None
 
 
 def can_dynamo(state: CollectionState, player: int) -> bool:
@@ -76,10 +84,3 @@ def has_hypnomatic_parts(state: CollectionState, player: int) -> bool:
 FIRST_PERSON_EASY = 1
 FIRST_PERSON_MEDIUM = 2
 FIRST_PERSON_HARD = 3
-
-
-def is_first_person_mode_glitch_location_allowed(state: CollectionState, player: int, difficulty: int) -> bool:
-    if state.multiworld.worlds[player].options.allow_first_person_mode:
-        return state.multiworld.worlds[player].options.allow_first_person_mode_glitch_locations >= difficulty
-
-    return false

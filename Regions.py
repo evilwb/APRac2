@@ -55,8 +55,19 @@ def create_regions(world: 'Rac2World'):
 
                 def generate_access_rule(loc: LocationData) -> typing.Callable[[CollectionState], bool]:
                     def access_rule(state: CollectionState):
-                        if loc.access_rule:
-                            return loc.access_rule(state, world.player)
+                        if loc.vanilla_requirements:
+                            requirements = loc.vanilla_requirements
+                            if loc.alternative_routes:
+                                for route in loc.alternative_routes:
+                                    if route.condition(state.multiworld.worlds[world.player].options):
+                                        requirements = [req for req in requirements if req not in route.skipped_checks]
+                                        if route.alternative_checks:
+                                            requirements.extend(route.alternative_checks)
+                            for requirement in requirements:
+                                if not requirement(state, world.player):
+                                    return False
+                            return True
+
                         return True
                     return access_rule
 
