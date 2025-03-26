@@ -32,26 +32,42 @@ class EquipmentData(ItemData):
     oclass_id: Optional[int] = 0x0047  # Wrench model
     icon_id: Optional[int] = 0xEA75    # Question Mark icon `?`
 
+# Unreferenced equipment offsets:
+#   - 00: ???
+#   - 01: ???
+#   - 04: "Hydro-Pack"
+#   - 06: "Armor"
+#   - 0A: "Wrench"
+#   - 0B: ???
+#   - 0F: Unused Weapon 1
+#   - 21: ???
+#   - 22: Unused Weapon 2
+#   - 23: Unused Weapon 3
+#   - 28: Unused Weapon 4
+#   - 2F: "Megacorp Helmet
+#   - 30: "Biker Helmet"
+#   - 34: ???
+
 
 # Gadgets/Items
-HELI_PACK = EquipmentData(1, "Heli-Pack", 2, oclass_id=0x025F, icon_id=0xEA8D)
-THRUSTER_PACK = EquipmentData(2, "Thruster-Pack", 3, oclass_id=0x0260, icon_id=0xEA7E)
-MAPPER = EquipmentData(3, "Mapper", 5, oclass_id=0x1235, icon_id=0xEA9F)
-ARMOR_MAGNETIZER = EquipmentData(4, "Armor Magnetizer", 7, oclass_id=0x112F, icon_id=0xEA9A)
-LEVITATOR = EquipmentData(5, "Levitator", 8, oclass_id=0x096C, icon_id=0xEA90)
-SWINGSHOT = EquipmentData(6, "Swingshot", 13, oclass_id=0x00D0, icon_id=0xEA8B)
-GRAVITY_BOOTS = EquipmentData(7, "Gravity Boots", 19, oclass_id=0x00AD, icon_id=0xEA88)
-GRIND_BOOTS = EquipmentData(8, "Grindboots", 20, oclass_id=0x00C3, icon_id=0xEA8C)
-GLIDER = EquipmentData(9, "Glider", 21, icon_id=0xEA91)
-DYNAMO = EquipmentData(10, "Dynamo", 36, oclass_id=0x0825, icon_id=0xEA7F)
-ELECTROLYZER = EquipmentData(11, "Electrolyzer", 38, oclass_id=0x0870, icon_id=0xEA81)
-THERMANATOR = EquipmentData(12, "Thermanator", 39, oclass_id=0x0FB0, icon_id=0xEA82)
-TRACTOR_BEAM = EquipmentData(13, "Tractor Beam", 46, oclass_id=0x00BC, icon_id=0xEA80)
-QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 49, icon_id=0xEA9C)
-BOX_BREAKER = EquipmentData(15, "Box Breaker", 50, oclass_id=0x1238, icon_id=0xEAA1)
-INFILTRATOR = EquipmentData(16, "Infiltrator", 51, oclass_id=0x0BD3, icon_id=0xEA83)
-CHARGE_BOOTS = EquipmentData(17, "Charge Boots", 54, oclass_id=0x0E70, icon_id=0xEA89)
-HYPNOMATIC = EquipmentData(18, "Hypnomatic", 55, oclass_id=0x0950, icon_id=0xEA84)
+HELI_PACK = EquipmentData(1, "Heli-Pack", 0x2, oclass_id=0x025F, icon_id=0xEA8D)
+THRUSTER_PACK = EquipmentData(2, "Thruster-Pack", 0x3, oclass_id=0x0260, icon_id=0xEA7E)
+MAPPER = EquipmentData(3, "Mapper", 0x5, oclass_id=0x1235, icon_id=0xEA9F)
+ARMOR_MAGNETIZER = EquipmentData(4, "Armor Magnetizer", 0x7, oclass_id=0x112F, icon_id=0xEA9A)
+LEVITATOR = EquipmentData(5, "Levitator", 0x8, oclass_id=0x096C, icon_id=0xEA90)
+SWINGSHOT = EquipmentData(6, "Swingshot", 0xD, oclass_id=0x00D0, icon_id=0xEA8B)
+GRAVITY_BOOTS = EquipmentData(7, "Gravity Boots", 0x13, oclass_id=0x00AD, icon_id=0xEA88)
+GRIND_BOOTS = EquipmentData(8, "Grindboots", 0x14, oclass_id=0x00C3, icon_id=0xEA8C)
+GLIDER = EquipmentData(9, "Glider", 0x15, icon_id=0xEA91)
+DYNAMO = EquipmentData(10, "Dynamo", 0x24, oclass_id=0x0825, icon_id=0xEA7F)
+ELECTROLYZER = EquipmentData(11, "Electrolyzer", 0x26, oclass_id=0x0870, icon_id=0xEA81)
+THERMANATOR = EquipmentData(12, "Thermanator", 0x27, oclass_id=0x0FB0, icon_id=0xEA82)
+TRACTOR_BEAM = EquipmentData(13, "Tractor Beam", 0x2E, oclass_id=0x00BC, icon_id=0xEA80)
+QWARK_STATUETTE = EquipmentData(14, "Qwark Statuette", 0x31, icon_id=0xEA9C)
+BOX_BREAKER = EquipmentData(15, "Box Breaker", 0x32, oclass_id=0x1238, icon_id=0xEAA1)
+INFILTRATOR = EquipmentData(16, "Infiltrator", 0x33, oclass_id=0x0BD3, icon_id=0xEA83)
+CHARGE_BOOTS = EquipmentData(17, "Charge Boots", 0x36, oclass_id=0x0E70, icon_id=0xEA89)
+HYPNOMATIC = EquipmentData(18, "Hypnomatic", 0x37, oclass_id=0x0950, icon_id=0xEA84)
 
 
 @dataclass

@@ -57,6 +57,7 @@ class Addresses:
 
             self.equipped_weapon: int = 0x1A7398
             self.quickselect: int = 0x1A73B8
+            self.easy_cutscene_skip: int = 0x1A7478
             self.current_planet: int = 0x1A79F0
             self.current_bolts: int = 0x1A79F8
             # self.raritanium_count: int = 0x1A79FC
@@ -70,6 +71,7 @@ class Addresses:
             self.inventory: int = 0x1A7AF8
             self.secondary_inventory: int = 0x1A7B30
             self.vendor_list: int = 0x1A7B68
+            # self.savefile_play_time: int = 0x1A7BC0
             self.unlocked_planets: int = 0x1A7BC8
             self.loaded_flag: int = 0x1A7BE5
             self.highlighted_planets: int = 0x1A7BE8
@@ -344,21 +346,25 @@ class Addresses:
             #  Custom addresses
             ################################################
 
-            # I use some unused addresses at the end of the platinum bolt table to store some extra data for AP.
-            self.platinum_bolt_count: int = self.platinum_bolt_table + 0x6C
-            self.nanotech_boost_count: int = self.platinum_bolt_table + 0x6D
-            self.hypnomatic_part_count: int = self.platinum_bolt_table + 0x6E
+            # We use secondary inventory for unused weapons to store "global" data that needs to be saved to memcard
+            self.platinum_bolt_count: int = self.secondary_inventory + 0x0F     # Unused weapon 1
+            self.nanotech_boost_count: int = self.secondary_inventory + 0x22    # Unused weapon 2
+            self.hypnomatic_part_count: int = self.secondary_inventory + 0x23   # Unused weapon 3
+            self.bolt_pack_count: int = self.secondary_inventory + 0x28         # Unused weapon 4
 
-            # The "enemy kill count table" is actually one table per planet of 0x400 bytes each, holding the number
-            # of times two enemies were killed (one in the upper half, the other in the lower half of the byte).
-            # As one might expect, this is way too much and most of this data is empty, but still saved on the memcard.
-            # We use the table for Feltzin since spaceship systems don't use that mechanic at all, but still have that
-            # table.
-            self.feltzin_kill_count_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
-            self.tabora_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x1
-            self.aranos_wrench_cutscene_flag: int = self.feltzin_kill_count_table + 0x2
-            self.custom_text_notification_trigger: int = self.feltzin_kill_count_table + 0x3
-            self.bolt_pack_count: int = self.feltzin_kill_count_table + 0x4
+            # Put the new Tabora wrench cutscene flag inside the platinum bolt table for Tabora so it gets saved along
+            # other planet specific data
+            self.tabora_wrench_cutscene_flag: int = self.platinum_bolt_table + (TABORA.number * 4) + 3
+            # Put the new Aranos Prison wrench cutscene flag inside the platinum bolt table for Aranos so it gets
+            # saved along other planet specific data
+            self.aranos_wrench_cutscene_flag: int = self.platinum_bolt_table + (ARANOS_PRISON.number * 4) + 1
+
+            # The "enemy kill count table" is a 0x400 table for each, holding the number of times two enemies were
+            # killed (one in the upper half, the other in the lower half of the byte).
+            # We use Feltzin's table as a spot to put temporary data, since spaceship systems don't use that mechanic
+            # at all but still have that table.
+            self.temporary_data_table: int = self.enemy_kill_count_table + (FELTZIN_SYSTEM.number * 0x400)
+            self.custom_text_notification_trigger: int = self.temporary_data_table
 
 
 class PlanetAddresses(NamedTuple):
