@@ -61,9 +61,6 @@ Ratchet & Clank 2:
   # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
   skip_wupash_nebula: true
 
-  # Gives access to first person mode in 'Special' menu without being in New Game+.
-  allow_first_person_mode: true
-
   # Enables the bolt multiplier feature without being in New Game+.
   enable_bolt_multiplier: false
 

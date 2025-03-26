@@ -47,11 +47,6 @@ class SkipWupashNebula(DefaultOnToggle):
     display_name = "Skip Wupash Nebula"
 
 
-class AllowFirstPersonMode(DefaultOnToggle):
-    """Gives access to first person mode in 'Special' menu without being in New Game+."""
-    display_name = "Allow First Person Mode"
-
-
 class EnableBoltMultiplier(Toggle):
     """Enables the bolt multiplier feature without being in New Game+."""
     display_name = "Enable Bolt Multiplier"
@@ -131,7 +126,6 @@ class Rac2Options(PerGameCommonOptions):
     randomize_gadgetron_vendor: RandomizeGadgetronVendor
     exclude_very_expensive_items: ExcludeVeryExpensiveItems
     skip_wupash_nebula: SkipWupashNebula
-    allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier
     no_revisit_reward_change: NoRevisitRewardChange
     no_kill_reward_degradation: NoKillRewardDegradation
