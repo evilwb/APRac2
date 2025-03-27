@@ -101,13 +101,13 @@ Ratchet & Clank 2:
   # This effectively makes all weapons that are usually restricted to NG+ available with enough grinding.
   extend_weapon_progression: false
 
-  # Allows the logic to use checks reachable with 1st person mode glitch
-  # Values are: no, easy, medium and hard
-  # The setting relates to the difficulty of performing the glitch. For exmaple:
-  # Easy: Getting the Platinum Bolt near the Tractor Beam exchange in Oozla.
-  # Medium: Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator.
-  # Hard: Getting to the Mutated Protopet without the Hypnomatic.
-  allow_first_person_mode_glitch_locations: no
+  # Determines if logic should take first person mode glitches into account when evaluating which locations are reachable.
+  # Various difficulty levels can be picked:
+  # - Easy: simple climbs (e.g. getting the Platinum Bolt near Oozla scientist)
+  # - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
+  # - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)
+  # Can be disabled with value disabled.
+  first_person_mode_glitch_in_logic: no
 
   # Item & Location Options
   local_items:
