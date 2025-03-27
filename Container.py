@@ -303,10 +303,9 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         # Set arg0 to 0x18 for ship shack
         patch.write_token(APTokenTypes.WRITE, address + 0x24, bytes([0x18, 0x00, 0x04, 0x24]))
 
-    # Allow first-person mode outside of NG+ if requested in options
-    if world.options.allow_first_person_mode:
-        for address in addresses.SPECIAL_MENU_FUNCS:
-            patch.write_token(APTokenTypes.WRITE, address + 0x1B0, NOP * 2)
+    # Allow first-person mode outside of NG+
+    for address in addresses.SPECIAL_MENU_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x1B0, NOP * 2)
             
     # Enable bolt multiplier outside of NG+ if requested in options
     if world.options.enable_bolt_multiplier:

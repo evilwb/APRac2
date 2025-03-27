@@ -61,9 +61,6 @@ Ratchet & Clank 2:
   # Skips the Wupash Nebula ship section that appears when first traveling to Maktar Nebula.
   skip_wupash_nebula: true
 
-  # Gives access to first person mode in 'Special' menu without being in New Game+.
-  allow_first_person_mode: true
-
   # Enables the bolt multiplier feature without being in New Game+.
   enable_bolt_multiplier: false
 
@@ -103,6 +100,14 @@ Ratchet & Clank 2:
   # upgrade into LV3 (yellow) weapons, which can then upgrade into LV4 (blue) weapons.
   # This effectively makes all weapons that are usually restricted to NG+ available with enough grinding.
   extend_weapon_progression: false
+
+  # Determines if logic should take first person mode glitches into account when evaluating which locations are reachable.
+  # Various difficulty levels can be picked:
+  # - Easy: simple climbs (e.g. getting the Platinum Bolt near Oozla scientist)
+  # - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
+  # - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)
+  # Can be disabled with value disabled.
+  first_person_mode_glitch_in_logic: no
 
   # Item & Location Options
   local_items:
