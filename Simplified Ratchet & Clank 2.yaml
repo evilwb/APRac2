@@ -107,7 +107,10 @@ Ratchet & Clank 2:
   # - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
   # - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)
   # Can be disabled with value disabled.
-  first_person_mode_glitch_in_logic: no
+  first_person_mode_glitch_in_logic: disabled
+
+  # If enabled, logic should take charge boots into account when evaluating which locations are reachable.
+  charge_boots_in_logic: false
 
   # Item & Location Options
   local_items:

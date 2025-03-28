@@ -117,6 +117,11 @@ class FirstPersonModeGlitchInLogic(Choice):
     default = 0
 
 
+class ChargeBootsInLogic(Toggle):
+    """If enabled, logic should take charge boots into account when evaluating which locations are reachable."""
+    display_name = "Charge Boots In Logic"
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -135,3 +140,4 @@ class Rac2Options(PerGameCommonOptions):
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
     extend_weapon_progression: ExtendWeaponProgression
     first_person_mode_glitch_in_logic: FirstPersonModeGlitchInLogic
+    charge_boots_in_logic: ChargeBootsInLogic

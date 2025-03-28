@@ -98,6 +98,10 @@ def oozla_tractor_puzzle_pb_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return True
 
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or can_tractor(state, player))
+
     return can_tractor(state, player)
 
 
@@ -118,18 +122,40 @@ def oozla_swamp_monster_ii_rule(state: CollectionState, player: int) -> bool:
 def maktar_photo_booth_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
+    if (options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM
+        and options.charge_boots_in_logic):
+        return (can_electrolyze(state, player)
+                or can_heli(state, player)
+                or can_charge(state, player))
+
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
         return (can_electrolyze(state, player)
                 or can_heli(state, player))
+
+    if options.charge_boots_in_logic:
+        return (can_electrolyze(state, player)
+                or can_charge(state, player))
 
     return can_electrolyze(state, player)
 
 
 def maktar_deactivate_jamming_array_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or can_tractor(state, player))
+
     return can_tractor(state, player)
 
 
 def maktar_jamming_array_pb_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or can_tractor(state, player))
+
     return can_tractor(state, player)
 
 
@@ -156,13 +182,19 @@ def barlow_inventor_rule(state: CollectionState, player: int) -> bool:
 
 
 def barlow_overbike_race_rule(state: CollectionState, player: int) -> bool:
+    if not can_electrolyze(state, player):
+        return False
+
     options = get_options(state, player)
 
-    if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
-        return can_electrolyze(state, player)
+    if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
+        return True
 
-    return (can_improved_jump(state, player)
-            and can_electrolyze(state, player))
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or can_improved_jump(state, player))
+
+    return can_improved_jump(state, player)
 
 
 def barlow_hound_cave_pb_rule(state: CollectionState, player: int) -> bool:
@@ -175,6 +207,11 @@ def notak_top_pier_telescreen_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return True
 
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or (can_improved_jump(state, player)
+                    and can_thermanate(state, player)))
+
     return (can_improved_jump(state, player)
             and can_thermanate(state, player))
 
@@ -184,6 +221,11 @@ def notak_worker_bots_rule(state: CollectionState, player: int) -> bool:
 
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
         return True
+
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or (can_heli(state, player)
+                    and can_thermanate(state, player)))
 
     return (can_heli(state, player)
             and can_thermanate(state, player))
@@ -195,9 +237,17 @@ def notak_timed_dynamo_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
         return True
 
-    return (can_dynamo(state, player)
-            and can_thermanate(state, player)
-            and can_improved_jump(state, player))
+    if options.charge_boots_in_logic:
+        if not can_dynamo(state, player):
+            return False
+
+        return (can_charge(state, player)
+                or (can_improved_jump(state, player)
+                    and can_thermanate(state, player)))
+
+    return (can_thermanate(state, player)
+            and can_improved_jump(state, player)
+            and can_dynamo(state, player))
 
 
 def siberius_defeat_thief_rule(state: CollectionState, player: int) -> bool:
@@ -218,6 +268,10 @@ def siberius_fenced_area_pb_rule(state: CollectionState, player: int) -> bool:
 
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return True
+
+    if options.charge_boots_in_logic:
+        return (can_charge(state, player)
+                or can_heli(state, player))
 
     return can_heli(state, player)
 
@@ -261,6 +315,11 @@ def tabora_northeast_desert_pb_rule(state: CollectionState, player: int) -> bool
 def tabora_canyon_glide_pillar_nt_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
+    if options.charge_boots_in_logic:
+        return (can_heli(state, player)
+                and can_swingshot(state, player)
+                and can_charge(state, player))
+
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return (can_heli(state, player)
                 and can_swingshot(state, player)
@@ -301,8 +360,17 @@ def dobbo_spiderbot_room_pb_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return can_swingshot(state, player)
 
-    return (can_swingshot(state, player)
-            and can_dynamo(state, player))
+    if options.charge_boots_in_logic:
+        if not (can_swingshot(state, player)
+                and can_spiderbot(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or can_dynamo(state, player))
+
+    return (can_dynamo(state, player)
+            and can_swingshot(state, player)
+            and can_spiderbot(state, player))
 
 
 def dobbo_facility_glide_pb_rule(state: CollectionState, player: int) -> bool:
@@ -328,6 +396,11 @@ def dobbo_facility_glide_nt_rule(state: CollectionState, player: int) -> bool:
 
 
 def joba_hoverbike_race_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        return can_charge(state, player)
+
     return can_swingshot(state, player)
 
 
@@ -369,6 +442,13 @@ def joba_hidden_cliff_pb_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
         return True
 
+    if options.charge_boots_in_logic:
+        if not can_dynamo(state, player):
+            return False
+
+        return (can_charge(state, player)
+                or can_swingshot(state, player))
+
     return (can_dynamo(state, player)
             and can_swingshot(state, player))
 
@@ -399,9 +479,17 @@ def todano_search_rocket_silo_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return True
 
+    if options.charge_boots_in_logic:
+        if not (can_electrolyze(state, player)
+                and can_infiltrate(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or can_improved_jump(state, player))
+
     return (can_electrolyze(state, player)
-            and can_improved_jump(state, player)
-            and can_infiltrate(state, player))
+            and can_infiltrate(state, player)
+            and can_improved_jump(state, player))
 
 
 def todano_stuart_zurgo_trade_rule(state: CollectionState, player: int) -> bool:
@@ -475,13 +563,16 @@ def boldan_find_fizzwidget_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_HARD:
         return True
 
-    if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_MEDIUM:
-        return (can_gravity(state, player)
-                and can_improved_jump(state, player))
-
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
-        return (can_swingshot(state, player)
-                and can_gravity(state, player))
+        return can_gravity(state, player)
+
+    if options.charge_boots_in_logic:
+        if not (can_levitate(state, player)
+                and can_gravity(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or can_swingshot(state, player))
 
     return (can_levitate(state, player)
             and can_swingshot(state, player)
@@ -567,7 +658,7 @@ def aranos_omniwrench_12000_rule(state: CollectionState, player: int) -> bool:
 def snivelak_rescue_angelak_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
-    if options.first_person_mode_glitch_in_logic >+ FIRST_PERSON_EASY:
+    if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return can_swingshot(state, player)
 
     return (can_swingshot(state, player)
@@ -581,6 +672,16 @@ def snivelak_dynamo_pb_rule(state: CollectionState, player: int) -> bool:
 
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         return can_swingshot(state, player)
+
+    if options.charge_boots_in_logic:
+        if not (can_swingshot(state, player)
+                and can_grind(state, player)
+                and can_gravity(state, player)
+                and can_dynamo(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or can_heli(state, player))
 
     return (can_swingshot(state, player)
             and can_grind(state, player)
@@ -629,8 +730,16 @@ def smolg_mutant_crab_rule(state: CollectionState, player: int) -> bool:
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         if not can_levitate(state, player):
             return False
+
         return (can_swingshot(state, player)
                 or can_electrolyze(state, player))
+
+    if options.charge_boots_in_logic:
+        if not can_levitate(state, player):
+            return False
+
+        return (can_charge(state, player)
+                or can_swingshot(state, player))
 
     return (can_swingshot(state, player)
             and can_levitate(state, player))
@@ -642,8 +751,16 @@ def smolg_floating_platform_pb_rule(state: CollectionState, player: int) -> bool
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
         if not can_levitate(state, player):
             return False
+
         return (can_swingshot(state, player)
                 or can_electrolyze(state, player))
+
+    if options.charge_boots_in_logic:
+        if not can_levitate(state, player):
+            return False
+
+        return (can_charge(state, player)
+                or can_swingshot(state, player))
 
     return (can_swingshot(state, player)
             and can_levitate(state, player))
@@ -660,6 +777,17 @@ def smolg_warehouse_pb_rule(state: CollectionState, player: int) -> bool:
 
 
 def damosel_hypnotist_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        if not (can_improved_jump(state, player)
+                and has_hypnomatic_parts(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or (can_swingshot(state, player)
+                    and can_thermanate(state, player)))
+
     return (can_swingshot(state, player)
             and can_improved_jump(state, player)
             and can_thermanate(state, player)
@@ -671,6 +799,16 @@ def damosel_train_rails_rule(state: CollectionState, player: int) -> bool:
 
 
 def damosel_frozen_mountain_pb_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        if not can_grind(state, player):
+            return False
+
+        return (can_charge(state, player)
+                or (can_improved_jump(state, player)
+                    and can_thermanate(state, player)))
+
     return (can_swingshot(state, player)
             and can_improved_jump(state, player)
             and can_thermanate(state, player)
@@ -678,6 +816,16 @@ def damosel_frozen_mountain_pb_rule(state: CollectionState, player: int) -> bool
 
 
 def damosel_pyramid_pb_rule(state: CollectionState, player: int) -> bool:
+    options = get_options(state, player)
+
+    if options.charge_boots_in_logic:
+        if not (can_improved_jump(state, player)
+                and can_hypnotize(state, player)):
+            return False
+
+        return (can_charge(state, player)
+                or can_swingshot(state, player))
+
     return (can_swingshot(state, player)
             and can_improved_jump(state, player)
             and can_hypnotize(state, player))
