@@ -3,13 +3,16 @@ from typing import TYPE_CHECKING
 from BaseClasses import ItemClassification, Item
 from .data import Items, Locations
 from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData, ItemData
-from .Rac2Options import StartingWeapons
+from .Rac2Options import StartingWeapons, Rac2Options
 
 if TYPE_CHECKING:
     from . import Rac2World
 
 
-def get_classification(item: ItemData) -> ItemClassification:
+def get_classification(item: ItemData, options: Rac2Options = None) -> ItemClassification:
+    if options is not None:
+        if options.charge_boots_in_logic and item == Items.CHARGE_BOOTS:
+            return ItemClassification.progression
     if item in Items.COORDS:
         return ItemClassification.progression
     if item in [
