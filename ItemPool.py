@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification, Item
+
 from .data import Items, Locations
 from .data.Items import CoordData, EquipmentData, ProgressiveUpgradeData, ItemData
+from .Logic import GLITCH_LOGIC_HARD
 from .Rac2Options import StartingWeapons, Rac2Options
 
 if TYPE_CHECKING:
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
 
 def get_classification(item: ItemData, options: Rac2Options = None) -> ItemClassification:
     if options is not None:
-        if options.charge_boots_in_logic and item == Items.CHARGE_BOOTS:
+        if options.glitch_logic_difficulty >= GLITCH_LOGIC_HARD and item == Items.CHARGE_BOOTS:
             return ItemClassification.progression
     if item in Items.COORDS:
         return ItemClassification.progression

@@ -101,16 +101,13 @@ Ratchet & Clank 2:
   # This effectively makes all weapons that are usually restricted to NG+ available with enough grinding.
   extend_weapon_progression: false
 
-  # Determines if logic should take first person mode glitches into account when evaluating which locations are reachable.
+  # Determines the kind of logic that should taken into account when evaluating which locations are reachable.
   # Various difficulty levels can be picked:
-  # - Easy: simple climbs (e.g. getting the Platinum Bolt near Oozla scientist)
-  # - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
-  # - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)
-  # Can be disabled with value disabled.
-  first_person_mode_glitch_in_logic: disabled
-
-  # If enabled, logic should take charge boots into account when evaluating which locations are reachable.
-  charge_boots_in_logic: false
+  # - Beginner: Intended way of doing things, or things you can deduce from a casual playthrough
+  # - Medium: Obscure knowledge, out-of-the-box thinking, unintuitive usage of game mechanics but no glitch involved (e.g. tight heli-pack glide, tight hyperstrike wrench jumps, simple macaroni & sideflip movement tech etc...)
+  # - Hard: Simple to intermediate glitches allowed (e.g. most decoy glove clip-outs, most charge boots tech, most decoy proxies, pack switch, etc...)
+  # - Expert: All known glitches allowed (e.g. hardest clip-outs, complex movement chains where keeping momentum is required, etc...)
+  glitch_logic_difficulty: beginner
 
   # Item & Location Options
   local_items:

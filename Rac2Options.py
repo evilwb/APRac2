@@ -103,23 +103,19 @@ class ExtendWeaponProgression(Toggle):
     display_name = "Extended Weapon Progression"
 
 
-class FirstPersonModeGlitchInLogic(Choice):
-    """Determines if logic should take first person mode glitches into account when evaluating which locations are
-    reachable. Various difficulty levels can be picked:
-    - Easy: simple climbs (e.g. getting the Platinum Bolt near Oozla scientist)
-    - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
-    - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)"""
-    display_name = "First Person Mode Glitch In Logic"
-    option_disabled = 0
-    option_easy = 1
-    option_medium = 2
-    option_hard = 3
+class GlitchLogicDifficulty(Choice):
+    """Determines the kind of logic that should taken into account when evaluating which locations are reachable.
+    Various difficulty levels can be picked:
+    - Beginner: Intended way of doing things, or things you can deduce from a casual playthrough
+    - Medium: Obscure knowledge, out-of-the-box thinking, unintuitive usage of game mechanics but no glitch involved (e.g. tight heli-pack glide, tight hyperstrike wrench jumps, simple macaroni & sideflip movement tech etc...)
+    - Hard: Simple to intermediate glitches allowed (e.g. most decoy glove clip-outs, most charge boots tech, most decoy proxies, pack switch, etc...)
+    - Expert: All known glitches allowed (e.g. hardest clip-outs, complex movement chains where keeping momentum is required, etc...)"""
+    display_name = "Glitch Logic Difficulty"
+    option_beginner = 0
+    option_medium = 1
+    option_hard = 2
+    option_expert = 3
     default = 0
-
-
-class ChargeBootsInLogic(Toggle):
-    """If enabled, logic should take charge boots into account when evaluating which locations are reachable."""
-    display_name = "Charge Boots In Logic"
 
 
 @dataclass
@@ -139,5 +135,4 @@ class Rac2Options(PerGameCommonOptions):
     weapon_xp_multiplier: WeaponExperienceMultiplier
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
     extend_weapon_progression: ExtendWeaponProgression
-    first_person_mode_glitch_in_logic: FirstPersonModeGlitchInLogic
-    charge_boots_in_logic: ChargeBootsInLogic
+    glitch_logic_difficulty: GlitchLogicDifficulty
