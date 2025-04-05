@@ -4,3 +4,4 @@ __pycache__
 *.iso
 test/test_output
 lib
+/.idea/
