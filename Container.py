@@ -211,26 +211,6 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
             # Put the base scaling from vanilla game for XP & Bolts even for revisits
             patch.write_token(APTokenTypes.WRITE, address, bytes([100, 50, 40, 30, 25, 20, 15, 10] * 4))
 
-    """ Normally, when the game gives you equipment (Gadgets/Items/Weapons), it will set a Primary and Secondary byte. 
-    The Primary byte is what the game uses to determine if you have the equipment. The Secondary byte doesn't seem to 
-    be used for anything. For the randomizer, the Primary byte will continue to be used to indicate whether the 
-    equipment is collected but the Secondary byte will be repurposed to keep track of whether the location has been
-    visited. Here, the give equipment function for each planet is modified to only set the Secondary byte to mark that 
-    the locations has been visited and prevent giving normal equipment. """
-    for address in addresses.GIVE_EQUIPMENT_FUNCS:
-        patch.write_token(APTokenTypes.WRITE, address + 0x14, bytes([0x01, 0x00, 0x03, 0x24]))  # addiu v1,zero,0x1
-        patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([0x21, 0x38, 0x82, 0x00]))  # addu a3,a0,v0
-        patch.write_token(APTokenTypes.WRITE, address + 0x1C, bytes([0x38, 0x00, 0xE3, 0xA0]))  # sb v1,0x38(a3)
-        patch.write_token(APTokenTypes.WRITE, address + 0x20, NOP * 43)
-
-    for address in addresses.VENDOR_CONFIRM_MENU_FUNCS:
-        # Prevent auto-equipping anything purchased at the vendor.
-        patch.write_token(APTokenTypes.WRITE, address + 0x740, NOP)
-
-        # Prevent vendor from overwriting slots after purchases.
-        patch.write_token(APTokenTypes.WRITE, address + 0x60C, NOP)
-        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
-
     """ Prevent any inference of an upgraded weapon type, always take the base Lv1 weapon so that we know which
     weapon to edit temporarily into a fake buyable item. """
     for address in addresses.VENDOR_LOOP_FUNCS:
@@ -333,6 +313,26 @@ def generate_patch(world: "Rac2World", patch: Rac2ProcedurePatch, instruction=No
         for address in addresses.AVAILABLE_ITEM_FUNCS:
             patch.write_token(APTokenTypes.WRITE, address + 0x4, NOP * 3)
             patch.write_token(APTokenTypes.WRITE, address + 0x14, NOP * 21)
+
+    """ Normally, when the game gives you equipment (Gadgets/Items/Weapons), it will set a Primary and Secondary byte. 
+    The Primary byte is what the game uses to determine if you have the equipment. The Secondary byte doesn't seem to 
+    be used for anything. For the randomizer, the Primary byte will continue to be used to indicate whether the 
+    equipment is collected but the Secondary byte will be repurposed to keep track of whether the location has been
+    visited. Here, the give equipment function for each planet is modified to only set the Secondary byte to mark that 
+    the locations has been visited and prevent giving normal equipment. """
+    for address in addresses.GIVE_EQUIPMENT_FUNCS:
+        patch.write_token(APTokenTypes.WRITE, address + 0x14, bytes([0x01, 0x00, 0x03, 0x24]))  # addiu v1,zero,0x1
+        patch.write_token(APTokenTypes.WRITE, address + 0x18, bytes([0x21, 0x38, 0x82, 0x00]))  # addu a3,a0,v0
+        patch.write_token(APTokenTypes.WRITE, address + 0x1C, bytes([0x38, 0x00, 0xE3, 0xA0]))  # sb v1,0x38(a3)
+        patch.write_token(APTokenTypes.WRITE, address + 0x20, NOP * 43)
+
+    for address in addresses.VENDOR_CONFIRM_MENU_FUNCS:
+        # Prevent auto-equipping anything purchased at the vendor.
+        patch.write_token(APTokenTypes.WRITE, address + 0x740, NOP)
+
+        # Prevent vendor from overwriting slots after purchases.
+        patch.write_token(APTokenTypes.WRITE, address + 0x60C, NOP)
+        patch.write_token(APTokenTypes.WRITE, address + 0x790, NOP)
 
     """--------- 
     Oozla 
