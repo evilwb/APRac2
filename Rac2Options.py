@@ -47,11 +47,6 @@ class SkipWupashNebula(DefaultOnToggle):
     display_name = "Skip Wupash Nebula"
 
 
-class AllowFirstPersonMode(DefaultOnToggle):
-    """Gives access to first person mode in 'Special' menu without being in New Game+."""
-    display_name = "Allow First Person Mode"
-
-
 class EnableBoltMultiplier(Toggle):
     """Enables the bolt multiplier feature without being in New Game+."""
     display_name = "Enable Bolt Multiplier"
@@ -108,6 +103,20 @@ class ExtendWeaponProgression(Toggle):
     display_name = "Extended Weapon Progression"
 
 
+class FirstPersonModeGlitchInLogic(Choice):
+    """Determines if logic should take first person mode glitches into account when evaluating which locations are
+    reachable. Various difficulty levels can be picked:
+    - Easy: simple climbs (e.g. getting the Platinum Bolt near Oozla scientist)
+    - Medium: harder climbs and basic lateral movement (e.g. Getting to the Notak Worker Bots without the Heli-pack nor the Thermanator)
+    - Hard: full navigation following walls (e.g. Getting to the Mutated Protopet only with the Infiltrator)"""
+    display_name = "First Person Mode Glitch In Logic"
+    option_disabled = 0
+    option_easy = 1
+    option_medium = 2
+    option_hard = 3
+    default = 0
+
+
 @dataclass
 class Rac2Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -117,7 +126,6 @@ class Rac2Options(PerGameCommonOptions):
     randomize_gadgetron_vendor: RandomizeGadgetronVendor
     exclude_very_expensive_items: ExcludeVeryExpensiveItems
     skip_wupash_nebula: SkipWupashNebula
-    allow_first_person_mode: AllowFirstPersonMode
     enable_bolt_multiplier: EnableBoltMultiplier
     no_revisit_reward_change: NoRevisitRewardChange
     no_kill_reward_degradation: NoKillRewardDegradation
@@ -126,3 +134,4 @@ class Rac2Options(PerGameCommonOptions):
     weapon_xp_multiplier: WeaponExperienceMultiplier
     extra_spaceship_challenge_locations: ExtraSpaceshipChallengeLocations
     extend_weapon_progression: ExtendWeaponProgression
+    first_person_mode_glitch_in_logic: FirstPersonModeGlitchInLogic
