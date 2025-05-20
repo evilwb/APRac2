@@ -95,10 +95,20 @@ def create_equipment(world: "Rac2World") -> list["Item"]:
     # Gadgetron Vendor
     if world.options.randomize_gadgetron_vendor:
         equipment_to_add += [i for i in Items.GADGETRON_VENDOR_WEAPONS if i not in world.starting_weapons]
+    else:
+        mapping: list[tuple[Locations.LocationData, Items.WeaponData]] = zip(Locations.GADGETRON_VENDOR_LOCATIONS, Items.GADGETRON_VENDOR_WEAPONS)
+        for loc, item in mapping:
+            location = world.multiworld.get_location(loc.name, world.player)
+            location.place_locked_item(world.create_item(item.name))
 
     # Megacorp Vendor
     if world.options.randomize_megacorp_vendor:
         equipment_to_add += [i for i in Items.MEGACORP_VENDOR_WEAPONS if i not in world.starting_weapons]
+    else:
+        mapping: list[tuple[Locations.LocationData, Items.WeaponData]] = zip(Locations.MEGACORP_VENDOR_LOCATIONS, Items.MEGACORP_VENDOR_WEAPONS)
+        for loc, item in mapping:
+            location = world.multiworld.get_location(loc.name, world.player)
+            location.place_locked_item(world.create_item(item.name))
 
     # Misc Weapons
     equipment_to_add += [Items.SHEEPINATOR]

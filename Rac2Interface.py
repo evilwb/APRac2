@@ -245,7 +245,9 @@ class Vendor:
             return
 
         if new_mode is Vendor.Mode.AMMO:
-            if not ctx.slot_data["randomize_megacorp_vendor"]:
+            if self.mode is self.Mode.MEGACORP and not ctx.slot_data["randomize_megacorp_vendor"]:
+                return
+            if self.mode is self.Mode.GADGETRON and not ctx.slot_data["randomize_gadgetron_vendor"]:
                 return
 
             current_inventory: dict[str, int] = ctx.game_interface.get_current_inventory()
@@ -337,6 +339,9 @@ class Vendor:
                     slots.append(Vendor.VendorSlot(weapons[i].offset, False, 0x47))
 
                 self.interface.pcsx2_interface.write_int16(equipment_table + weapons[i].offset * 0xE0 + 0x3C, Items.get_icon_id(item))
+            if not slots:
+                self.change_mode(ctx, self.Mode.AMMO)
+                return
             self.populate_slots(slots)
         elif new_mode is Vendor.Mode.CLOSED:
             # reset weapon data back to default when not in vendor
