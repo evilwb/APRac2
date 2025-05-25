@@ -656,7 +656,7 @@ def smolg_warehouse_pb_rule(state: CollectionState, player: int) -> bool:
         return True
 
     return (can_dynamo(state, player)
-            or can_improved_jump(state, player))
+            and can_improved_jump(state, player))
 
 
 def damosel_hypnotist_rule(state: CollectionState, player: int) -> bool:
