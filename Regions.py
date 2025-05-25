@@ -24,23 +24,7 @@ def create_regions(world: 'Rac2World'):
         if planet_data.locations:
             def generate_planet_access_rule(planet: PlanetData) -> typing.Callable[[CollectionState], bool]:
                 def planet_access_rule(state: CollectionState):
-                    # Connect with special case access rules
-                    if planet == Planets.TABORA:
-                        return (
-                            state.has(Items.coord_for_planet(planet.number).name, world.player)
-                            and can_heli(state, world.player)
-                            and can_swingshot(state, world.player)
-                        )
-                    if planet == Planets.ARANOS_PRISON:
-                        return (
-                            state.has(Items.coord_for_planet(planet.number).name, world.player)
-                            and state.has_all([
-                                Items.GRAVITY_BOOTS.name, Items.LEVITATOR.name, Items.INFILTRATOR.name], world.player
-                            )
-                        )
-                    # Connect with general case access rule
-                    else:
-                        return state.has(Items.coord_for_planet(planet.number).name, world.player)
+                    return state.has(Items.coord_for_planet(planet.number).name, world.player)
                 return planet_access_rule
 
             region = Region(planet_data.name, world.player, world.multiworld)
