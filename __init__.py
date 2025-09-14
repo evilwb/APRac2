@@ -117,7 +117,7 @@ class Rac2World(World):
         unfilled = [i for i in self.multiworld.get_unfilled_locations(self.player) if not i.is_event]
         remain = len(unfilled) - len(items_to_add)
         assert remain >= 0, "There are more items than locations. This is not supported."
-        print(f"Not enough items to fill all locations. Adding {remain} filler items to the item pool")
+        print(f"[RAC2 Debug] Not enough items to fill all locations. Adding {remain} filler items to the item pool")
         for _ in range(remain):
             items_to_add.append(self.create_item(Items.BOLT_PACK.name, ItemClassification.filler))
 
