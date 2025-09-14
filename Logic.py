@@ -299,10 +299,12 @@ def dobbo_spiderbot_room_pb_rule(state: CollectionState, player: int) -> bool:
     options = get_options(state, player)
 
     if options.first_person_mode_glitch_in_logic >= FIRST_PERSON_EASY:
-        return can_swingshot(state, player)
+        return (can_swingshot(state, player)
+                and can_spiderbot(state, player))
 
     return (can_swingshot(state, player)
-            and can_dynamo(state, player))
+            and can_dynamo(state, player)
+            and can_spiderbot(state, player))
 
 
 def dobbo_facility_glide_pb_rule(state: CollectionState, player: int) -> bool:
